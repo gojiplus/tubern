@@ -4,13 +4,9 @@
 \alias{list_jobs}
 \title{List Jobs}
 \usage{
-list_jobs(page_size = NULL, page_token = NULL, ...)
+list_jobs(...)
 }
 \arguments{
-\item{page_size}{The requested page size. If no value is specified, the API server chooses an appropriate default, optional}
-
-\item{page_token}{specific page in the result set that should be returned, optional}
-
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{

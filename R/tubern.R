@@ -27,7 +27,7 @@ yt_check_token <- function() {
 #' @return list
 
 tubern_GET <- 
-function(path, query, ...) {
+function(path, query=NULL, ...) {
 
 	yt_check_token()
 

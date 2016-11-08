@@ -4,7 +4,7 @@
 \alias{tubern_GET}
 \title{Base POST AND GET functions. Not exported.}
 \usage{
-tubern_GET(path, query, ...)
+tubern_GET(path, query = NULL, ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}
