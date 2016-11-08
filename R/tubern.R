@@ -31,7 +31,7 @@ function(path, query, ...) {
 
 	yt_check_token()
 
-	req <- GET("https://youtubereporting.googleapis.com/v1/", path= path, query=query, config(token = getOption("google_token")), ...)
+	req <- GET("https://youtubereporting.googleapis.com/", path= paste0("v1/", path), query=query, config(token = getOption("google_token")), ...)
 	
 	stop_for_status(req)
 	res <- content(req)
@@ -54,7 +54,7 @@ function(path, query, body="", ...) {
 
 	yt_check_token()
 	
-	req <- POST("https://youtubereporting.googleapis.com/v1/", path= path, body=body, query=query, config(token = getOption("google_token")), ...)
+	req <- POST("https://youtubereporting.googleapis.com/", path= paste0("v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 

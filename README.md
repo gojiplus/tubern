@@ -1,7 +1,7 @@
 ## tubern: R Client for the Youtube Analytics and Reporting API
 
 [![Build status](https://ci.appveyor.com/api/projects/status/y2m2kda6polq50ge?svg=true)](https://ci.appveyor.com/project/soodoku/tubern)
-[![Build Status](https://travis-ci.org/soodoku/tuber.svg?branch=master)](https://travis-ci.org/soodoku/tubern)
+[![Build Status](https://travis-ci.org/soodoku/tubern.svg?branch=master)](https://travis-ci.org/soodoku/tubern)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tuber)](https://cran.r-project.org/package=tubern)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tubern)
 
