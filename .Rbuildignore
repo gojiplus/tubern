@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+.httr-oauth
+dev
+^.travis.yml$
+^codecov.yml$
+^appveyor.yml$
+^cran-comments.md$
+^tests\testthat\yt_key.enc$
+^\.httr-oauth$
