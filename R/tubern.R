@@ -54,7 +54,7 @@ function(path, query, body="", ...) {
 
 	yt_check_token()
 	
-	req <- POST("https://www.googleapis.com", path= path, body=body, query=query, config(token = getOption("google_token")), ...)
+	req <- POST("https://youtubereporting.googleapis.com/v1/", path= path, body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 
