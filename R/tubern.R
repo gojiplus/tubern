@@ -31,7 +31,7 @@ function(path, query=NULL, ...) {
 
 	yt_check_token()
 
-	req <- GET("https://youtubereporting.googleapis.com/", path= paste0("v1/", path), query=query, config(token = getOption("google_token")), ...)
+	req <- GET("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path), query=query, config(token = getOption("google_token")), ...)
 	
 	stop_for_status(req)
 	res <- content(req)
@@ -50,11 +50,11 @@ function(path, query=NULL, ...) {
 #' @return list
 
 tubern_POST <- 
-function(path, query, body="", ...) {
+function(path, query=NULL, body="", ...) {
 
 	yt_check_token()
 	
-	req <- POST("https://youtubereporting.googleapis.com/", path= paste0("v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
+	req <- POST("https://www.googleapis.com/youtube/analytics/", path= paste0("v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 

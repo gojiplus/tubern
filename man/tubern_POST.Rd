@@ -4,7 +4,7 @@
 \alias{tubern_POST}
 \title{POST}
 \usage{
-tubern_POST(path, query, body = "", ...)
+tubern_POST(path, query = NULL, body = "", ...)
 }
 \arguments{
 \item{path}{path to specific API request URL}
@@ -21,4 +21,3 @@ list
 \description{
 POST
 }
-

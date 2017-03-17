@@ -16,8 +16,8 @@
 #' 
 #' @export
 #' 
-#' @references \url{https://developers.google.com/youtube/v3/docs/}
-#' @references \url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
+#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/}
+#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
 #' 
 #' @examples
 #'  \dontrun{

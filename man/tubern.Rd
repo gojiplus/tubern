@@ -8,4 +8,3 @@
 \description{
 \pkg{tubern} provides access to the YouTube Analytics and Reporting API
 }
-

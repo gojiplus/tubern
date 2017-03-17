@@ -35,8 +35,7 @@ The function launches a browser to allow you to authorize the application
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/}
+\url{https://developers.google.com/youtube/analytics/v1/reference/}
 
-\url{https://developers.google.com/youtube/v3/guides/auth/client-side-web-apps} for different scopes
+\url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
 }
-
