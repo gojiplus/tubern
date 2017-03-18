@@ -2,6 +2,8 @@
 #'
 #' @name tubern
 #' @importFrom httr GET POST authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom jsonlite toJSON
+#' @importFrom utils URLencode
 #' @docType package
 NULL
 
@@ -54,7 +56,7 @@ function(path, query=NULL, body="", ...) {
 
 	yt_check_token()
 	
-	req <- POST("https://www.googleapis.com/youtube/analytics/", path= paste0("v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
+	req <- POST("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 

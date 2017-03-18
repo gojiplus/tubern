@@ -12,7 +12,8 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Imports:
-    httr
+    httr,
+    jsonlite
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),

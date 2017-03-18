@@ -18,11 +18,12 @@
 #' ``Whether the API response should include channels' watch time and view data from the time period prior 
 #' to when the channels were linked to the content owner.''
 #' @param max_results Integer. Optional. The maximum number of rows to include in the response.
-#' @param sort. String. Optional A comma-separated list of dimensions or metrics that determine the sort order for YouTube 
+#' @param sort String. Optional A comma-separated list of dimensions or metrics that determine the sort order for YouTube 
 #' @param start_index Integer. Optional. ``The 1-based index of the first entity to retrieve.'' 
 #' @param user_ip ``IP address of the end user for whom the API call is being made.''
 #' @param \dots Additional arguments passed to \code{\link{tubern_GET}}.
-#' @return 
+#' 
+#' @return named list
 #' 
 #' @export
 #' 
@@ -30,10 +31,11 @@
 #' 
 #' @examples
 #' \dontrun{
-#' get_report(ids = 'channel==MINE', metrics = 'views', start_date = "2010-04-01", end_date ="2017-01-01")
+#' get_report(ids = "channel==MINE", metrics = "views", 
+#' start_date = "2010-04-01", end_date ="2017-01-01")
 #' }
 
-get_report <- function (ids, metrics, start_date, end_date, ...) 
+get_report <- function (ids, metrics, start_date, end_date, currency, dimensions, filters, include_historical_channel_data, max_results, sort, start_index, user_ip, ...) 
 {
 
 	querylist <- list(ids = URLencode(ids), 'start-date' = start_date, 'end-date' = end_date, metrics = metrics, ...)
@@ -42,4 +44,3 @@ get_report <- function (ids, metrics, start_date, end_date, ...)
 
 	res
 }
-

@@ -1,4 +1,4 @@
 library(testthat)
-library(tuber)
+library(tubern)
 
-test_check("tuber")
+test_check("tubern")
