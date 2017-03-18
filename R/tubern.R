@@ -1,7 +1,7 @@
 #' \pkg{tubern} provides access to the YouTube Analytics and Reporting API
 #'
 #' @name tubern
-#' @importFrom httr GET POST authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom jsonlite toJSON
 #' @importFrom utils URLencode
 #' @docType package
@@ -47,7 +47,7 @@ function(path, query=NULL, ...) {
 #' @param path path to specific API request URL 
 #' @param query query list
 #' @param body passing image through body 
-#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
 #' 
 #' @return list
 
@@ -57,6 +57,50 @@ function(path, query=NULL, body="", ...) {
 	yt_check_token()
 	
 	req <- POST("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
+	stop_for_status(req)
+	res <- content(req)
+
+	res
+}
+
+#'
+#' PUT
+#' 
+#' @param path path to specific API request URL 
+#' @param query query list
+#' @param body passing image through body 
+#' @param \dots Additional arguments passed to \code{\link[httr]{PUT}}.
+#' 
+#' @return list
+
+tubern_PUT <- 
+function(path, query=NULL, body="", ...) {
+
+	yt_check_token()
+	
+	req <- PUT("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
+	stop_for_status(req)
+	res <- content(req)
+
+	res
+}
+
+#'
+#' DELETE
+#' 
+#' @param path path to specific API request URL 
+#' @param query query list
+#' @param body passing image through body 
+#' @param \dots Additional arguments passed to \code{\link[httr]{DELETE}}.
+#' 
+#' @return list
+
+tubern_DELETE <- 
+function(path, query=NULL, body="", ...) {
+
+	yt_check_token()
+	
+	req <- DELETE("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
 	stop_for_status(req)
 	res <- content(req)
 
