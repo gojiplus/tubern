@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/th08w0p7q247p6a7?svg=true)](https://ci.appveyor.com/project/soodoku/tubern)
 [![Build Status](https://travis-ci.org/soodoku/tubern.svg?branch=master)](https://travis-ci.org/soodoku/tubern)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tubern)](https://cran.r-project.org/package=tubern)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tubern)](http://www.r-pkg.org/badges/version/tubern)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tubern)
 
 R Client for the Youtube Analytics and Reporting API. To learn more about the YouTube Analytics and Reporting API, see [https://developers.google.com/youtube/reporting/](https://developers.google.com/youtube/reporting/).
