@@ -6,5 +6,6 @@ dev
 ^codecov.yml$
 ^appveyor.yml$
 ^cran-comments.md$
-^tests\testthat\yt_key.enc$
+^tests\testthat\token_file.rds$
+^tests\testthat\token_file.rds.enc$
 ^\.httr-oauth$

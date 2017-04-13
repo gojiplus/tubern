@@ -29,7 +29,12 @@ yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="analytics", token = '
 
 	if (file.exists(token)) {
 		
-		google_token <- readRDS(token)
+		google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
+		
+		if ( inherits(google_token, "try-error")) {
+  			  stop(sprintf("Unable to read token from:%s", token))
+  		}
+
 		google_token <- google_token[[1]]
 				
 	} else if(is.null(app_id) | is.null(app_secret)) {
