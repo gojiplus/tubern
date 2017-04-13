@@ -11,4 +11,4 @@ notifications:
     on_success: change
     on_failure: always
 before_install:
-- openssl aes-256-cbc -K $encrypted_1fc90f464345_key -iv $encrypted_1fc90f464345_iv -in token_file.rds.enc -out token_file.rds -d
+- openssl aes-256-cbc -K $encrypted_1fc90f464345_key -iv $encrypted_1fc90f464345_iv -in tests/testthat/token_file.rds.enc -out tests/testthat/token_file.rds -d
