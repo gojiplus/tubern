@@ -1,5 +1,5 @@
 Package: tubern
-Title: R Client for the Youtube Analytics and Reporting API
+Title: R Client for the YouTube Analytics and Reporting API
 Version: 0.1.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>

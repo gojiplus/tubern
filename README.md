@@ -5,7 +5,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tubern)](http://www.r-pkg.org/badges/version/tubern)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tubern)
 
-R Client for the Youtube Analytics and Reporting API. To learn more about the YouTube Analytics and Reporting API, see [https://developers.google.com/youtube/reporting/](https://developers.google.com/youtube/reporting/).
+R Client for the YouTube Analytics and Reporting API. To learn more about the YouTube Analytics and Reporting API, see [https://developers.google.com/youtube/reporting/](https://developers.google.com/youtube/reporting/).
 
 ### Installation
 

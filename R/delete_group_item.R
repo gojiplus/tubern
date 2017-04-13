@@ -8,7 +8,7 @@
 #' 
 #' @export
 #' 
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groups/update}
+#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/delete}
 #' 
 #' @examples
 #' 

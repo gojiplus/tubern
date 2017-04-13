@@ -25,5 +25,5 @@ delete_group_item(id="ABZZzGSIAAA")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/update}
+\url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/delete}
 }

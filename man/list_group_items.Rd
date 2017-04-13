@@ -23,5 +23,5 @@ list_group_items(group_id = "vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCRe
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/list}
+\url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/list}
 }
