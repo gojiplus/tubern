@@ -14,13 +14,11 @@
 #' list_group_items(group_id = "vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8")
 #' }
 
-list_group_items<- function (group_id, ...) 
-{
+list_group_items <- function (group_id, ...) {
 
-	querylist <- c(groupId = group_id)
+  querylist <- c(groupId = group_id)
 
-	res <- tubern_GET("groupItems", querylist, ...)
+  res <- tubern_GET("groupItems", querylist, ...)
 
-	res
+  res
 }
-

@@ -16,9 +16,9 @@
 #' update_group(list(id="ABZZzGSIAAA", snippet = list(title ="hello")))
 #' }
 
-update_group <- function (resource_details, ...) 
-{
-	json_arg <- toJSON(resource_details, auto_unbox=TRUE)
-	res      <- tubern_PUT("groups", body = json_arg, encode='json', ...)
-	res
+update_group <- function (resource_details, ...) {
+
+  json_arg <- toJSON(resource_details, auto_unbox = TRUE)
+  res      <- tubern_PUT("groups", body = json_arg, encode = "json", ...)
+  res
 }

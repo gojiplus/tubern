@@ -17,9 +17,9 @@
 #' ContentDetails = list(itemType="youtube#channel"), snippet = list(title ="hello")))
 #' }
 
-add_groups <- function (resource_details, ...) 
-{
-	json_arg <- toJSON(resource_details, auto_unbox=TRUE)
-	res      <- tubern_POST("groups", body = json_arg, encode='json', ...)
-	res
+add_groups <- function (resource_details, ...) {
+
+  json_arg <- toJSON(resource_details, auto_unbox = TRUE)
+  res      <- tubern_POST("groups", body = json_arg, encode = "json", ...)
+  res
 }

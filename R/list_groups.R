@@ -17,14 +17,12 @@
 #' list_groups(filter = c(mine = 'True'))
 #' }
 
-list_groups <- function (filter, page_token, ...) 
-{
+list_groups <- function (filter, page_token, ...) {
 
-	querylist <- list()
-	querylist <- c(querylist, filter)
+  querylist <- list()
+  querylist <- c(querylist, filter)
 
-	res <- tubern_GET("groups", querylist, ...)
+  res <- tubern_GET("groups", querylist, ...)
 
-	res
+  res
 }
-

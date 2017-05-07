@@ -16,9 +16,9 @@
 #' add_group_item(list(groupId = "", resouce.id ="hello"))
 #' }
 
-add_group_item <- function (resource_details, ...) 
-{
-	json_arg <- toJSON(resource_details, auto_unbox=TRUE)
-	res      <- tubern_POST("groupItems", body = json_arg, encode='json', ...)
-	res
+add_group_item <- function (resource_details, ...) {
+
+  json_arg <- toJSON(resource_details, auto_unbox = TRUE)
+  res      <- tubern_POST("groupItems", body = json_arg, encode = "json", ...)
+  res
 }

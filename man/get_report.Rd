@@ -4,8 +4,10 @@
 \alias{get_report}
 \title{Get Reports}
 \usage{
-get_report(ids, metrics, start_date, end_date, currency, dimensions, filters,
-  include_historical_channel_data, max_results, sort, start_index, user_ip, ...)
+get_report(ids, metrics, start_date = NULL, end_date = NULL,
+  currency = NULL, dimensions, filters, historical_channel_data = NULL,
+  max_results = NULL, sort = NULL, start_index = NULL, user_ip = NULL,
+  ...)
 }
 \arguments{
 \item{ids}{Named vector with two potential names: channel or contentOwner
@@ -26,7 +28,7 @@ If contentOwner, potential values are: owner_id of the content}
 \item{filters}{Named Vector. Optional. For instance, ``\code{video==pd1FJh59zxQ,Zhawgd0REhA;country==IT} 
 restricts the result set to include data for the given videos in Italy''}
 
-\item{include_historical_channel_data}{Boolean. Defaults is False. 
+\item{historical_channel_data}{Boolean. Defaults is False. 
 ``Whether the API response should include channels' watch time and view data from the time period prior 
 to when the channels were linked to the content owner.''}
 

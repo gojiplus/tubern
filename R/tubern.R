@@ -12,7 +12,7 @@ NULL
 
 yt_check_token <- function() {
 
-	app_token = getOption('google_token')
+  app_token <- getOption("google_token")
     if (is.null(app_token)) stop("Please get a token using yt_oauth()")
 
 }
@@ -28,17 +28,18 @@ yt_check_token <- function() {
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
-tubern_GET <- 
-function(path, query=NULL, ...) {
+tubern_GET <- function(path, query = NULL, ...) {
 
-	yt_check_token()
+  yt_check_token()
 
-	req <- GET("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path), query=query, config(token = getOption("google_token")), ...)
-	
-	stop_for_status(req)
-	res <- content(req)
+  req <- GET("https://www.googleapis.com/",
+             path = paste0("youtube/analytics/v1/", path),
+             query = query, config(token = getOption("google_token")), ...)
 
-	res
+  stop_for_status(req)
+  res <- content(req)
+
+  res
 }
 
 #'
@@ -51,16 +52,18 @@ function(path, query=NULL, ...) {
 #' 
 #' @return list
 
-tubern_POST <- 
-function(path, query=NULL, body="", ...) {
+tubern_POST <- function(path, query = NULL, body = "", ...) {
 
-	yt_check_token()
-	
-	req <- POST("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
-	stop_for_status(req)
-	res <- content(req)
+  yt_check_token()
 
-	res
+  req <- POST("https://www.googleapis.com/",
+              path = paste0("youtube/analytics/v1/", path),
+              body = body, query = query,
+              config(token = getOption("google_token")), ...)
+  stop_for_status(req)
+  res <- content(req)
+
+  res
 }
 
 #'
@@ -73,16 +76,18 @@ function(path, query=NULL, body="", ...) {
 #' 
 #' @return list
 
-tubern_PUT <- 
-function(path, query=NULL, body="", ...) {
+tubern_PUT <- function(path, query = NULL, body = "", ...) {
 
-	yt_check_token()
-	
-	req <- PUT("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
-	stop_for_status(req)
-	res <- content(req)
+  yt_check_token()
 
-	res
+  req <- PUT("https://www.googleapis.com/",
+             path = paste0("youtube/analytics/v1/", path),
+             body = body, query = query,
+             config(token = getOption("google_token")), ...)
+  stop_for_status(req)
+  res <- content(req)
+
+  res
 }
 
 #'
@@ -95,14 +100,16 @@ function(path, query=NULL, body="", ...) {
 #' 
 #' @return list
 
-tubern_DELETE <- 
-function(path, query=NULL, body="", ...) {
+tubern_DELETE <- function(path, query = NULL, body = "", ...) {
 
-	yt_check_token()
-	
-	req <- DELETE("https://www.googleapis.com/", path= paste0("youtube/analytics/v1/", path),  body=body, query=query, config(token = getOption("google_token")), ...)
-	stop_for_status(req)
-	res <- content(req)
+  yt_check_token()
 
-	res
+  req <- DELETE("https://www.googleapis.com/",
+                path = paste0("youtube/analytics/v1/", path),
+                body = body, query = query,
+                config(token = getOption("google_token")), ...)
+  stop_for_status(req)
+  res <- content(req)
+
+  res
 }

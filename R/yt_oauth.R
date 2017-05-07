@@ -21,38 +21,46 @@
 #' 
 #' @examples
 #'  \dontrun{
-#'	  yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
-#'	           "MbOSt6cQhhFkwETXKur-L9rN")
+#'    yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
+#'             "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 
-yt_oauth <- function (app_id=NULL, app_secret=NULL, scope="analytics", token = '.httr-oauth', ...) {
+yt_oauth <- function (app_id = NULL, app_secret = NULL,
+                      scope = "analytics", token = ".httr-oauth", ...) {
 
-	if (file.exists(token)) {
-		
-		google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
-		
-		if ( inherits(google_token, "try-error")) {
-  			  stop(sprintf("Unable to read token from:%s", token))
-  		}
+  if (file.exists(token)) {
 
-		google_token <- google_token[[1]]
-				
-	} else if(is.null(app_id) | is.null(app_secret)) {
-		
-		stop("Please provide values for app_id and app_secret")
-	
-	} else {
-	
-		myapp <- oauth_app("google", key = app_id, secret = app_secret)
+    google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
 
-		if (scope == "analytics") {
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/yt-analytics.readonly", ...)
-		
-		} else if (scope == "monetary-analytics") {
-			google_token <- oauth2.0_token( oauth_endpoints("google"), myapp, scope = "https://www.googleapis.com/auth/yt-analytics-monetary.readonly", ...)
-		}
-	}
-	
-	options(google_token = google_token)
+    if ( inherits(google_token, "try-error")) {
+          stop(sprintf("Unable to read token from:%s", token))
+      }
 
+    google_token <- google_token[[1]]
+
+  } else if (is.null(app_id) | is.null(app_secret)) {
+
+    stop("Please provide values for app_id and app_secret")
+
+  } else {
+
+    myapp <- oauth_app("google", key = app_id, secret = app_secret)
+
+    if (scope == "analytics") {
+      google_token <- oauth2.0_token(
+                oauth_endpoints("google"),
+                myapp,
+                scope = "https://www.googleapis.com/auth/yt-analytics.readonly",
+                ...)
+
+    } else if (scope == "monetary-analytics") {
+      google_token <- oauth2.0_token(
+       oauth_endpoints("google"),
+       myapp,
+       scope = "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+       ...)
+    }
+  }
+
+  options(google_token = google_token)
 }

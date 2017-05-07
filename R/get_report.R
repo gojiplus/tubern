@@ -14,7 +14,7 @@
 #' @param dimensions String. Optional. Comma-separated list of YouTube Analytics dimensions, such as \code{video} or \code{ageGroup,gender}. 
 #' @param filters Named Vector. Optional. For instance, ``\code{video==pd1FJh59zxQ,Zhawgd0REhA;country==IT} 
 #' restricts the result set to include data for the given videos in Italy''
-#' @param include_historical_channel_data Boolean. Defaults is False. 
+#' @param historical_channel_data Boolean. Defaults is False. 
 #' ``Whether the API response should include channels' watch time and view data from the time period prior 
 #' to when the channels were linked to the content owner.''
 #' @param max_results Integer. Optional. The maximum number of rows to include in the response.
@@ -35,12 +35,25 @@
 #' start_date = "2010-04-01", end_date ="2017-01-01")
 #' }
 
-get_report <- function (ids, metrics, start_date, end_date, currency, dimensions, filters, include_historical_channel_data, max_results, sort, start_index, user_ip, ...) 
-{
+get_report <- function (ids, metrics, start_date = NULL, end_date = NULL,
+                        currency = NULL, dimensions, filters,
+                        historical_channel_data = NULL,
+                        max_results = NULL, sort = NULL,
+                        start_index = NULL, user_ip = NULL, ...) {
 
-	querylist <- list(ids = URLencode(ids), 'start-date' = start_date, 'end-date' = end_date, metrics = metrics, ...)
+  querylist <- list(ids = URLencode(ids),
+                    "start-date" = start_date,
+                    "end-date" = end_date,
+                    metrics = metrics,
+                    currency = currency,
+                    "max-results" = max_results,
+                    sort = sort,
+                    "include-historical-channel-data" = historical_channel_data,
+                    "start-index" = start_index,
+                    "userIp" = user_ip,
+                    ...)
 
-	res <- tubern_GET("reports", querylist, ...)
+  res <- tubern_GET("reports", querylist, ...)
 
-	res
+  res
 }

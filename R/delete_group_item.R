@@ -16,9 +16,9 @@
 #' delete_group_item(id="ABZZzGSIAAA")
 #' }
 
-delete_group_item <- function (id, ...) 
-{
-	querylist <- list(id = id)
-	res      <- tubern_DELETE("groups", query = querylist, ...)
-	res
+delete_group_item <- function (id, ...) {
+
+  querylist <- list(id = id)
+  res      <- tubern_DELETE("groups", query = querylist, ...)
+  res
 }

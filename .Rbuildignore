@@ -10,3 +10,4 @@ dev
 ^tests\testthat\token_file.rds.enc$
 ^\.httr-oauth$
 ^docs$
+.lintr
