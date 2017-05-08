@@ -2,6 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/th08w0p7q247p6a7?svg=true)](https://ci.appveyor.com/project/soodoku/tubern)
 [![Build Status](https://travis-ci.org/soodoku/tubern.svg?branch=master)](https://travis-ci.org/soodoku/tubern)
+[![codecov](https://codecov.io/gh/soodoku/tubern/branch/master/graph/badge.svg)](https://codecov.io/gh/soodoku/tubern)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tubern)](http://www.r-pkg.org/badges/version/tubern)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/tubern)
 
