@@ -1,0 +1,28 @@
+url: https://soodoku.github.io/tubern
+
+template:
+  params:
+    bootswatch: cosmo
+    docsearch:
+      api_key: 
+      index_name: tubern
+
+authors:
+  Gaurav Sood:
+    href: https://github.com/soodoku
+
+reference:
+  - title: Authentication
+    contents:
+    - yt_oauth
+  - title: Group Related
+    contents:
+    - list_groups
+    - list_group_items
+    - add_groups
+    - add_group_item
+    - delete_group
+    - update_group
+  - title: Report
+    contents:
+    - get_report

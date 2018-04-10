@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Groups — add_groups • tubern</title>
+<title>License • tubern</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -22,13 +22,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
-<script src="../pkgdown.js"></script>
-<meta property="og:title" content="Add Groups — add_groups" />
-
-<meta property="og:description" content="Add Groups" />
-<meta name="twitter:card" content="summary" />
+<link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script>
+<script src="pkgdown.js"></script>
+<meta property="og:title" content="License" />
 
 
 <!-- mathjax -->
@@ -48,7 +45,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -59,7 +56,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">tubern</a>
+        <a class="navbar-link" href="index.html">tubern</a>
         <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
@@ -67,13 +64,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
+  <a href="index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -83,12 +80,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/basic_tubern.html">Using tubern</a>
+      <a href="articles/basic_tubern.html">Using tubern</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">Changelog</a>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -115,63 +112,19 @@
       </header>
 
 <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Add Groups</h1>
-    <small>Source: <a href='http://github.com/soodoku/tubern/blob/master/R/add_groups.R'><code>R/add_groups.R</code></a></small>
-    <div class="hidden name"><code>add_groups.Rd</code></div>
+      <h1>License</h1>
     </div>
 
-    
-    <p>Add Groups</p>
-    
-
-    <pre class="usage"><span class='fu'>add_groups</span>(<span class='no'>resource_details</span>, <span class='no'>...</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>resource_details</th>
-      <td><p>Named nested list. Required. Must provide: 
-etag, snippet title and contentDetails itemType</p></td>
-    </tr>
-    <tr>
-      <th>&#8230;</th>
-      <td><p>Additional arguments passed to <code>tubern_POST</code>.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>named list</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://developers.google.com/youtube/analytics/v1/reference/groups/insert'>https://developers.google.com/youtube/analytics/v1/reference/groups/insert</a></p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='fu'>add_groups</span>(<span class='fu'>list</span>(<span class='kw'>etag</span><span class='kw'>=</span><span class='st'>"vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8"</span>,
-<span class='kw'>ContentDetails</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>itemType</span><span class='kw'>=</span><span class='st'>"youtube#channel"</span>), <span class='kw'>snippet</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>title</span> <span class='kw'>=</span><span class='st'>"hello"</span>)))
-<span class='co'># }</span></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+<pre>YEAR: 2016
+COPYRIGHT HOLDER: Gaurav Sood
+</pre>
 
   </div>
+
 </div>
+
 
       <footer>
       <div class="copyright">

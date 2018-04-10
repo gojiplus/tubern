@@ -11,3 +11,6 @@ dev
 ^\.httr-oauth$
 ^docs$
 .lintr
+.github
+^_pkgdown\.yml$
+
