@@ -13,4 +13,3 @@ dev
 .lintr
 .github
 ^_pkgdown\.yml$
-

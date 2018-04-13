@@ -4,7 +4,7 @@ template:
   params:
     bootswatch: cosmo
     docsearch:
-      api_key: 
+      api_key: 1f3c1636050e97a5149c7b98308d602a
       index_name: tubern
 
 authors:
