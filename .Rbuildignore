@@ -13,3 +13,4 @@ dev
 .lintr
 .github
 ^_pkgdown\.yml$
+^CRAN-SUBMISSION$
