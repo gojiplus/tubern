@@ -11,8 +11,8 @@ Get statistics and reports from YouTube. To learn more about the YouTube Analyti
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://github.com/soodoku/tubern}
-  \item Report bugs at \url{http://github.com/soodoku/tubern/issues}
+  \item \url{https://github.com/gojiplus/tubern}
+  \item Report bugs at \url{https://github.com/gojiplus/tubern/issues}
 }
 
 }
