@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+dev
+.httr-oauth
+tests/testthat/yt_key
+tests/testthat/token_file.rds
