@@ -9,7 +9,7 @@ list_group_items(group_id, ...)
 \arguments{
 \item{group_id}{String. Required. ID of the group}
 
-\item{\dots}{Additional arguments passed to \code{\link{tubern_GET}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_GET}}.}
 }
 \value{
 named list

@@ -1,17 +1,17 @@
 #' Update Groups
-#'  
-#' @param resource_details Named nested list. Required. Must provide: 
+#'
+#' @param resource_details Named nested list. Required. Must provide:
 #' id, snippet title
-#' @param \dots Additional arguments passed to \code{\link{tubern_PUT}}.
-#' 
+#' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.
+#'
 #' @return named list
-#' 
+#'
 #' @export
-#' 
+#'
 #' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groups/update}
-#' 
+#'
 #' @examples
-#' 
+#'
 #' \dontrun{
 #' update_group(list(id="ABZZzGSIAAA", snippet = list(title ="hello")))
 #' }

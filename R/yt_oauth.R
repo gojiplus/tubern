@@ -2,26 +2,26 @@
 #'
 #' The function looks for .httr-oauth in the working directory. If it doesn't find it, it expects an application ID and a secret.
 #' If you want to remove the existing .httr-oauth, set remove_old_oauth to TRUE. By default, it is set to FALSE.
-#' The function launches a browser to allow you to authorize the application 
-#' 
+#' The function launches a browser to allow you to authorize the application
+#'
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
-#' @param scope Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}. 
-#' The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy. 
+#' @param scope Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}.
+#' The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy.
 #' @param token path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
 #' So if there is such a file, the function will first try to read from it.
-#' @param \dots Additional arguments passed to \code{\link{oauth2.0_token}}
-#' 
+#' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
+#'
 #' @return sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
-#' 
+#'
 #' @export
-#' 
+#'
 #' @references \url{https://developers.google.com/youtube/analytics/v1/reference/}
 #' @references \url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
-#' 
+#'
 #' @examples
 #'  \dontrun{
-#'    yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
+#'    yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
 #'             "MbOSt6cQhhFkwETXKur-L9rN")
 #' }
 

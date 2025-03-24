@@ -1,6 +1,6 @@
 Package: tubern
 Title: R Client for the YouTube Analytics and Reporting API
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get statistics and reports from YouTube. To learn more about
@@ -8,9 +8,10 @@ Description: Get statistics and reports from YouTube. To learn more about
 URL: http://github.com/soodoku/tubern
 BugReports: http://github.com/soodoku/tubern/issues
 Depends:
-    R (>= 3.2.0)
+    R (>= 4.1.0)
 License: MIT + file LICENSE
 LazyData: true
+Encoding: UTF-8
 Imports:
     httr,
     jsonlite
@@ -21,4 +22,4 @@ Suggests:
     rmarkdown,
     xml2,
     lintr
-RoxygenNote: 6.0.1
+RoxygenNote: 7.3.2

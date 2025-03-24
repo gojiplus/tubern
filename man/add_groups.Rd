@@ -7,10 +7,10 @@
 add_groups(resource_details, ...)
 }
 \arguments{
-\item{resource_details}{Named nested list. Required. Must provide: 
+\item{resource_details}{Named nested list. Required. Must provide:
 etag, snippet title and contentDetails itemType}
 
-\item{\dots}{Additional arguments passed to \code{\link{tubern_POST}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_POST}}.}
 }
 \value{
 named list
@@ -21,7 +21,7 @@ Add Groups
 \examples{
 
 \dontrun{
-add_groups(list(etag="vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8", 
+add_groups(list(etag="vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8",
 ContentDetails = list(itemType="youtube#channel"), snippet = list(title ="hello")))
 }
 }

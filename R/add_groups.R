@@ -1,19 +1,19 @@
 #' Add Groups
-#'  
-#' @param resource_details Named nested list. Required. Must provide: 
+#'
+#' @param resource_details Named nested list. Required. Must provide:
 #' etag, snippet title and contentDetails itemType
-#' @param \dots Additional arguments passed to \code{\link{tubern_POST}}.
-#' 
+#' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_POST}}.
+#'
 #' @return named list
-#' 
+#'
 #' @export
-#' 
+#'
 #' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groups/insert}
-#' 
+#'
 #' @examples
-#' 
+#'
 #' \dontrun{
-#' add_groups(list(etag="vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8", 
+#' add_groups(list(etag="vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8",
 #' ContentDetails = list(itemType="youtube#channel"), snippet = list(title ="hello")))
 #' }
 

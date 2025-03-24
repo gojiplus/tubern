@@ -4,21 +4,26 @@
 \alias{yt_oauth}
 \title{Set up Authorization}
 \usage{
-yt_oauth(app_id = NULL, app_secret = NULL, scope = "analytics",
-  token = ".httr-oauth", ...)
+yt_oauth(
+  app_id = NULL,
+  app_secret = NULL,
+  scope = "analytics",
+  token = ".httr-oauth",
+  ...
+)
 }
 \arguments{
 \item{app_id}{client id; required; no default}
 
 \item{app_secret}{client secret; required; no default}
 
-\item{scope}{Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}. 
+\item{scope}{Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}.
 The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy.}
 
 \item{token}{path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
 So if there is such a file, the function will first try to read from it.}
 
-\item{\dots}{Additional arguments passed to \code{\link{oauth2.0_token}}}
+\item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
 }
 \value{
 sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
@@ -30,7 +35,7 @@ The function launches a browser to allow you to authorize the application
 }
 \examples{
  \dontrun{
-   yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com", 
+   yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
             "MbOSt6cQhhFkwETXKur-L9rN")
 }
 }

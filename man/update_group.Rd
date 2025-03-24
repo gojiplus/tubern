@@ -7,10 +7,10 @@
 update_group(resource_details, ...)
 }
 \arguments{
-\item{resource_details}{Named nested list. Required. Must provide: 
+\item{resource_details}{Named nested list. Required. Must provide:
 id, snippet title}
 
-\item{\dots}{Additional arguments passed to \code{\link{tubern_PUT}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.}
 }
 \value{
 named list

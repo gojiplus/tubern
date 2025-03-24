@@ -7,10 +7,10 @@
 add_group_item(resource_details, ...)
 }
 \arguments{
-\item{resource_details}{Named nested list. Required. Must provide: 
+\item{resource_details}{Named nested list. Required. Must provide:
 groupId, resource.id}
 
-\item{\dots}{Additional arguments passed to \code{\link{tubern_POST}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_POST}}.}
 }
 \value{
 named list

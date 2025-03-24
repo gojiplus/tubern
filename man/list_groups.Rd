@@ -13,7 +13,7 @@ mine String. Can be 'True' or 'False.' ``Set this parameter's value to true to r
 
 \item{page_token}{String. Optional. ``Identifies a specific page in the result set that should be returned.''}
 
-\item{\dots}{Additional arguments passed to \code{\link{tubern_GET}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_GET}}.}
 }
 \value{
 named list
