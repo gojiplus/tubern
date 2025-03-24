@@ -3,9 +3,8 @@
 #' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom jsonlite toJSON
 #' @importFrom utils URLencode
-#' @docType _PACKAGE
 #' @name tubern
-NULL
+"_PACKAGE"
 
 
 #' Check if authentication token is in options
