@@ -11,8 +11,8 @@ Provides access to YouTube Analytics API v2 for retrieving YouTube Analytics dat
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/soodoku/tubern}
-  \item Report bugs at \url{https://github.com/soodoku/tubern/issues}
+  \item \url{https://github.com/gojiplus/tubern}
+  \item Report bugs at \url{https://github.com/gojiplus/tubern/issues}
 }
 
 }

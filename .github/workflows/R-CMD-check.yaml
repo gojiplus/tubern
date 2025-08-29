@@ -6,31 +6,39 @@ on:
   pull_request:
 
 jobs:
-  build:
+  R-CMD-check:
     runs-on: ${{ matrix.config.os }}
+    
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    
     strategy:
+      fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest, r: '4.1'}
-          - {os: macos-latest, r: '4.1'}
-          - {os: windows-latest, r: '4.1'}
+          - {os: ubuntu-latest,   r: '4.3'}
+          - {os: macos-latest,    r: '4.3'}
+          - {os: windows-latest,  r: '4.3'}
+    
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+    
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      
+      - uses: r-lib/actions/setup-pandoc@v2
+      
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-      - uses: r-lib/actions/setup-pandoc@v2
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+      
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            devtools
-            testthat
-            httptest
-            covr
-            lintr
-      - name: Lint
-        run: Rscript -e 'lintr::lint_package()'
-      - name: R CMD check
-        run: Rscript -e 'devtools::check(args = c("--no-manual", "--as-cran"))'
-      - name: Test coverage and upload
-        run: Rscript -e 'covr::codecov()'
+          extra-packages: any::rcmdcheck
+          needs: check
+      
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
