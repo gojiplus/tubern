@@ -8,8 +8,8 @@ Description: Provides access to YouTube Analytics API v2 for retrieving
     YouTube Analytics data including views, engagement metrics, demographics, and 
     revenue data. Supports OAuth 2.0 authentication and channel group management. 
     See <https://developers.google.com/youtube/analytics/> for API documentation.
-URL: https://github.com/soodoku/tubern
-BugReports: https://github.com/soodoku/tubern/issues
+URL: https://github.com/gojiplus/tubern
+BugReports: https://github.com/gojiplus/tubern/issues
 Depends:
     R (>= 4.1.0)
 License: MIT + file LICENSE
