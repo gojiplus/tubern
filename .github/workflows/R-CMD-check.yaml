@@ -23,6 +23,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
+            devtools
             testthat
             httptest
             covr
@@ -30,6 +31,6 @@ jobs:
       - name: Lint
         run: Rscript -e 'lintr::lint_package()'
       - name: R CMD check
-        run: R CMD check --no-manual --as-cran .
+        run: Rscript -e 'devtools::check(args = c("--no-manual", "--as-cran"))'
       - name: Test coverage and upload
         run: Rscript -e 'covr::codecov()'
