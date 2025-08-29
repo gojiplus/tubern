@@ -4,14 +4,14 @@
 \alias{list_groups}
 \title{List Groups}
 \usage{
-list_groups(filter, page_token, ...)
+list_groups(filter, page_token = NULL, ...)
 }
 \arguments{
-\item{filter}{Named Vector. Required. Only One of the two: id or mine.
-id ``The Named parameter specifies a comma-separated list of the YouTube group ID(s) for the resource(s) that are being retrieved.''
-mine String. Can be 'True' or 'False.' ``Set this parameter's value to true to retrieve all groups owned by the authenticated user.''}
+\item{filter}{Named Vector. Required. Only one of the two: id or mine.
+id: Comma-separated list of YouTube group ID(s) to retrieve.
+mine: Set to TRUE to retrieve all groups owned by the authenticated user.}
 
-\item{page_token}{String. Optional. ``Identifies a specific page in the result set that should be returned.''}
+\item{page_token}{String. Optional. Identifies a specific page in the result set that should be returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_GET}}.}
 }
@@ -23,9 +23,9 @@ List Groups
 }
 \examples{
 \dontrun{
-list_groups(filter = c(mine = 'True'))
+list_groups(filter = c(mine = TRUE))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/list}
+\url{https://developers.google.com/youtube/analytics/reference/groups/list}
 }

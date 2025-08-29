@@ -1,12 +1,15 @@
 Package: tubern
 Title: R Client for the YouTube Analytics and Reporting API
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
+Author: Gaurav Sood [aut, cre]
 Maintainer: Gaurav Sood <gsood07@gmail.com>
-Description: Get statistics and reports from YouTube. To learn more about
-    the YouTube Analytics and Reporting API, see <https://developers.google.com/youtube/reporting/>.
-URL: https://github.com/gojiplus/tubern
-BugReports: https://github.com/gojiplus/tubern/issues
+Description: Provides access to YouTube Analytics API v2 for retrieving 
+    YouTube Analytics data including views, engagement metrics, demographics, and 
+    revenue data. Supports OAuth 2.0 authentication and channel group management. 
+    See <https://developers.google.com/youtube/analytics/> for API documentation.
+URL: https://github.com/soodoku/tubern
+BugReports: https://github.com/soodoku/tubern/issues
 Depends:
     R (>= 4.1.0)
 License: MIT + file LICENSE
@@ -19,7 +22,9 @@ VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
     testthat,
+    httptest,
     rmarkdown,
     xml2,
-    lintr
+    lintr,
+    covr
 RoxygenNote: 7.3.2

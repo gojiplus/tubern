@@ -6,7 +6,7 @@
 #'
 #' @param app_id client id; required; no default
 #' @param app_secret client secret; required; no default
-#' @param scope Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}.
+#' @param scope Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{analytics}.
 #' The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy.
 #' @param token path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
 #' So if there is such a file, the function will first try to read from it.
@@ -16,8 +16,8 @@
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/}
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
+#' @references \url{https://developers.google.com/youtube/analytics/reference/}
+#' @references \url{https://developers.google.com/youtube/analytics/reference/} for different scopes
 #'
 #' @examples
 #'  \dontrun{
@@ -50,14 +50,16 @@ yt_oauth <- function (app_id = NULL, app_secret = NULL,
       google_token <- oauth2.0_token(
                 oauth_endpoints("google"),
                 myapp,
-                scope = "https://www.googleapis.com/auth/yt-analytics.readonly",
+                scope = c("https://www.googleapis.com/auth/yt-analytics.readonly",
+                         "https://www.googleapis.com/auth/youtube.readonly"),
                 ...)
 
     } else if (scope == "monetary-analytics") {
       google_token <- oauth2.0_token(
        oauth_endpoints("google"),
        myapp,
-       scope = "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+       scope = c("https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+                "https://www.googleapis.com/auth/youtube.readonly"),
        ...)
     }
   }

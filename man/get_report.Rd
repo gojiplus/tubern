@@ -10,13 +10,12 @@ get_report(
   start_date = NULL,
   end_date = NULL,
   currency = NULL,
-  dimensions,
-  filters,
-  historical_channel_data = NULL,
+  dimensions = NULL,
+  filters = NULL,
+  include_historical_channel_data = NULL,
   max_results = NULL,
   sort = NULL,
   start_index = NULL,
-  user_ip = NULL,
   ...
 )
 }
@@ -27,19 +26,19 @@ If contentOwner, potential values are: owner_id of the content}
 
 \item{metrics}{String. Comma-separated list of YouTube Analytics metrics, such as \code{views} or \code{likes,dislikes}.}
 
-\item{start_date}{String. Must be in YYYY-MM-DD format.}
+\item{start_date}{String. Start date for the report. Must be in YYYY-MM-DD format.}
 
-\item{end_date}{String. Must be in YYYY-MM-DD format.}
+\item{end_date}{String. End date for the report. Must be in YYYY-MM-DD format.}
 
 \item{currency}{Optional. String. Default is USD. Specifies what earnings metrics like
 \code{earnings, adEarnings, grossRevenue, playbackBasedCpm, impressionBasedCpm} will be reported in.}
 
 \item{dimensions}{String. Optional. Comma-separated list of YouTube Analytics dimensions, such as \code{video} or \code{ageGroup,gender}.}
 
-\item{filters}{Named Vector. Optional. For instance, ``\code{video==pd1FJh59zxQ,Zhawgd0REhA;country==IT}
+\item{filters}{String. Optional. Dimension value filters. For instance, ``\code{video==pd1FJh59zxQ,Zhawgd0REhA;country==IT}
 restricts the result set to include data for the given videos in Italy''}
 
-\item{historical_channel_data}{Boolean. Defaults is False.
+\item{include_historical_channel_data}{Boolean. Default is FALSE.
 ``Whether the API response should include channels' watch time and view data from the time period prior
 to when the channels were linked to the content owner.''}
 
@@ -49,15 +48,13 @@ to when the channels were linked to the content owner.''}
 
 \item{start_index}{Integer. Optional. ``The 1-based index of the first entity to retrieve.''}
 
-\item{user_ip}{``IP address of the end user for whom the API call is being made.''}
-
 \item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_GET}}.}
 }
 \value{
 named list
 }
 \description{
-Lists reporting jobs that have been scheduled for a channel or content owner.
+Retrieves YouTube Analytics reports containing YouTube Analytics data.
 }
 \examples{
 \dontrun{
@@ -66,5 +63,5 @@ start_date = "2010-04-01", end_date ="2017-01-01")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/reports/query}
+\url{https://developers.google.com/youtube/analytics/reference/reports/query}
 }

@@ -17,7 +17,7 @@ yt_oauth(
 
 \item{app_secret}{client secret; required; no default}
 
-\item{scope}{Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}.
+\item{scope}{Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{analytics}.
 The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy.}
 
 \item{token}{path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
@@ -40,7 +40,7 @@ The function launches a browser to allow you to authorize the application
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/}
+\url{https://developers.google.com/youtube/analytics/reference/}
 
-\url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
+\url{https://developers.google.com/youtube/analytics/reference/} for different scopes
 }

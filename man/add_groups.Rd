@@ -8,7 +8,7 @@ add_groups(resource_details, ...)
 }
 \arguments{
 \item{resource_details}{Named nested list. Required. Must provide:
-etag, snippet title and contentDetails itemType}
+snippet with title (required), and optionally description and contentDetails with itemType}
 
 \item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_POST}}.}
 }
@@ -16,15 +16,20 @@ etag, snippet title and contentDetails itemType}
 named list
 }
 \description{
-Add Groups
+Creates a new channel group.
 }
 \examples{
 
 \dontrun{
-add_groups(list(etag="vponEBg8hrR1yBUX0Hz66Uc5WMk/vyGp6PvFo4RvsFtPoIWeCReyIC8",
-ContentDetails = list(itemType="youtube#channel"), snippet = list(title ="hello")))
+add_groups(list(
+  snippet = list(
+    title = "My Channel Group",
+    description = "A group for organizing channels"
+  ),
+  contentDetails = list(itemType = "youtube#channel")
+))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/insert}
+\url{https://developers.google.com/youtube/analytics/reference/groups/insert}
 }

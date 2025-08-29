@@ -4,7 +4,7 @@ test_that("get_details runs successfully", {
 
   skip_on_cran()
 
-  google_token <- readRDS("token_file.rds")
+  google_token <- readRDS("token_file.rds.enc")
   options(google_token = google_token[[1]])
 
   get_info <- get_report(ids = "channel==MINE", metrics = "views",
