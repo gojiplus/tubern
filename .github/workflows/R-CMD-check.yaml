@@ -21,8 +21,12 @@ jobs:
           r-version: ${{ matrix.config.r }}
       - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-r-dependencies@v2
-      - name: Install extra dependencies
-        run: Rscript -e 'install.packages(c("testthat", "httptest", "covr", "lintr"))'
+        with:
+          extra-packages: |
+            testthat
+            httptest
+            covr
+            lintr
       - name: Lint
         run: Rscript -e 'lintr::lint_package()'
       - name: R CMD check
