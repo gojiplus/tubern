@@ -389,4 +389,4 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
 
 - [YouTube Analytics API Documentation](https://developers.google.com/youtube/analytics)
 - [Google Cloud Console](https://console.cloud.google.com) for API setup
-- [tubern GitHub Repository](https://github.com/soodoku/tubern) for issues and updates
+- [tubern GitHub Repository](https://github.com/gojiplus/tubern) for issues and updates

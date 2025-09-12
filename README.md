@@ -29,7 +29,7 @@ install.packages("tubern")
 ### Development version from GitHub
 ```r
 # install.packages("devtools")
-devtools::install_github("soodoku/tubern", build_vignettes = TRUE)
+devtools::install_github("gojiplus/tubern", build_vignettes = TRUE)
 ```
 
 ## Quick Start
@@ -199,4 +199,4 @@ Contributions are welcome! Please read the [Contributor Code of Conduct](https:/
 
 ## Support
 
-For bug reports and feature requests, please use the [GitHub issue tracker](https://github.com/soodoku/tubern/issues).
+For bug reports and feature requests, please use the [GitHub issue tracker](https://github.com/gojiplus/tubern/issues).
