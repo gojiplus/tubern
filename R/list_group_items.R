@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/list}
+#' @references \url{https://developers.google.com/youtube/analytics/reference/groupItems/list}
 #'
 #' @examples
 #' \dontrun{
