@@ -1,0 +1,375 @@
+---
+title: "tubern: Comprehensive YouTube Analytics Examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{tubern: Comprehensive YouTube Analytics Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+# tubern: Enhanced YouTube Analytics for R
+
+This vignette demonstrates the enhanced features of tubern, showing you how to efficiently retrieve, analyze, and visualize YouTube Analytics data.
+
+## Quick Setup
+
+```{r setup}
+library(tubern)
+
+# First-time setup - shows setup guide
+yt_oauth()
+
+# Or with your credentials
+yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret")
+```
+
+## New Features Overview
+
+### 1. Relative Date Ranges
+
+No more manual date calculations! Use intuitive relative dates:
+
+```{r dates}
+# Get common date range options
+get_common_date_ranges()
+
+# Use relative dates in reports
+report <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,likes",
+  start_date = "last_30_days"  # End date calculated automatically
+)
+
+# More examples
+get_report(ids = "channel==MINE", metrics = "views", start_date = "this_month")
+get_report(ids = "channel==MINE", metrics = "views", start_date = "last_quarter")
+get_report(ids = "channel==MINE", metrics = "views", start_date = "yesterday")
+```
+
+### 2. Helper Functions for Common Reports
+
+#### Channel Overview
+```{r channel_overview}
+# Get comprehensive channel performance
+overview <- get_channel_overview("last_30_days")
+
+# Customize what metrics to include
+overview <- get_channel_overview(
+  "this_month", 
+  include_engagement = TRUE,
+  include_subscribers = TRUE
+)
+```
+
+#### Top Performing Videos
+```{r top_videos}
+# Get top 10 videos by views
+top_videos <- get_top_videos("last_7_days")
+
+# Get more videos with custom metrics
+top_videos <- get_top_videos(
+  "last_30_days",
+  max_results = 25,
+  metrics = c("views", "likes", "comments", "shares", "estimatedMinutesWatched")
+)
+```
+
+#### Audience Demographics
+```{r demographics}
+# Full demographic breakdown
+demographics <- get_audience_demographics("last_90_days")
+
+# Age groups only
+age_data <- get_audience_demographics("this_month", dimension = "ageGroup")
+
+# Gender breakdown only
+gender_data <- get_audience_demographics("this_quarter", dimension = "gender")
+```
+
+#### Geographic Performance
+```{r geographic}
+# Top countries by views
+geo_performance <- get_geographic_performance("last_30_days")
+
+# US states/provinces (requires filtering to US)
+us_states <- get_geographic_performance(
+  "this_month", 
+  dimension = "province",
+  filters = "country==US"
+)
+```
+
+#### Device and Platform Analysis
+```{r devices}
+# Performance by device type
+device_performance <- get_device_performance("last_30_days")
+
+# Operating system breakdown
+os_performance <- get_device_performance("this_month", dimension = "operatingSystem")
+
+# Both device and OS
+device_os <- get_device_performance(
+  "last_7_days", 
+  dimension = c("deviceType", "operatingSystem")
+)
+```
+
+#### Daily Time Series Data
+```{r daily}
+# Daily performance trends
+daily_data <- get_daily_performance("last_30_days")
+
+# With engagement metrics
+daily_engagement <- get_daily_performance(
+  "this_month",
+  metrics = c("views", "likes", "comments", "shares")
+)
+```
+
+#### Revenue Reports (Requires Monetary Scope)
+```{r revenue}
+# Set up OAuth with monetary scope first
+yt_oauth("your-client-id", "your-client-secret", scope = "monetary")
+
+# Get revenue data
+revenue <- get_revenue_report("last_month")
+
+# Revenue in different currency
+revenue_eur <- get_revenue_report("this_quarter", currency = "EUR")
+```
+
+### 3. Enhanced Parameter Validation
+
+tubern now provides helpful validation and suggestions:
+
+```{r validation}
+# Invalid metrics get helpful suggestions
+# get_report(ids = "channel==MINE", metrics = "vews", start_date = "last_7_days")
+# Error: Invalid metric(s): vews
+# Did you mean: 'vews' -> 'views'
+
+# Check available metrics and dimensions
+get_available_metrics()
+get_available_metrics("view")  # Filter by pattern
+
+get_available_dimensions() 
+get_available_dimensions("country|city")  # Geographic dimensions
+```
+
+### 4. Data Transformation and Analysis
+
+#### Convert to Data Frames
+```{r dataframes}
+# Get data and convert to clean data.frame
+report <- get_daily_performance("last_30_days")
+df <- yt_to_dataframe(report)
+head(df)
+
+# Convert to tibble (if tibble package installed)
+tbl <- yt_to_tibble(report)
+
+# Keep original column names
+df_orig <- yt_to_dataframe(report, clean_names = FALSE)
+```
+
+#### Data Export
+```{r export}
+# Export to CSV
+report <- get_top_videos("last_7_days")
+file_path <- yt_export_csv(report, "top_videos.csv")
+
+# Auto-generated filename with timestamp
+file_path <- yt_export_csv(report)
+```
+
+#### Quick Visualization
+```{r plots}
+# Automatic plot creation (requires ggplot2)
+daily_report <- get_daily_performance("last_30_days")
+yt_quick_plot(daily_report)  # Line plot over time
+
+# Bar chart for top videos
+top_videos <- get_top_videos("last_7_days")
+yt_quick_plot(top_videos, chart_type = "bar")
+
+# Custom x and y columns
+geo_data <- get_geographic_performance("last_30_days")
+yt_quick_plot(geo_data, x_col = "country", y_col = "views")
+```
+
+#### Data Summary
+```{r summary}
+# Get summary statistics
+report <- get_channel_overview("last_30_days")
+summary <- yt_extract_summary(report)
+print(summary)
+```
+
+### 5. Improved Error Handling and Diagnostics
+
+#### Diagnostic Tools
+```{r diagnostics}
+# Check if everything is set up correctly
+diagnose_tubern()
+
+# Check API quota status
+check_api_quota()
+```
+
+#### Error Recovery
+```{r errors}
+# tubern now provides helpful error messages and suggestions
+# for authentication, API quota, parameter errors, etc.
+
+# Example: If OAuth token expires, tubern will suggest running yt_oauth() again
+# Example: If API quota is exceeded, tubern will suggest ways to reduce usage
+```
+
+## Complete Workflow Examples
+
+### Example 1: Channel Performance Dashboard
+```{r workflow1}
+# Set up authentication
+yt_oauth("your-client-id", "your-client-secret")
+
+# Get overview data
+overview <- get_channel_overview("last_30_days")
+overview_df <- yt_to_dataframe(overview)
+
+# Get daily trends
+daily <- get_daily_performance("last_30_days")
+daily_df <- yt_to_dataframe(daily)
+
+# Get top videos
+top_videos <- get_top_videos("last_30_days", max_results = 10)
+videos_df <- yt_to_dataframe(top_videos)
+
+# Get geographic performance
+geo <- get_geographic_performance("last_30_days")
+geo_df <- yt_to_dataframe(geo)
+
+# Create visualizations
+yt_quick_plot(daily)      # Daily trend
+yt_quick_plot(top_videos) # Top videos
+yt_quick_plot(geo)        # Geographic performance
+
+# Export data
+yt_export_csv(overview, "channel_overview.csv")
+yt_export_csv(daily, "daily_performance.csv")
+yt_export_csv(top_videos, "top_videos.csv")
+```
+
+### Example 2: Audience Analysis
+```{r workflow2}
+# Demographic analysis
+demographics <- get_audience_demographics("last_90_days")
+demo_df <- yt_to_dataframe(demographics)
+
+# Device analysis  
+devices <- get_device_performance("last_90_days")
+device_df <- yt_to_dataframe(devices)
+
+# Geographic analysis
+geography <- get_geographic_performance("last_90_days", max_results = 50)
+geo_df <- yt_to_dataframe(geography)
+
+# Combined analysis with dplyr (if available)
+if (require(dplyr)) {
+  # Top countries by watch time
+  top_countries <- geo_df %>%
+    arrange(desc(estimated_minutes_watched)) %>%
+    head(10)
+  
+  print(top_countries)
+}
+```
+
+### Example 3: Content Performance Analysis
+```{r workflow3}
+# Analyze video performance over time
+videos_monthly <- get_top_videos("this_month", max_results = 50)
+videos_df <- yt_to_dataframe(videos_monthly)
+
+# Compare with previous month
+videos_prev <- get_top_videos("last_month", max_results = 50) 
+videos_prev_df <- yt_to_dataframe(videos_prev)
+
+# Daily performance for trend analysis
+daily_trends <- get_daily_performance(
+  "last_30_days",
+  metrics = c("views", "estimatedMinutesWatched", "likes", "comments")
+)
+trends_df <- yt_to_dataframe(daily_trends)
+
+# Visualize trends
+yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
+```
+
+## Best Practices
+
+### 1. Authentication
+- Use `scope = "monetary"` only when you need revenue data
+- Keep your OAuth credentials secure
+- Use `diagnose_tubern()` to troubleshoot authentication issues
+
+### 2. Data Retrieval
+- Use relative dates for convenience: `"last_30_days"`, `"this_month"`
+- Start with helper functions like `get_channel_overview()` before using `get_report()` directly
+- Use `max_results` parameter to limit data when testing
+
+### 3. Error Handling
+- Always check `diagnose_tubern()` if you encounter issues
+- Use `check_api_quota()` to monitor your API usage
+- Enable `setup_guide = TRUE` for first-time setup help
+
+### 4. Data Analysis
+- Convert API responses to data.frames with `yt_to_dataframe()`
+- Use `yt_quick_plot()` for rapid data exploration
+- Export data with `yt_export_csv()` for external analysis
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Authentication Problems**
+   ```{r}
+   # Run diagnostics
+   diagnose_tubern()
+   
+   # Re-authenticate
+   yt_oauth("your-client-id", "your-client-secret")
+   ```
+
+2. **API Quota Exceeded**
+   ```{r}
+   # Check quota status
+   check_api_quota()
+   
+   # Reduce data scope
+   get_report(ids = "channel==MINE", metrics = "views", 
+             start_date = "yesterday", max_results = 10)
+   ```
+
+3. **Invalid Parameters**
+   ```{r}
+   # Check available options
+   get_available_metrics()
+   get_available_dimensions()
+   
+   # Use helper functions for validation
+   get_channel_overview("last_7_days")  # Pre-validated parameters
+   ```
+
+## More Resources
+
+- [YouTube Analytics API Documentation](https://developers.google.com/youtube/analytics)
+- [Google Cloud Console](https://console.cloud.google.com) for API setup
+- [tubern GitHub Repository](https://github.com/soodoku/tubern) for issues and updates

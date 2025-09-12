@@ -2,7 +2,9 @@
 #'
 #' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom jsonlite toJSON
-#' @importFrom utils URLencode
+#' @importFrom utils URLencode adist packageVersion write.csv
+#' @importFrom stats median
+#' @importFrom graphics barplot points
 #' @name tubern
 "_PACKAGE"
 
@@ -17,21 +19,7 @@
 # @param ... additional args passed to httr functions (e.g., encode)
 # @return parsed content as list
 .api_request <- function(method, path, query = NULL, body = NULL, ...) {
-  yt_check_token()
-  url <- paste0(.api_base, "/", path)
-  fun <- switch(method,
-                GET = GET,
-                POST = POST,
-                PUT = PUT,
-                DELETE = DELETE,
-                stop("Unsupported HTTP method: ", method))
-  req <- fun(url,
-             query = query,
-             body = body,
-             config(token = getOption("google_token")),
-             ...)
-  stop_for_status(req)
-  content(req)
+  .api_request_enhanced(method, path, query, body, ...)
 }
 
 

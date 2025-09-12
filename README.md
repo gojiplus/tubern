@@ -8,11 +8,16 @@ tubern provides an R interface to the [YouTube Analytics API v2](https://develop
 
 ## Features
 
-- **Analytics Reports**: Retrieve detailed analytics data including views, likes, dislikes, watch time, and more
-- **OAuth 2.0 Authentication**: Secure authentication with YouTube Analytics API
-- **Group Management**: Create, list, update, and delete channel groups
-- **Flexible Querying**: Support for dimensions, filters, sorting, and date ranges
-- **Content Owner Support**: Access analytics for channels you manage as a content owner
+- **🚀 Enhanced User Experience**: Simplified functions for common analytics tasks
+- **📅 Smart Date Handling**: Use intuitive relative dates like "last_30_days", "this_month"
+- **🔍 Intelligent Validation**: Get helpful suggestions for metrics, dimensions, and parameters
+- **📊 Built-in Data Transformation**: Convert API responses to data.frames, tibbles, and CSV exports
+- **📈 Quick Visualization**: Generate plots with one function call
+- **🛠️ Advanced Error Handling**: Informative error messages and diagnostic tools
+- **🔐 Streamlined Authentication**: Step-by-step OAuth setup with automatic scope detection
+- **⚡ Pre-built Report Templates**: Channel overview, top videos, demographics, and more
+- **🌍 Geographic & Demographic Analysis**: Built-in support for audience insights
+- **💰 Revenue Analytics**: Comprehensive monetization reporting (with proper OAuth scope)
 
 ## Installation
 
@@ -29,53 +34,92 @@ devtools::install_github("soodoku/tubern", build_vignettes = TRUE)
 
 ## Quick Start
 
-### 1. Authentication
-
-First, you need to set up OAuth 2.0 authentication. You'll need to create a Google Cloud project and obtain OAuth 2.0 credentials:
+### 1. Easy Authentication Setup
 
 ```r
 library(tubern)
 
-# Set up authentication (you'll need your own client ID and secret)
-yt_oauth(app_id = "your_client_id.apps.googleusercontent.com",
-         app_secret = "your_client_secret")
+# First time? Get step-by-step setup guide
+yt_oauth()
+
+# With your credentials (basic analytics)
+yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret")
+
+# For revenue data (requires special permission)
+yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret", scope = "monetary")
 ```
 
-### 2. Get Analytics Reports
+### 2. Get Analytics with Smart Dates
 
 ```r
-# Get basic view statistics for your channel
+# Use intuitive relative dates - no more manual date calculations!
+overview <- get_channel_overview("last_30_days")
+daily_trends <- get_daily_performance("this_month") 
+top_videos <- get_top_videos("last_7_days")
+
+# Or use traditional dates
 report <- get_report(
   ids = "channel==MINE",
-  metrics = "views,likes,dislikes,shares",
+  metrics = "views,likes,comments",
   start_date = "2024-01-01",
-  end_date = "2024-12-31"
-)
-
-# Get data with dimensions
-report_by_video <- get_report(
-  ids = "channel==MINE",
-  metrics = "views,averageViewDuration",
-  dimensions = "video",
-  start_date = "2024-01-01",
-  end_date = "2024-12-31",
-  max_results = 25
+  end_date = "2024-01-31"
 )
 ```
 
-### 3. Manage Channel Groups
+### 3. Instant Data Analysis & Visualization
 
 ```r
-# List your channel groups
-groups <- list_groups(filter = c(mine = TRUE))
+# Convert to data.frame with clean column names
+df <- yt_to_dataframe(daily_trends)
+head(df)
 
-# Create a new group
-new_group <- add_groups(
-  snippet = list(
-    title = "My Channel Group",
-    description = "A group for organizing my channels"
-  )
-)
+# Quick visualization
+yt_quick_plot(daily_trends)    # Auto-detects best chart type
+yt_quick_plot(top_videos, chart_type = "bar")
+
+# Export to CSV
+yt_export_csv(overview, "my_channel_overview.csv")
+
+# Get summary statistics
+summary <- yt_extract_summary(overview)
+```
+
+### 4. Pre-built Analytics Templates
+
+```r
+# Channel performance overview
+overview <- get_channel_overview("last_30_days")
+
+# Top performing videos
+top_videos <- get_top_videos("last_7_days", max_results = 20)
+
+# Audience demographics
+demographics <- get_audience_demographics("last_90_days")
+
+# Geographic performance
+geo_performance <- get_geographic_performance("this_month")
+
+# Device/platform breakdown
+device_performance <- get_device_performance("last_30_days")
+
+# Revenue analysis (requires monetary scope)
+revenue <- get_revenue_report("last_month")
+```
+
+### 5. Smart Validation & Help
+
+```r
+# Get available metrics and dimensions
+get_available_metrics()
+get_available_dimensions()
+
+# Helpful error messages with suggestions
+# get_report(ids = "channel==MINE", metrics = "vews", start_date = "last_7_days")
+# → Error: Invalid metric(s): vews. Did you mean: 'vews' -> 'views'?
+
+# Diagnostic tools
+diagnose_tubern()  # Check setup
+check_api_quota()  # Monitor API usage
 ```
 
 ## API Reference

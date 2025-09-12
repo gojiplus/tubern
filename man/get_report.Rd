@@ -29,10 +29,10 @@ For content owners: \code{"contentOwner==ownerName"}.}
 such as \code{views} or \code{likes,dislikes}.}
 
 \item{start_date}{String. Start date for the report.
-Must be in YYYY-MM-DD format.}
+Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", "yesterday".}
 
 \item{end_date}{String. End date for the report.
-Must be in YYYY-MM-DD format.}
+Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.}
 
 \item{currency}{Optional. String. Default is USD. Specifies what earnings
 metrics like \code{earnings, adEarnings, grossRevenue, playbackBasedCpm,

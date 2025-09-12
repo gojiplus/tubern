@@ -10,9 +10,9 @@
 #' @param metrics String. Comma-separated list of YouTube Analytics metrics,
 #' such as \code{views} or \code{likes,dislikes}.
 #' @param start_date String. Start date for the report.
-#' Must be in YYYY-MM-DD format.
+#' Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", "yesterday".
 #' @param end_date String. End date for the report.
-#' Must be in YYYY-MM-DD format.
+#' Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.
 #' @param currency Optional. String. Default is USD. Specifies what earnings
 #' metrics like \code{earnings, adEarnings, grossRevenue, playbackBasedCpm,
 #' impressionBasedCpm} will be reported in.
@@ -82,26 +82,63 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
                         max_results = NULL, sort = NULL,
                         start_index = NULL, ...) {
 
-  if (is.null(start_date) || is.null(end_date)) {
-    stop("start_date and end_date are required parameters")
-  }
+  # Validate required parameters
   if (!grepl("^(channel|contentOwner)==", ids)) {
     stop("ids parameter must be in format 'channel==MINE', ",
-         "'channel==CHANNEL_ID', or 'contentOwner==OWNER_NAME'")
+         "'channel==CHANNEL_ID', or 'contentOwner==OWNER_NAME'", call. = FALSE)
   }
-
-  if (!is.null(filters) && grepl("video==", filters) &&
-        !grepl("video", ifelse(is.null(dimensions), "", dimensions))) {
-    warning("When using video filters, consider adding 'video' to the ",
-            "dimensions parameter to see individual video results")
+  
+  # Resolve date range (handles both relative and absolute dates)
+  if (is.null(start_date)) {
+    stop("start_date is required", call. = FALSE)
+  }
+  
+  dates <- resolve_date_range(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
+  
+  # Additional validation for resolved dates
+  final_dates <- .validate_dates(start_date, end_date)
+  start_date <- final_dates$start_date
+  end_date <- final_dates$end_date
+  
+  # Validate metrics
+  metrics <- .validate_metrics(metrics)
+  metrics_param <- paste(metrics, collapse = ",")
+  
+  # Validate dimensions 
+  dimensions <- .validate_dimensions(dimensions, filters)
+  dimensions_param <- if (!is.null(dimensions)) paste(dimensions, collapse = ",") else NULL
+  
+  # Validate filters
+  filters <- .validate_filters(filters, dimensions)
+  
+  # Validate currency
+  if (!is.null(currency) && !currency %in% c("USD", "EUR", "GBP", "JPY", "KRW", "INR", "CAD", "AUD")) {
+    warning("Currency '", currency, "' may not be supported. Common currencies: USD, EUR, GBP, JPY", 
+            call. = FALSE)
+  }
+  
+  # Validate max_results
+  if (!is.null(max_results)) {
+    if (!is.numeric(max_results) || max_results < 1 || max_results > 200) {
+      stop("max_results must be between 1 and 200", call. = FALSE)
+    }
+  }
+  
+  # Validate start_index
+  if (!is.null(start_index)) {
+    if (!is.numeric(start_index) || start_index < 1) {
+      stop("start_index must be a positive integer", call. = FALSE)
+    }
   }
 
   querylist <- list(ids = URLencode(ids),
                     startDate = start_date,
                     endDate = end_date,
-                    metrics = metrics,
+                    metrics = metrics_param,
                     currency = currency,
-                    dimensions = dimensions,
+                    dimensions = dimensions_param,
                     filters = filters,
                     maxResults = max_results,
                     sort = sort,
