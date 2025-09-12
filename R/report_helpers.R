@@ -169,49 +169,6 @@ get_geographic_performance <- function(date_range, end_date = NULL, ids = "chann
   )
 }
 
-#' Get device and OS performance report
-#' 
-#' Retrieves performance metrics broken down by device type and operating system.
-#' 
-#' @param date_range Date range string or start date
-#' @param end_date End date (only needed if date_range is a specific start date)
-#' @param ids Channel identifier (default: "channel==MINE")
-#' @param dimension Device dimension: "deviceType", "operatingSystem", or both (default: "deviceType")
-#' @param metrics Vector of metrics to include (default: views, estimatedMinutesWatched)
-#' @param ... Additional arguments passed to get_report()
-#' @return API response with device/OS data
-#' @export
-#' @examples
-#' \dontrun{
-#' # Performance by device type
-#' get_device_performance("last_30_days")
-#' 
-#' # Performance by operating system
-#' get_device_performance("this_month", dimension = "operatingSystem")
-#' 
-#' # Both device and OS breakdown
-#' get_device_performance("last_7_days", dimension = c("deviceType", "operatingSystem"))
-#' }
-get_device_performance <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                                 dimension = "deviceType",
-                                 metrics = c("views", "estimatedMinutesWatched"), ...) {
-  
-  # Handle dimension parameter
-  if (length(dimension) > 1) {
-    dimensions <- paste(dimension, collapse = ",")
-  } else {
-    dimensions <- dimension
-  }
-  
-  get_report(
-    ids = ids,
-    metrics = paste(metrics, collapse = ","),
-    dimensions = dimensions,
-    start_date = date_range,
-    end_date = end_date,
-    ...
-  )
-}
 
 #' Get daily performance time series
 #' 

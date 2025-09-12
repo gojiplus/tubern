@@ -100,7 +100,12 @@ demographics <- get_audience_demographics("last_90_days")
 geo_performance <- get_geographic_performance("this_month")
 
 # Device/platform breakdown
-device_performance <- get_device_performance("last_30_days")
+device_performance <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,estimatedMinutesWatched", 
+  dimensions = "deviceType",
+  start_date = "last_30_days"
+)
 
 # Revenue analysis (requires monetary scope)
 revenue <- get_revenue_report("last_month")

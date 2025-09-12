@@ -109,16 +109,28 @@ us_states <- get_geographic_performance(
 
 #### Device and Platform Analysis
 ```{r devices}
-# Performance by device type
-device_performance <- get_device_performance("last_30_days")
+# Performance by device type - use get_report directly
+device_performance <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,estimatedMinutesWatched",
+  dimensions = "deviceType",
+  start_date = "last_30_days"
+)
 
 # Operating system breakdown
-os_performance <- get_device_performance("this_month", dimension = "operatingSystem")
+os_performance <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,estimatedMinutesWatched", 
+  dimensions = "operatingSystem",
+  start_date = "this_month"
+)
 
 # Both device and OS
-device_os <- get_device_performance(
-  "last_7_days", 
-  dimension = c("deviceType", "operatingSystem")
+device_os <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,estimatedMinutesWatched",
+  dimensions = "deviceType,operatingSystem",
+  start_date = "last_7_days"
 )
 ```
 
@@ -274,7 +286,12 @@ demographics <- get_audience_demographics("last_90_days")
 demo_df <- yt_to_dataframe(demographics)
 
 # Device analysis  
-devices <- get_device_performance("last_90_days")
+devices <- get_report(
+  ids = "channel==MINE",
+  metrics = "views,estimatedMinutesWatched",
+  dimensions = "deviceType",
+  start_date = "last_90_days"
+)
 device_df <- yt_to_dataframe(devices)
 
 # Geographic analysis

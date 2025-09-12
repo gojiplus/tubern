@@ -7,7 +7,6 @@
   - `get_top_videos()` - Best performing videos with sorting
   - `get_audience_demographics()` - Age/gender audience breakdown  
   - `get_geographic_performance()` - Performance by country/region
-  - `get_device_performance()` - Device and OS analytics
   - `get_daily_performance()` - Time series data for trend analysis
   - `get_revenue_report()` - Monetization metrics (requires monetary scope)
 
