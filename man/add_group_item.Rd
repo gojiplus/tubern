@@ -25,5 +25,5 @@ add_group_item(list(groupId = "", resouce.id ="hello"))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/insert}
+\url{https://developers.google.com/youtube/analytics/reference/groupItems/insert}
 }

@@ -25,5 +25,5 @@ update_group(list(id="ABZZzGSIAAA", snippet = list(title ="hello")))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/update}
+\url{https://developers.google.com/youtube/analytics/reference/groups/update}
 }
