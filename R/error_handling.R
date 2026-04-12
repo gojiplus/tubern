@@ -1,131 +1,291 @@
 #' Enhanced Error Handling for tubern
 #'
 #' Custom error classes and improved error handling for YouTube Analytics API
+#' using rlang for modern error handling patterns.
 #' @name error_handling
+#' @importFrom rlang abort warn inform caller_env
 NULL
 
-#' Custom error class for YouTube Analytics API errors
-#' 
+#' Abort with tubern-specific error class
+#'
 #' @param message Error message
-#' @param type Type of error (auth, quota, parameter, api)
-#' @param call The call that generated the error
-#' @param response Optional HTTP response object
-#' @return An error object with class 'tubern_error'
+#' @param class Additional error class (e.g., "auth", "quota", "parameter", "api")
+#' @param ... Additional data to include in the error condition
+#' @param call The call to include in the error (default: caller's environment)
+#' @return Never returns; always throws an error
 #' @keywords internal
 #' @noRd
-tubern_error <- function(message, type = "general", call = NULL, response = NULL) {
-  error <- list(
-    message = message,
-    type = type,
-    call = call,
-    response = response
+tubern_abort <- function(message, class = NULL, ..., call = caller_env()) {
+  full_class <- c(
+    if (!is.null(class)) paste0("tubern_", class, "_error"),
+    "tubern_error"
   )
-  class(error) <- c("tubern_error", "error", "condition")
-  error
+  abort(message, class = full_class, ..., call = call)
+}
+
+#' Warn with tubern-specific warning class
+#'
+#' @param message Warning message
+#' @param class Additional warning class
+#' @param ... Additional data to include in the warning condition
+#' @keywords internal
+#' @noRd
+tubern_warn <- function(message, class = NULL, ...) {
+  full_class <- c(
+    if (!is.null(class)) paste0("tubern_", class, "_warning"),
+    "tubern_warning"
+  )
+  warn(message, class = full_class, ...)
+}
+
+#' Inform with tubern-specific message class
+#'
+#' @param message Informational message
+#' @param class Additional message class
+#' @param ... Additional data to include in the message condition
+#' @keywords internal
+#' @noRd
+tubern_inform <- function(message, class = NULL, ...) {
+  full_class <- c(
+    if (!is.null(class)) paste0("tubern_", class, "_message"),
+    "tubern_message"
+
+  )
+  inform(message, class = full_class, ...)
+}
+
+#' Execute with retry for transient errors
+#'
+#' Implements exponential backoff retry logic for transient API errors.
+#'
+#' @param expr Expression to evaluate
+#' @param max_tries Maximum number of attempts (default: 3)
+#' @param base_delay Base delay in seconds between retries (default: 1)
+#' @param max_delay Maximum delay in seconds (default: 60)
+#' @param retry_on HTTP status codes to retry on (default: 429, 500, 502, 503, 504)
+#' @return Result of the expression if successful
+#' @keywords internal
+#' @noRd
+with_retry <- function(expr,
+                       max_tries = 3,
+                       base_delay = 1,
+                       max_delay = 60,
+                       retry_on = c(429L, 500L, 502L, 503L, 504L)) {
+  attempt <- 1
+  last_error <- NULL
+
+
+  while (attempt <= max_tries) {
+    result <- tryCatch(
+      {
+        force(expr)
+      },
+      tubern_quota_error = function(e) {
+        if (attempt < max_tries) {
+          delay <- min(base_delay * (2^(attempt - 1)), max_delay)
+          tubern_inform(
+            sprintf("Rate limited. Retrying in %.1f seconds (attempt %d/%d)...",
+                    delay, attempt, max_tries),
+            class = "retry"
+          )
+          Sys.sleep(delay)
+        }
+        last_error <<- e
+        NULL
+      },
+      tubern_api_error = function(e) {
+        status <- e$status_code
+        if (!is.null(status) && status %in% retry_on && attempt < max_tries) {
+          delay <- min(base_delay * (2^(attempt - 1)), max_delay)
+          tubern_inform(
+            sprintf("Transient error (HTTP %d). Retrying in %.1f seconds (attempt %d/%d)...",
+                    status, delay, attempt, max_tries),
+            class = "retry"
+          )
+          Sys.sleep(delay)
+          last_error <<- e
+          return(NULL)
+        }
+        stop(e)
+      },
+      error = function(e) {
+        stop(e)
+      }
+    )
+
+    if (!is.null(result)) {
+      return(result)
+    }
+
+    attempt <- attempt + 1
+  }
+
+  if (!is.null(last_error)) {
+    stop(last_error)
+  }
+
+  tubern_abort("Maximum retry attempts exceeded", class = "api")
 }
 
 #' Enhanced API request function with better error handling
-#' 
+#'
 #' @param method HTTP method
 #' @param path API endpoint path
 #' @param query Query parameters
 #' @param body Request body
 #' @param ... Additional parameters
+#' @param retry Logical. Whether to use retry logic (default: TRUE)
 #' @return API response
 #' @keywords internal
 #' @noRd
-.api_request_enhanced <- function(method, path, query = NULL, body = NULL, ...) {
+.api_request_enhanced <- function(method, path, query = NULL, body = NULL, ..., retry = TRUE) {
   yt_check_token()
-  
+
   url <- paste0(.api_base, "/", path)
   fun <- switch(method,
                 GET = GET,
                 POST = POST,
                 PUT = PUT,
                 DELETE = DELETE,
-                stop("Unsupported HTTP method: ", method))
-  
-  # Make the request
-  req <- tryCatch({
-    fun(url,
-        query = query,
-        body = body,
-        config(token = getOption("google_token")),
-        ...)
-  }, error = function(e) {
-    stop(tubern_error(
-      message = paste("Network error:", e$message),
-      type = "network",
-      call = sys.call(-1)
-    ))
-  })
-  
-  # Enhanced error handling based on HTTP status
-  if (req$status_code != 200) {
-    error_content <- tryCatch(content(req), error = function(e) NULL)
-    
-    error_message <- switch(as.character(req$status_code),
-      "401" = "Authentication failed. Please check your OAuth token and scopes.",
-      "403" = {
-        if (!is.null(error_content) && 
-            grepl("quotaExceeded|rateLimitExceeded", error_content$error$errors[[1]]$reason)) {
-          "API quota exceeded. Try reducing the scope of your request or wait before trying again."
-        } else {
-          "Access forbidden. Check your permissions and API settings."
-        }
-      },
-      "404" = paste(
-        "Resource not found. This could mean:",
-        "- YouTube Analytics API is not enabled in your Google Cloud project",
-        "- The channel/content owner ID does not exist or you don't have access",
-        "- Check your authentication scopes",
+                tubern_abort(paste("Unsupported HTTP method:", method), class = "parameter"))
+
+  make_request <- function() {
+    req <- tryCatch({
+      fun(url,
+          query = query,
+          body = body,
+          config(token = getOption("google_token")),
+          ...)
+    }, error = function(e) {
+      tubern_abort(
+        paste("Network error:", conditionMessage(e)),
+        class = "network"
+      )
+    })
+
+    .handle_api_response(req)
+  }
+
+  if (retry) {
+    with_retry(make_request())
+  } else {
+    make_request()
+  }
+}
+
+#' Handle API response and convert errors to rlang conditions
+#'
+#' @param req httr response object
+#' @return Parsed content if successful
+#' @keywords internal
+#' @noRd
+.handle_api_response <- function(req) {
+  if (req$status_code == 200) {
+    return(content(req))
+  }
+
+  error_content <- tryCatch(content(req), error = function(e) NULL)
+
+  error_info <- .parse_api_error(req$status_code, error_content)
+
+  tubern_abort(
+    error_info$message,
+    class = error_info$class,
+    status_code = req$status_code,
+    response = req,
+    api_error = error_content
+  )
+}
+
+#' Parse API error response into message and class
+#'
+#' @param status_code HTTP status code
+#' @param error_content Parsed error content from response
+#' @return List with message and class
+#' @keywords internal
+#' @noRd
+.parse_api_error <- function(status_code, error_content) {
+  error_details <- NULL
+  if (!is.null(error_content) && !is.null(error_content$error$errors)) {
+    error_details <- error_content$error$errors[[1]]
+  }
+
+  result <- switch(
+    as.character(status_code),
+    "400" = {
+      msg <- if (!is.null(error_details$message)) {
+        paste("Bad request:", error_details$message)
+      } else {
+        "Bad request. Check your parameters."
+      }
+      list(message = msg, class = "parameter")
+    },
+    "401" = list(
+      message = paste(
+        "Authentication failed.",
+        "Run yt_oauth() to refresh your token or check your OAuth scopes."
+      ),
+      class = "auth"
+    ),
+    "403" = {
+      reason <- error_details$reason
+      if (!is.null(reason) && grepl("quotaExceeded|rateLimitExceeded", reason)) {
+        list(
+          message = paste(
+            "API quota exceeded.",
+            "Reduce request scope or wait before trying again.",
+            "Check quota limits at https://console.cloud.google.com"
+          ),
+          class = "quota"
+        )
+      } else {
+        list(
+          message = "Access forbidden. Check your permissions and API settings.",
+          class = "auth"
+        )
+      }
+    },
+    "404" = list(
+      message = paste(
+        "Resource not found. Possible causes:",
+        "- YouTube Analytics API not enabled in Google Cloud project",
+        "- Channel/content owner ID doesn't exist or is inaccessible",
+        "- Incorrect authentication scopes",
         sep = "\n"
       ),
-      "400" = {
-        if (!is.null(error_content) && !is.null(error_content$error$errors)) {
-          error_details <- error_content$error$errors[[1]]
-          if (!is.null(error_details$reason)) {
-            switch(error_details$reason,
-              "invalidParameter" = paste("Invalid parameter:", error_details$message),
-              "invalidQuery" = paste("Invalid query:", error_details$message),
-              "badRequest" = paste("Bad request:", error_details$message),
-              paste("API error:", error_details$message)
-            )
-          } else {
-            "Bad request. Check your parameters."
-          }
-        } else {
-          "Bad request. Check your parameters."
-        }
-      },
-      "429" = "Too many requests. Please slow down and try again.",
-      "500" = "YouTube API server error. Please try again later.",
-      paste("HTTP", req$status_code, "error occurred")
+      class = "api"
+    ),
+    "429" = list(
+      message = "Too many requests. Please slow down and try again.",
+      class = "quota"
+    ),
+    "500" = list(
+      message = "YouTube API server error. Please try again later.",
+      class = "api"
+    ),
+    "502" = list(
+      message = "YouTube API bad gateway error. Please try again.",
+      class = "api"
+    ),
+    "503" = list(
+      message = "YouTube API service unavailable. Please try again later.",
+      class = "api"
+    ),
+    "504" = list(
+      message = "YouTube API gateway timeout. Please try again.",
+      class = "api"
+    ),
+    list(
+      message = paste("HTTP", status_code, "error occurred"),
+      class = "api"
     )
-    
-    error_type <- switch(as.character(req$status_code),
-      "401" = "auth",
-      "403" = "quota", 
-      "404" = "api",
-      "400" = "parameter",
-      "429" = "quota",
-      "500" = "api",
-      "api"
-    )
-    
-    stop(tubern_error(
-      message = error_message,
-      type = error_type,
-      call = sys.call(-1),
-      response = req
-    ))
-  }
-  
-  content(req)
+  )
+
+  result
 }
 
 #' Check API quota status and provide guidance
-#' 
+#'
 #' @export
 #' @return Message about current quota usage (if available)
 #' @examples
@@ -134,35 +294,36 @@ tubern_error <- function(message, type = "general", call = NULL, response = NULL
 #' }
 check_api_quota <- function() {
   tryCatch({
-    # Make a minimal request to check quota status
     result <- get_report(
-      ids = "channel==MINE", 
+      ids = "channel==MINE",
       metrics = "views",
       start_date = format(Sys.Date() - 1, "%Y-%m-%d"),
       end_date = format(Sys.Date() - 1, "%Y-%m-%d"),
       max_results = 1
     )
-    message("API access is working normally.")
+    tubern_inform("API access is working normally.")
+  }, tubern_quota_error = function(e) {
+    tubern_inform(c(
+      "Quota exceeded. Consider:",
+      "- Reducing the date range of your requests",
+      "- Using fewer metrics or dimensions",
+      "- Implementing caching for repeated requests",
+      "- Checking your Google Cloud Console quota limits"
+    ))
+  }, tubern_auth_error = function(e) {
+    tubern_inform(c(
+      "Authentication issue. Try:",
+      "- Running yt_oauth() again",
+      "- Checking your OAuth scopes",
+      "- Verifying your Google Cloud project settings"
+    ))
   }, error = function(e) {
-    if (inherits(e, "tubern_error") && e$type == "quota") {
-      message("Quota exceeded. Consider:")
-      message("- Reducing the date range of your requests")
-      message("- Using fewer metrics or dimensions") 
-      message("- Implementing caching for repeated requests")
-      message("- Checking your Google Cloud Console quota limits")
-    } else if (inherits(e, "tubern_error") && e$type == "auth") {
-      message("Authentication issue. Try:")
-      message("- Running yt_oauth() again")
-      message("- Checking your OAuth scopes")
-      message("- Verifying your Google Cloud project settings")
-    } else {
-      message("API check failed: ", e$message)
-    }
+    tubern_inform(paste("API check failed:", conditionMessage(e)))
   })
 }
 
 #' Diagnose common tubern issues
-#' 
+#'
 #' @export
 #' @return Diagnostic information about tubern setup
 #' @examples
@@ -171,8 +332,7 @@ check_api_quota <- function() {
 #' }
 diagnose_tubern <- function() {
   cat("=== tubern Diagnostic Report ===\n\n")
-  
-  # Check authentication
+
   cat("1. Authentication Status:\n")
   token <- getOption("google_token")
   if (is.null(token)) {
@@ -180,8 +340,7 @@ diagnose_tubern <- function() {
     cat("   -> Run yt_oauth() to authenticate\n\n")
   } else {
     cat("   OK Authentication token present\n")
-    
-    # Check token validity
+
     tryCatch({
       yt_check_token()
       cat("   OK Token validation passed\n")
@@ -191,11 +350,9 @@ diagnose_tubern <- function() {
     })
     cat("\n")
   }
-  
-  # Check network connectivity
+
   cat("2. Network Connectivity:\n")
   tryCatch({
-    # Try a simple HTTP request to Google
     test_req <- GET("https://www.googleapis.com")
     if (test_req$status_code == 200) {
       cat("   OK Network connection to Google APIs working\n")
@@ -203,29 +360,27 @@ diagnose_tubern <- function() {
       cat("   X Network connection issues detected\n")
     }
   }, error = function(e) {
-    cat("   X Network connection failed:", e$message, "\n")
+    cat("   X Network connection failed:", conditionMessage(e), "\n")
     cat("   -> Check your internet connection and proxy settings\n")
   })
   cat("\n")
-  
-  # Check API access
+
   cat("3. YouTube Analytics API Access:\n")
   if (!is.null(token)) {
     tryCatch({
       check_api_quota()
     }, error = function(e) {
       cat("   X API access test failed\n")
-      cat("   -> Error:", e$message, "\n")
+      cat("   -> Error:", conditionMessage(e), "\n")
     })
   } else {
     cat("   - Skipped (no authentication token)\n")
   }
   cat("\n")
-  
-  # Package information
+
   cat("4. Package Information:\n")
   cat("   tubern version:", as.character(packageVersion("tubern")), "\n")
   cat("   R version:", R.version.string, "\n")
-  
+
   cat("\n=== End Diagnostic Report ===\n")
 }

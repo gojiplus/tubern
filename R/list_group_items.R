@@ -15,10 +15,8 @@
 #' }
 
 list_group_items <- function (group_id, ...) {
+  assert_string(group_id, .var.name = "group_id")
 
   querylist <- c(groupId = group_id)
-
-  res <- tubern_GET("groupItems", querylist, ...)
-
-  res
+  tubern_GET("groupItems", querylist, ...)
 }

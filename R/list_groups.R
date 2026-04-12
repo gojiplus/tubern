@@ -18,13 +18,14 @@
 #' }
 
 list_groups <- function (filter, page_token = NULL, ...) {
+  if (!is.null(page_token)) {
+    assert_string(page_token, .var.name = "page_token")
+  }
 
   querylist <- as.list(filter)
   if (!is.null(page_token)) {
     querylist$pageToken <- page_token
   }
 
-  res <- tubern_GET("groups", querylist, ...)
-
-  res
+  tubern_GET("groups", querylist, ...)
 }

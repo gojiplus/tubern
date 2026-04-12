@@ -1,6 +1,6 @@
 Package: tubern
 Title: R Client for the YouTube Analytics and Reporting API
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Author: Gaurav Sood [aut, cre]
 Maintainer: Gaurav Sood <gsood07@gmail.com>
@@ -13,12 +13,13 @@ BugReports: https://github.com/gojiplus/tubern/issues
 Depends:
     R (>= 4.1.0)
 License: MIT + file LICENSE
-LazyData: true
 Encoding: UTF-8
 Language: en-US
 Imports:
     httr,
-    jsonlite
+    jsonlite,
+    checkmate,
+    rlang (>= 1.1.0)
 VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
@@ -30,4 +31,4 @@ Suggests:
     covr,
     ggplot2,
     tibble
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

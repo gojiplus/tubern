@@ -10,7 +10,7 @@ delete_group(id, ...)
 \item{id}{String. Required.
 ``The id parameter specifies the YouTube group ID of the group that is being deleted.''}
 
-\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_DELETE}}.}
 }
 \value{
 named list

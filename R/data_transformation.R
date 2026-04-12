@@ -4,6 +4,9 @@
 #' @name data_transformation
 NULL
 
+# Declare .data as global variable to avoid R CMD check NOTE
+utils::globalVariables(".data")
+
 #' Convert API response to data frame
 #' 
 #' Transforms YouTube Analytics API response into a clean data.frame with proper column names and types.
@@ -25,27 +28,25 @@ NULL
 yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE) {
   
   if (is.null(api_response) || !is.list(api_response)) {
-    warning("Invalid API response provided", call. = FALSE)
+    tubern_warn("Invalid API response provided")
     return(NULL)
   }
   
-  # Check if response contains data
   if (is.null(api_response$rows) || length(api_response$rows) == 0) {
-    message("No data available in the API response")
+    tubern_inform("No data available in the API response")
     return(data.frame())
   }
   
-  # Extract column headers
   if (is.null(api_response$columnHeaders)) {
-    warning("No column headers found in API response", call. = FALSE)
+    tubern_warn("No column headers found in API response")
     return(NULL)
   }
   
-  headers <- sapply(api_response$columnHeaders, function(x) x$name)
+  headers <- vapply(api_response$columnHeaders, function(x) x$name, character(1))
   
   # Convert rows to matrix then data.frame
   data_matrix <- do.call(rbind, api_response$rows)
-  df <- as.data.frame(data_matrix, stringsAsFactors = FALSE)
+  df <- as.data.frame(data_matrix)
   names(df) <- headers
   
   # Clean column names if requested
@@ -111,7 +112,7 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
     }
     
     # Parse date columns if requested
-    if (parse_dates && col_name %in% c("day", "month") || grepl("date", col_name, ignore.case = TRUE)) {
+    if (parse_dates && (col_name %in% c("day", "month") || grepl("date", col_name, ignore.case = TRUE))) {
       date_parsed <- tryCatch({
         as.Date(df[[col_name]])
       }, error = function(e) NULL)
@@ -141,11 +142,10 @@ yt_to_tibble <- function(api_response, ...) {
   
   if (is.null(df)) return(NULL)
   
-  # Try to convert to tibble if available
   if (requireNamespace("tibble", quietly = TRUE)) {
     return(tibble::as_tibble(df))
   } else {
-    message("Install 'tibble' package for tibble output format")
+    tubern_inform("Install 'tibble' package for tibble output format")
     return(df)
   }
 }
@@ -178,7 +178,7 @@ yt_extract_summary <- function(api_response) {
   )
   
   # Add numeric column summaries
-  numeric_cols <- sapply(df, is.numeric)
+  numeric_cols <- vapply(df, is.numeric, logical(1))
   if (any(numeric_cols)) {
     summary_list$numeric_summary <- lapply(df[numeric_cols], function(x) {
       list(
@@ -210,7 +210,7 @@ yt_export_csv <- function(api_response, filename = NULL, ...) {
   df <- yt_to_dataframe(api_response, ...)
   
   if (is.null(df) || nrow(df) == 0) {
-    stop("No data to export", call. = FALSE)
+    tubern_abort("No data to export", class = "parameter")
   }
   
   if (is.null(filename)) {
@@ -224,7 +224,7 @@ yt_export_csv <- function(api_response, filename = NULL, ...) {
   }
   
   write.csv(df, filename, row.names = FALSE)
-  message("Data exported to: ", filename)
+  tubern_inform(paste("Data exported to:", filename))
   return(filename)
 }
 
@@ -250,28 +250,28 @@ yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type =
   df <- yt_to_dataframe(api_response)
   
   if (is.null(df) || nrow(df) == 0) {
-    stop("No data to plot", call. = FALSE)
+    tubern_abort("No data to plot", class = "parameter")
   }
   
   # Auto-detect columns if not specified
   if (is.null(x_col)) {
     # Look for date columns first, then dimension columns
-    date_cols <- names(df)[sapply(df, function(x) inherits(x, "Date"))]
+    date_cols <- names(df)[vapply(df, function(x) inherits(x, "Date"), logical(1))]
     if (length(date_cols) > 0) {
       x_col <- date_cols[1]
     } else {
       # Use first non-numeric column
-      x_col <- names(df)[!sapply(df, is.numeric)][1]
+      x_col <- names(df)[!vapply(df, is.numeric, logical(1))][1]
     }
   }
   
   if (is.null(y_col)) {
     # Use first numeric column
-    numeric_cols <- names(df)[sapply(df, is.numeric)]
+    numeric_cols <- names(df)[vapply(df, is.numeric, logical(1))]
     if (length(numeric_cols) > 0) {
       y_col <- numeric_cols[1]
     } else {
-      stop("No numeric columns found for plotting", call. = FALSE)
+      tubern_abort("No numeric columns found for plotting", class = "parameter")
     }
   }
   
@@ -284,11 +284,10 @@ yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type =
     }
   }
   
-  # Create plot
   if (requireNamespace("ggplot2", quietly = TRUE)) {
     .create_ggplot(df, x_col, y_col, chart_type)
   } else {
-    message("Install 'ggplot2' package for better plots. Using base R plot.")
+    tubern_inform("Install 'ggplot2' package for better plots. Using base R plot.")
     .create_base_plot(df, x_col, y_col, chart_type)
   }
 }
@@ -297,7 +296,7 @@ yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type =
 #' @keywords internal
 #' @noRd
 .create_ggplot <- function(df, x_col, y_col, chart_type) {
-  p <- ggplot2::ggplot(df, ggplot2::aes_string(x = x_col, y = y_col))
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data[[x_col]], y = .data[[y_col]]))
   
   if (chart_type == "line") {
     p <- p + ggplot2::geom_line() + ggplot2::geom_point()

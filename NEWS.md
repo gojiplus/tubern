@@ -1,4 +1,12 @@
-# tubern 0.4.0
+# tubern 0.5.0
+
+## Modernization & Code Quality
+
+* **NEW**: Added `checkmate` dependency for robust parameter validation
+* **NEW**: Added `rlang` dependency for modern error handling with `abort()` and structured error classes
+* **NEW**: Retry logic for transient API failures with exponential backoff
+* **NEW**: Mock-based test suite that runs without API credentials
+* **NEW**: Comprehensive test coverage for validation, error handling, and data transformation
 
 ## Major Usability Enhancements
 

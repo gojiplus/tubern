@@ -25,8 +25,8 @@
 #' }
 
 add_groups <- function (resource_details, ...) {
+  assert_list(resource_details, .var.name = "resource_details")
 
   json_arg <- toJSON(resource_details, auto_unbox = TRUE)
-  res      <- tubern_POST("groups", body = json_arg, encode = "json", ...)
-  res
+  tubern_POST("groups", body = json_arg, encode = "json", ...)
 }

@@ -39,19 +39,19 @@ Simplified OAuth2 setup for YouTube Analytics API. This function will automatica
 detect the required scope based on your needs and provide helpful setup guidance.
 }
 \details{
-The function looks for .httr-oauth in the working directory. If it doesn't find it, 
-it expects an application ID and a secret. The function launches a browser to allow 
+The function looks for .httr-oauth in the working directory. If it doesn't find it,
+it expects an application ID and a secret. The function launches a browser to allow
 you to authorize the application.
 }
 \examples{
  \dontrun{
    # Basic setup (will show setup guide first time)
    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret")
-   
+
    # Setup with monetary scope for revenue data
-   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret", 
+   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
             scope = "monetary")
-   
+
    # Skip setup guide
    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
             setup_guide = FALSE)

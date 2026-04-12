@@ -5,6 +5,8 @@
 #' @importFrom utils URLencode adist packageVersion write.csv
 #' @importFrom stats median
 #' @importFrom graphics barplot points
+#' @importFrom rlang abort warn inform caller_env
+#' @importFrom checkmate assert_character assert_string assert_flag assert_int assert_number assert_list check_string
 #' @name tubern
 "_PACKAGE"
 
@@ -27,10 +29,13 @@
 #'
 
 yt_check_token <- function() {
-
   app_token <- getOption("google_token")
-    if (is.null(app_token)) stop("Please get a token using yt_oauth()")
-
+  if (is.null(app_token)) {
+    tubern_abort(
+      "No authentication token found. Run yt_oauth() to authenticate.",
+      class = "auth"
+    )
+  }
 }
 
 #'

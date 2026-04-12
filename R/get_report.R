@@ -82,55 +82,56 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
                         max_results = NULL, sort = NULL,
                         start_index = NULL, ...) {
 
-  # Validate required parameters
+  assert_string(ids, .var.name = "ids")
+
   if (!grepl("^(channel|contentOwner)==", ids)) {
-    stop("ids parameter must be in format 'channel==MINE', ",
-         "'channel==CHANNEL_ID', or 'contentOwner==OWNER_NAME'", call. = FALSE)
+    tubern_abort(
+      c(
+        "ids parameter must be in format:",
+        "'channel==MINE', 'channel==CHANNEL_ID', or 'contentOwner==OWNER_NAME'"
+      ),
+      class = "parameter"
+    )
   }
-  
-  # Resolve date range (handles both relative and absolute dates)
+
   if (is.null(start_date)) {
-    stop("start_date is required", call. = FALSE)
+    tubern_abort("start_date is required", class = "parameter")
   }
-  
+
   dates <- resolve_date_range(start_date, end_date)
   start_date <- dates$start_date
   end_date <- dates$end_date
-  
-  # Additional validation for resolved dates
+
   final_dates <- .validate_dates(start_date, end_date)
   start_date <- final_dates$start_date
   end_date <- final_dates$end_date
-  
-  # Validate metrics
+
   metrics <- .validate_metrics(metrics)
   metrics_param <- paste(metrics, collapse = ",")
-  
-  # Validate dimensions 
+
   dimensions <- .validate_dimensions(dimensions, filters)
   dimensions_param <- if (!is.null(dimensions)) paste(dimensions, collapse = ",") else NULL
-  
-  # Validate filters
+
   filters <- .validate_filters(filters, dimensions)
-  
-  # Validate currency
-  if (!is.null(currency) && !currency %in% c("USD", "EUR", "GBP", "JPY", "KRW", "INR", "CAD", "AUD")) {
-    warning("Currency '", currency, "' may not be supported. Common currencies: USD, EUR, GBP, JPY", 
-            call. = FALSE)
+
+  if (!is.null(currency)) {
+    assert_string(currency, .var.name = "currency")
+    valid_currencies <- c("USD", "EUR", "GBP", "JPY", "KRW", "INR", "CAD", "AUD")
+    if (!currency %in% valid_currencies) {
+      tubern_warn(
+        paste0("Currency '", currency, "' may not be supported. Common currencies: ",
+               paste(valid_currencies, collapse = ", ")),
+        class = "parameter"
+      )
+    }
   }
-  
-  # Validate max_results
+
   if (!is.null(max_results)) {
-    if (!is.numeric(max_results) || max_results < 1 || max_results > 200) {
-      stop("max_results must be between 1 and 200", call. = FALSE)
-    }
+    assert_int(max_results, lower = 1, upper = 200, .var.name = "max_results")
   }
-  
-  # Validate start_index
+
   if (!is.null(start_index)) {
-    if (!is.numeric(start_index) || start_index < 1) {
-      stop("start_index must be a positive integer", call. = FALSE)
-    }
+    assert_int(start_index, lower = 1, .var.name = "start_index")
   }
 
   querylist <- list(ids = URLencode(ids),
@@ -146,7 +147,5 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
                       include_historical_channel_data,
                     startIndex = start_index)
 
-  res <- tubern_GET("reports", querylist, ...)
-
-  res
+  tubern_GET("reports", querylist, ...)
 }

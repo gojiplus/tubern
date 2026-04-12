@@ -5,4 +5,5 @@
 \title{Enhanced Error Handling for tubern}
 \description{
 Custom error classes and improved error handling for YouTube Analytics API
+using rlang for modern error handling patterns.
 }

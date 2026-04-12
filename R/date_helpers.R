@@ -63,9 +63,11 @@ NULL
       }
     },
     
-    stop("Unrecognized date string: ", date_string, 
-         ". Use YYYY-MM-DD format or relative dates like 'last_30_days', 'this_month', etc.", 
-         call. = FALSE)
+    tubern_abort(
+      paste0("Unrecognized date string: '", date_string, "'.",
+             " Use YYYY-MM-DD format or relative dates like 'last_30_days', 'this_month', etc."),
+      class = "parameter"
+    )
   )
   
   return(date_obj)
@@ -161,17 +163,19 @@ resolve_date_range <- function(start_date, end_date = NULL) {
     end_parsed <- start_parsed  # Same as start if absolute and no end specified
   }
   
-  # Validate date order
   if (start_parsed > end_parsed) {
-    stop("Resolved start_date (", format(start_parsed, "%Y-%m-%d"), 
-         ") is after end_date (", format(end_parsed, "%Y-%m-%d"), ")", 
-         call. = FALSE)
+    tubern_abort(
+      paste0("Resolved start_date (", format(start_parsed, "%Y-%m-%d"),
+             ") is after end_date (", format(end_parsed, "%Y-%m-%d"), ")"),
+      class = "parameter"
+    )
   }
   
-  # Check if trying to get future data
   if (end_parsed > Sys.Date()) {
-    warning("End date is in the future. YouTube Analytics data is typically delayed by 1-2 days.",
-            call. = FALSE)
+    tubern_warn(
+      "End date is in the future. YouTube Analytics data is typically delayed by 1-2 days.",
+      class = "parameter"
+    )
   }
   
   # Return as formatted strings

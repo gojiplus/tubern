@@ -5,4 +5,5 @@
 \title{YouTube Analytics API Validation Helpers}
 \description{
 Internal validation functions for metrics, dimensions, and parameters
+using checkmate for robust parameter validation.
 }
