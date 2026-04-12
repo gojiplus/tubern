@@ -1,14 +1,14 @@
-#' Delete Group
+#' Delete Group Item
 #'
 #' @param id  String. Required.
 #' ``The id parameter specifies the YouTube group item ID for the group that is being deleted.''
-#' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.
+#' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_DELETE}}.
 #'
 #' @return named list
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/delete}
+#' @references \url{https://developers.google.com/youtube/analytics/reference/groupItems/delete}
 #'
 #' @examples
 #'
@@ -17,8 +17,8 @@
 #' }
 
 delete_group_item <- function (id, ...) {
+  assert_string(id, .var.name = "id")
 
   querylist <- list(id = id)
-  res      <- tubern_DELETE("groups", query = querylist, ...)
-  res
+  tubern_DELETE("groupItems", query = querylist, ...)
 }

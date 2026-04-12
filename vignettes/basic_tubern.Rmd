@@ -4,7 +4,7 @@ author: "Gaurav Sood"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using tuber}
+  %\VignetteIndexEntry{Using tubern}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

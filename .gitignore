@@ -5,3 +5,7 @@ dev
 .httr-oauth
 tests/testthat/yt_key
 tests/testthat/token_file.rds
+.DS_Store
+/..Rcheck
+/tubern.Rcheck
+*.gz

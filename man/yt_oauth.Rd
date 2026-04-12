@@ -9,38 +9,54 @@ yt_oauth(
   app_secret = NULL,
   scope = "analytics",
   token = ".httr-oauth",
+  setup_guide = interactive(),
   ...
 )
 }
 \arguments{
-\item{app_id}{client id; required; no default}
+\item{app_id}{Client ID from Google Cloud Console; required; no default}
 
-\item{app_secret}{client secret; required; no default}
+\item{app_secret}{Client secret from Google Cloud Console; required; no default}
 
-\item{scope}{Character. \code{analytics} or \code{monetary-analytics}. Required. Default is \code{monetary-analytics}.
-The scopes are largely exchangeable but \code{monetary-analytics} yields extra authorizations that come in handy.}
+\item{scope}{Character. One of:
+\itemize{
+  \item \code{"analytics"} - Basic analytics data (views, likes, etc.) - Default
+  \item \code{"monetary"} - Includes revenue and monetization data
+  \item \code{"auto"} - Automatically detect scope based on first API call
+}}
 
-\item{token}{path to file containing the token. If a path is given, the function will first try to read from it. Default is \code{.httr-oauth} in the local directory.
-So if there is such a file, the function will first try to read from it.}
+\item{token}{Path to file containing the token. Default is \code{.httr-oauth} in working directory.}
+
+\item{setup_guide}{Logical. Show setup guide for first-time users (default: TRUE for interactive sessions)}
 
 \item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
 }
 \value{
-sets the google_token option and also saves .httr_auth in the working directory (find out the working directory via getwd())
+Sets the google_token option and saves .httr-oauth in working directory
 }
 \description{
-The function looks for .httr-oauth in the working directory. If it doesn't find it, it expects an application ID and a secret.
-If you want to remove the existing .httr-oauth, set remove_old_oauth to TRUE. By default, it is set to FALSE.
-The function launches a browser to allow you to authorize the application
+Simplified OAuth2 setup for YouTube Analytics API. This function will automatically
+detect the required scope based on your needs and provide helpful setup guidance.
+}
+\details{
+The function looks for .httr-oauth in the working directory. If it doesn't find it,
+it expects an application ID and a secret. The function launches a browser to allow
+you to authorize the application.
 }
 \examples{
  \dontrun{
-   yt_oauth("998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com",
-            "MbOSt6cQhhFkwETXKur-L9rN")
+   # Basic setup (will show setup guide first time)
+   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret")
+
+   # Setup with monetary scope for revenue data
+   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
+            scope = "monetary")
+
+   # Skip setup guide
+   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
+            setup_guide = FALSE)
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/}
-
-\url{https://developers.google.com/youtube/analytics/v1/reference/} for different scopes
+\url{https://developers.google.com/youtube/analytics/reference/}
 }

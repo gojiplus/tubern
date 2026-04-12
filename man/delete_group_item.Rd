@@ -2,7 +2,7 @@
 % Please edit documentation in R/delete_group_item.R
 \name{delete_group_item}
 \alias{delete_group_item}
-\title{Delete Group}
+\title{Delete Group Item}
 \usage{
 delete_group_item(id, ...)
 }
@@ -10,13 +10,13 @@ delete_group_item(id, ...)
 \item{id}{String. Required.
 ``The id parameter specifies the YouTube group item ID for the group that is being deleted.''}
 
-\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_DELETE}}.}
 }
 \value{
 named list
 }
 \description{
-Delete Group
+Delete Group Item
 }
 \examples{
 
@@ -25,5 +25,5 @@ delete_group_item(id="ABZZzGSIAAA")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/delete}
+\url{https://developers.google.com/youtube/analytics/reference/groupItems/delete}
 }

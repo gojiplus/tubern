@@ -10,7 +10,7 @@ delete_group(id, ...)
 \item{id}{String. Required.
 ``The id parameter specifies the YouTube group ID of the group that is being deleted.''}
 
-\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_PUT}}.}
+\item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_DELETE}}.}
 }
 \value{
 named list
@@ -25,5 +25,5 @@ delete_group(id="ABZZzGSIAAA")
 }
 }
 \references{
-\url{https://developers.google.com/youtube/analytics/v1/reference/groups/delete}
+\url{https://developers.google.com/youtube/analytics/reference/groups/delete}
 }

@@ -1,59 +1,151 @@
 #' Get Reports
 #'
-#' Lists reporting jobs that have been scheduled for a channel or content owner.
+#' Retrieves YouTube Analytics reports containing YouTube Analytics data.
 #'
-#' @param ids Named vector with two potential names: channel or contentOwner
-#' If channel, potential values are: mine or channel_id
-#' If contentOwner, potential values are: owner_id of the content
+#' @param ids String. Channel or content owner identifier.
+#' For channels: \code{"channel==MINE"} (for authenticated user's channel) or
+#' \code{"channel==UCxxxxxxxxxxxxxxx"} (for specific channel ID).
+#' For content owners: \code{"contentOwner==ownerName"}.
 #'
-#' @param metrics String. Comma-separated list of YouTube Analytics metrics, such as \code{views} or \code{likes,dislikes}.
-#' @param start_date String. Must be in YYYY-MM-DD format.
-#' @param end_date String. Must be in YYYY-MM-DD format.
-#' @param currency Optional. String. Default is USD. Specifies what earnings metrics like
-#' \code{earnings, adEarnings, grossRevenue, playbackBasedCpm, impressionBasedCpm} will be reported in.
-#' @param dimensions String. Optional. Comma-separated list of YouTube Analytics dimensions, such as \code{video} or \code{ageGroup,gender}.
-#' @param filters Named Vector. Optional. For instance, ``\code{video==pd1FJh59zxQ,Zhawgd0REhA;country==IT}
-#' restricts the result set to include data for the given videos in Italy''
-#' @param historical_channel_data Boolean. Defaults is False.
-#' ``Whether the API response should include channels' watch time and view data from the time period prior
-#' to when the channels were linked to the content owner.''
-#' @param max_results Integer. Optional. The maximum number of rows to include in the response.
-#' @param sort String. Optional A comma-separated list of dimensions or metrics that determine the sort order for YouTube
-#' @param start_index Integer. Optional. ``The 1-based index of the first entity to retrieve.''
-#' @param user_ip ``IP address of the end user for whom the API call is being made.''
+#' @param metrics String. Comma-separated list of YouTube Analytics metrics,
+#' such as \code{views} or \code{likes,dislikes}.
+#' @param start_date String. Start date for the report.
+#' Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", "yesterday".
+#' @param end_date String. End date for the report.
+#' Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.
+#' @param currency Optional. String. Default is USD. Specifies what earnings
+#' metrics like \code{earnings, adEarnings, grossRevenue, playbackBasedCpm,
+#' impressionBasedCpm} will be reported in.
+#' @param dimensions String. Optional. Comma-separated list of YouTube Analytics
+#' dimensions, such as \code{video} or \code{ageGroup,gender}.
+#' @param filters String. Optional. Dimension value filters. Multiple filters
+#' can be separated by semicolons. For video filtering:
+#' \code{"video==videoId1,videoId2"} (comma-separated video IDs).
+#' For country filtering: \code{"country==US"}.
+#' Combined example: \code{"video==videoId1,videoId2;country==US"}.
+#' Note: When filtering by video IDs, ensure the \code{dimensions} parameter
+#' includes "video".
+#' @param include_historical_channel_data Boolean. Default is FALSE.
+#' ``Whether the API response should include channels' watch time and view data
+#' from the time period prior to when the channels were linked to the content
+#' owner.''
+#' @param max_results Integer. Optional. The maximum number of rows to
+#' include in the response.
+#' @param sort String. Optional A comma-separated list of dimensions or metrics
+#' that determine the sort order for YouTube
+#' @param start_index Integer. Optional. ``The 1-based index of the first
+#' entity to retrieve.''
 #' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_GET}}.
 #'
 #' @return named list
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/reports/query}
+#' @references
+#' \url{https://developers.google.com/youtube/analytics/reference/reports/query}
+#'
+#' @section Troubleshooting 404 Errors:
+#' If you encounter a 404 "Not Found" error, check the following:
+#' \itemize{
+#'   \item Ensure YouTube Analytics API is enabled in your Google Cloud Console
+#'   project
+#'   \item Verify your authentication token is valid and has the correct scopes
+#'   \item Check that the channel ID (if using specific channel ID) exists and
+#'   you have access to it
+#'   \item Use \code{"channel==MINE"} to access your own authenticated channel's
+#'   data
+#' }
 #'
 #' @examples
 #' \dontrun{
+#' # Basic channel report
 #' get_report(ids = "channel==MINE", metrics = "views",
-#' start_date = "2010-04-01", end_date ="2017-01-01")
+#'            start_date = "2020-01-01", end_date = "2020-01-31")
+#'
+#' # Report with video filtering (requires dimensions = "video")
+#' get_report(ids = "channel==MINE",
+#'            metrics = "views,likes,comments",
+#'            dimensions = "video",
+#'            filters = "video==videoId1,videoId2",
+#'            start_date = "2020-01-01", end_date = "2020-01-31")
+#'
+#' # Report with country filtering
+#' get_report(ids = "channel==MINE",
+#'            metrics = "views",
+#'            filters = "country==US",
+#'            start_date = "2020-01-01", end_date = "2020-01-31")
 #' }
 
-get_report <- function (ids, metrics, start_date = NULL, end_date = NULL,
-                        currency = NULL, dimensions, filters,
-                        historical_channel_data = NULL,
+get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
+                        currency = NULL, dimensions = NULL, filters = NULL,
+                        include_historical_channel_data = NULL,
                         max_results = NULL, sort = NULL,
-                        start_index = NULL, user_ip = NULL, ...) {
+                        start_index = NULL, ...) {
+
+  assert_string(ids, .var.name = "ids")
+
+  if (!grepl("^(channel|contentOwner)==", ids)) {
+    tubern_abort(
+      c(
+        "ids parameter must be in format:",
+        "'channel==MINE', 'channel==CHANNEL_ID', or 'contentOwner==OWNER_NAME'"
+      ),
+      class = "parameter"
+    )
+  }
+
+  if (is.null(start_date)) {
+    tubern_abort("start_date is required", class = "parameter")
+  }
+
+  dates <- resolve_date_range(start_date, end_date)
+  start_date <- dates$start_date
+  end_date <- dates$end_date
+
+  final_dates <- .validate_dates(start_date, end_date)
+  start_date <- final_dates$start_date
+  end_date <- final_dates$end_date
+
+  metrics <- .validate_metrics(metrics)
+  metrics_param <- paste(metrics, collapse = ",")
+
+  dimensions <- .validate_dimensions(dimensions, filters)
+  dimensions_param <- if (!is.null(dimensions)) paste(dimensions, collapse = ",") else NULL
+
+  filters <- .validate_filters(filters, dimensions)
+
+  if (!is.null(currency)) {
+    assert_string(currency, .var.name = "currency")
+    valid_currencies <- c("USD", "EUR", "GBP", "JPY", "KRW", "INR", "CAD", "AUD")
+    if (!currency %in% valid_currencies) {
+      tubern_warn(
+        paste0("Currency '", currency, "' may not be supported. Common currencies: ",
+               paste(valid_currencies, collapse = ", ")),
+        class = "parameter"
+      )
+    }
+  }
+
+  if (!is.null(max_results)) {
+    assert_int(max_results, lower = 1, upper = 200, .var.name = "max_results")
+  }
+
+  if (!is.null(start_index)) {
+    assert_int(start_index, lower = 1, .var.name = "start_index")
+  }
 
   querylist <- list(ids = URLencode(ids),
-                    "start-date" = start_date,
-                    "end-date" = end_date,
-                    metrics = metrics,
+                    startDate = start_date,
+                    endDate = end_date,
+                    metrics = metrics_param,
                     currency = currency,
-                    "max-results" = max_results,
+                    dimensions = dimensions_param,
+                    filters = filters,
+                    maxResults = max_results,
                     sort = sort,
-                    "include-historical-channel-data" = historical_channel_data,
-                    "start-index" = start_index,
-                    "userIp" = user_ip,
-                    ...)
+                    includeHistoricalChannelData =
+                      include_historical_channel_data,
+                    startIndex = start_index)
 
-  res <- tubern_GET("reports", querylist, ...)
-
-  res
+  tubern_GET("reports", querylist, ...)
 }

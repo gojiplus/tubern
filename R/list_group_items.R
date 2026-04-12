@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-#' @references \url{https://developers.google.com/youtube/analytics/v1/reference/groupItems/list}
+#' @references \url{https://developers.google.com/youtube/analytics/reference/groupItems/list}
 #'
 #' @examples
 #' \dontrun{
@@ -15,10 +15,8 @@
 #' }
 
 list_group_items <- function (group_id, ...) {
+  assert_string(group_id, .var.name = "group_id")
 
   querylist <- c(groupId = group_id)
-
-  res <- tubern_GET("groupItems", querylist, ...)
-
-  res
+  tubern_GET("groupItems", querylist, ...)
 }

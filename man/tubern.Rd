@@ -6,7 +6,7 @@
 \alias{tubern}
 \title{\pkg{tubern} provides access to the YouTube Analytics and Reporting API}
 \description{
-Get statistics and reports from YouTube. To learn more about the YouTube Analytics and Reporting API, see \url{https://developers.google.com/youtube/reporting/}.
+Provides access to YouTube Analytics API v2 for retrieving YouTube Analytics data including views, engagement metrics, demographics, and revenue data. Supports OAuth 2.0 authentication and channel group management. See \url{https://developers.google.com/youtube/analytics/} for API documentation.
 }
 \seealso{
 Useful links:

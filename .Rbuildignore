@@ -6,11 +6,15 @@ dev
 ^codecov.yml$
 ^appveyor.yml$
 ^cran-comments.md$
-^tests\testthat\token_file.rds$
-^tests\testthat\token_file.rds.enc$
+^tests/testthat/token_file.rds$
+^tests/testthat/token_file.rds.enc$
 ^\.httr-oauth$
 ^docs$
 .lintr
 .github
 ^_pkgdown\.yml$
 ^CRAN-SUBMISSION$
+^\.claude$
+^\.DS_Store$
+\.Rcheck$
+^tubern_.*\.tar\.gz$
