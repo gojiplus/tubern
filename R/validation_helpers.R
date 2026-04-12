@@ -348,9 +348,14 @@ NULL
     )
   }
 
-  if ("video" %in% filter_dims && !is.null(dimensions) && !"video" %in% dimensions) {
-    tubern_inform(
-      "When filtering by video, consider adding 'video' to dimensions to see individual video results"
+  if ("video" %in% filter_dims && (is.null(dimensions) || !"video" %in% dimensions)) {
+    tubern_warn(
+      c(
+        "Filtering by video without dimensions='video' returns aggregated channel stats.",
+        "To see per-video breakdown, add dimensions = 'video' to your call.",
+        "Example: get_report(..., dimensions = 'video', filters = 'video==id1,id2')"
+      ),
+      class = "parameter"
     )
   }
 

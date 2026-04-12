@@ -94,6 +94,18 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
     )
   }
 
+  if (grepl("^channel==UC", ids) && !grepl("^channel==MINE$", ids)) {
+    tubern_warn(
+      c(
+        "Using a specific channel ID may result in 404 errors.",
+        "YouTube Analytics API only allows access to your own channel's data.",
+        "Use 'channel==MINE' to access your authenticated channel's analytics.",
+        "Only YouTube Partner content owners can access other channels' data."
+      ),
+      class = "parameter"
+    )
+  }
+
   if (is.null(start_date)) {
     tubern_abort("start_date is required", class = "parameter")
   }

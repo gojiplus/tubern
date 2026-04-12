@@ -249,7 +249,10 @@ with_retry <- function(expr,
       message = paste(
         "Resource not found. Possible causes:",
         "- YouTube Analytics API not enabled in Google Cloud project",
-        "- Channel/content owner ID doesn't exist or is inaccessible",
+        "- Using a specific channel ID (channel==UCxxx) instead of 'channel==MINE'",
+        "  Note: You can only access analytics for your own authenticated channel",
+        "  unless you are a YouTube Partner content owner",
+        "- Channel/content owner ID doesn't exist",
         "- Incorrect authentication scopes",
         sep = "\n"
       ),
