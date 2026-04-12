@@ -88,6 +88,26 @@ test_that("get_report validates max_results bounds", {
   })
 })
 
+test_that("get_report warns when using specific channel ID", {
+  stub <- function(method, path, query = NULL, body = NULL, ...) {
+    mock_api_response()
+  }
+  with_api_stub(stub, {
+    expect_warning(
+      get_report(ids = "channel==UCiMg06DjcUk5FRiM3g5sqoQ",
+                 metrics = "views",
+                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      "Using a specific channel ID may result in 404 errors",
+      class = "tubern_parameter_warning"
+    )
+
+    expect_silent(
+      get_report(ids = "channel==MINE", metrics = "views",
+                 start_date = "2023-01-01", end_date = "2023-01-31")
+    )
+  })
+})
+
 test_that("get_report with real API works", {
   skip_on_cran()
   skip_if_no_token()

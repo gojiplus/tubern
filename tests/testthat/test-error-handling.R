@@ -61,6 +61,13 @@ test_that(".parse_api_error handles 404 errors", {
   expect_true(grepl("not found", result$message, ignore.case = TRUE))
 })
 
+test_that(".parse_api_error 404 message mentions channel access restrictions", {
+  result <- tubern:::.parse_api_error(404, NULL)
+  expect_true(grepl("channel==MINE", result$message))
+  expect_true(grepl("your own authenticated channel", result$message, ignore.case = TRUE))
+  expect_true(grepl("YouTube Partner content owner", result$message, ignore.case = TRUE))
+})
+
 test_that(".parse_api_error handles 429 errors", {
   result <- tubern:::.parse_api_error(429, NULL)
   expect_equal(result$class, "quota")

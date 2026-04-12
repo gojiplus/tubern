@@ -109,13 +109,35 @@ test_that(".validate_filters accepts valid filters", {
   result <- tubern:::.validate_filters("country==US")
   expect_equal(result, "country==US")
 
-  result <- tubern:::.validate_filters("country==US;video==abc123")
+  result <- tubern:::.validate_filters("country==US;video==abc123", dimensions = "video")
   expect_equal(result, "country==US;video==abc123")
 })
 
 test_that(".validate_filters handles NULL", {
   result <- tubern:::.validate_filters(NULL)
   expect_null(result)
+})
+
+test_that(".validate_filters warns when filtering by video without video dimension", {
+  expect_warning(
+    tubern:::.validate_filters("video==abc123", dimensions = NULL),
+    "Filtering by video without dimensions='video'",
+    class = "tubern_parameter_warning"
+  )
+
+  expect_warning(
+    tubern:::.validate_filters("video==abc123,def456", dimensions = "day"),
+    "Filtering by video without dimensions='video'",
+    class = "tubern_parameter_warning"
+  )
+
+  expect_silent(
+    tubern:::.validate_filters("video==abc123", dimensions = "video")
+  )
+
+  expect_silent(
+    tubern:::.validate_filters("video==abc123", dimensions = c("video", "day"))
+  )
 })
 
 test_that("get_available_metrics returns valid metrics", {
