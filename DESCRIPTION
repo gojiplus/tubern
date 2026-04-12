@@ -30,5 +30,6 @@ Suggests:
     lintr,
     covr,
     ggplot2,
-    tibble
+    tibble,
+    withr
 RoxygenNote: 7.3.3

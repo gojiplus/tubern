@@ -13,6 +13,7 @@
 #'   \itemize{
 #'     \item \code{"analytics"} - Basic analytics data (views, likes, etc.) - Default
 #'     \item \code{"monetary"} - Includes revenue and monetization data
+#'     \item \code{"full"} - Full access including group management (create/delete)
 #'     \item \code{"auto"} - Automatically detect scope based on first API call
 #'   }
 #' @param token Path to file containing the token. Default is \code{.httr-oauth} in working directory.
@@ -33,6 +34,10 @@
 #'    # Setup with monetary scope for revenue data
 #'    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
 #'             scope = "monetary")
+#'
+#'    # Setup with full scope for group management (create/delete groups)
+#'    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
+#'             scope = "full")
 #'
 #'    # Skip setup guide
 #'    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
@@ -148,12 +153,16 @@ yt_oauth <- function (app_id = NULL, app_secret = NULL,
       "https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
       "https://www.googleapis.com/auth/youtube.readonly"
     ),
+    "full" = c(
+      "https://www.googleapis.com/auth/yt-analytics.readonly",
+      "https://www.googleapis.com/auth/youtube"
+    ),
     "auto" = c(
       "https://www.googleapis.com/auth/yt-analytics.readonly",
       "https://www.googleapis.com/auth/youtube.readonly"
     ),
     tubern_abort(
-      "Invalid scope. Use 'analytics', 'monetary', or 'auto'",
+      "Invalid scope. Use 'analytics', 'monetary', 'full', or 'auto'",
       class = "parameter"
     )
   )
