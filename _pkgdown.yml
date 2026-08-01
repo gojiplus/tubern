@@ -11,18 +11,9 @@ authors:
   Gaurav Sood:
     href: https://github.com/soodoku
 
-reference:
-  - title: Authentication
-    contents:
-    - yt_oauth
-  - title: Group Related
-    contents:
-    - list_groups
-    - list_group_items
-    - add_groups
-    - add_group_item
-    - delete_group
-    - update_group
-  - title: Report
-    contents:
-    - get_report
+# No `reference:` section on purpose. The hand-written index listed 8 topics
+# and pkgdown found 29 more it did not cover, so the site failed to build at
+# all. An index you must remember to update every time you add a function is
+# the same drift problem this fleet standard exists to remove, one scale down.
+# Without the section pkgdown lists every exported topic and cannot fall
+# behind. Curated groupings are welcome back if they are kept complete.
