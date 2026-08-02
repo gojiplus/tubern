@@ -1,5 +1,3 @@
-context("Validation helpers")
-
 test_that(".validate_metrics rejects empty metrics", {
   expect_error(
     tubern:::.validate_metrics(NULL),

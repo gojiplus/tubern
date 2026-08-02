@@ -1,5 +1,3 @@
-context("Data transformation functions")
-
 test_that("yt_to_dataframe handles parse_dates=FALSE correctly", {
   mock_response <- mock_api_response(
     rows = list(

@@ -1,5 +1,3 @@
-context("Groups endpoints")
-
 test_that("add_groups constructs correct API call", {
   resource_details <- list(
     etag = "etag123",

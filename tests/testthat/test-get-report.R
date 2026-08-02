@@ -1,5 +1,3 @@
-context("Get Report")
-
 test_that("get_report validates ids parameter format", {
   stub <- function(method, path, query = NULL, body = NULL, ...) {
     mock_api_response()
