@@ -1,5 +1,3 @@
-context("Reports endpoint")
-
 ## Test get_report against recorded fixture
 
 test_that("get_report returns parsed list from fixture", {

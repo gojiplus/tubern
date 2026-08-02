@@ -1,5 +1,3 @@
-context("Error handling")
-
 test_that("tubern_abort creates proper error class", {
   err <- tryCatch(
     tubern:::tubern_abort("test error", class = "auth"),

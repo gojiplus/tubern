@@ -1,5 +1,3 @@
-context("Groups live API tests")
-
 test_that("group management lifecycle works", {
   skip_on_cran()
   skip_if_no_token()

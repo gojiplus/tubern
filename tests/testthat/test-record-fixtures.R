@@ -1,5 +1,3 @@
-context("Recording API fixtures")
-
 ## Manual script to record API fixture for get_report
 
 test_that("record get_report fixture", {
