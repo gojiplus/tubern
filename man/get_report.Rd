@@ -35,8 +35,8 @@ Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", 
 Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.}
 
 \item{currency}{Optional. String. Default is USD. Specifies what earnings
-metrics like \code{earnings, adEarnings, grossRevenue, playbackBasedCpm,
-impressionBasedCpm} will be reported in.}
+metrics like \code{estimatedRevenue, estimatedAdRevenue, grossRevenue,
+playbackBasedCpm, cpm} will be reported in.}
 
 \item{dimensions}{String. Optional. Comma-separated list of YouTube Analytics
 dimensions, such as \code{video} or \code{ageGroup,gender}.}

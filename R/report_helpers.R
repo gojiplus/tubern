@@ -226,10 +226,12 @@ get_daily_performance <- function(date_range, end_date = NULL, ids = "channel==M
 get_revenue_report <- function(date_range, end_date = NULL, ids = "channel==MINE",
                              currency = "USD", include_cpm = TRUE, ...) {
   
-  metrics <- c("estimatedRevenue", "adEarnings", "monetizedPlaybacks")
-  
+  # adEarnings and impressionBasedCpm are the pre-v2 names; the API renamed
+  # them to estimatedAdRevenue and cpm.
+  metrics <- c("estimatedRevenue", "estimatedAdRevenue", "monetizedPlaybacks")
+
   if (include_cpm) {
-    metrics <- c(metrics, "playbackBasedCpm", "impressionBasedCpm")
+    metrics <- c(metrics, "playbackBasedCpm", "cpm")
   }
   
   get_report(
