@@ -4,7 +4,7 @@ if (requireNamespace("lintr", quietly = TRUE)) {
   test_that("Package Style", {
     skip_if_not_installed("lintr")
     skip_on_cran()
-    
+
     # Try to find package root directory
     pkg_root <- tryCatch({
       # Look for DESCRIPTION file going up the directory tree
@@ -18,11 +18,11 @@ if (requireNamespace("lintr", quietly = TRUE)) {
         NULL
       }
     }, error = function(e) NULL)
-    
+
     if (is.null(pkg_root)) {
       skip("Could not locate package root for linting")
     }
-    
+
     # Run lintr on the package root
     tryCatch({
       lintr::expect_lint_free(path = pkg_root, cache = TRUE)
