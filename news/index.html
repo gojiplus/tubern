@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tubern</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -65,6 +65,16 @@
       <small>Source: <a href="https://github.com/gojiplus/tubern/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.1" id="tubern-051">tubern 0.5.1<a class="anchor" aria-label="anchor" href="#tubern-051"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-5-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-1"></a></h3>
+<ul><li><p>A relative <code>end_date</code> resolved to the <em>start</em> of its own window. <code>.parse_date_string()</code> maps a range name to the beginning of that range, and <code>end_date</code> was passed through it unchanged, so a value like <code>"last_month"</code> returned the first day of the period rather than the last and silently shortened every such report. Absolute <code>YYYY-MM-DD</code> input was always correct, which is why this was not obvious.</p></li>
+<li><p>Two revenue metrics used names the API had renamed: <code>adEarnings</code> and <code>impressionBasedCpm</code> are the pre-v2 spellings of <code>estimatedAdRevenue</code> and <code>cpm</code>, so requests carrying them did not return the intended columns.</p></li>
+<li><p>The retry helper called <code>force(expr)</code> inside its loop. <code>expr</code> is a promise, so forcing it again memoises the first result and a retry replayed a stale value rather than re-issuing the request. It also signalled “retry” by returning <code>NULL</code>, which was indistinguishable from a genuine <code>NULL</code> result. The caller’s expression is now re-evaluated each attempt and the retry signal is a distinct sentinel.</p></li>
+<li><p>Only HTTP 200 counted as success, but <code>groups.delete</code> and <code>groupItems.delete</code> return 204 with an empty body, so a successful delete was handled as a failure. Any 2xx is now a success. The error path also called <code>$</code> on a body that comes back as <code>raw(0)</code> when empty, which is an error on an atomic vector; an empty error body now reports the status instead.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="tubern-050">tubern 0.5.0<small>2026-04-12</small><a class="anchor" aria-label="anchor" href="#tubern-050"></a></h2>
 <div class="section level3">
