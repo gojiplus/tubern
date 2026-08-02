@@ -155,7 +155,10 @@ NULL
       paste0("Unrecognised date range: '", start_date_string, "'. ",
              "Expected YYYY-MM-DD or one of: ",
              paste(.known_date_ranges, collapse = ", ")),
-      class = "invalid_date"
+      # "parameter", not a date-specific class: every other invalid-argument
+      # path in the package raises tubern_parameter_error, and a handler
+      # catching that would silently miss this one.
+      class = "parameter"
     )
   }
 

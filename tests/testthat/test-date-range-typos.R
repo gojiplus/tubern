@@ -24,6 +24,16 @@ test_that("an unrecognised relative start_date is rejected too", {
   expect_error(resolve_date_range("last_mont"), "Unrecognised|Invalid|nrecognized")
 })
 
+test_that("an invalid range is a parameter error, like every other bad argument", {
+  # A date-specific condition class would be invisible to the handlers callers
+  # already write: every other invalid-argument path in the package raises
+  # tubern_parameter_error, so one outlier silently escapes tryCatch on it.
+  err <- tryCatch(resolve_date_range("2024-01-01", "last_mont"),
+                  error = function(e) e)
+  expect_s3_class(err, "tubern_parameter_error")
+  expect_s3_class(err, "tubern_error")
+})
+
 test_that("the error names the ranges that would have worked", {
   err <- tryCatch(resolve_date_range("2024-01-01", "last_mont"),
                   error = function(e) conditionMessage(e))
