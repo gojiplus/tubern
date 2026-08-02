@@ -64,7 +64,19 @@ test_that("a 204 No Content response is a success, not an error", {
                                    class = "Token2.0"))
   on.exit(options(google_token = NULL), add = TRUE)
 
+  # Restore and relock on the way out. Left in place, the stub outlived this
+  # test and answered 204 for every later POST/DELETE in the session -- with a
+  # token present, test-groups-live.R's add_groups() then returned list() and
+  # the lifecycle test either failed or, worse, passed against the fake.
   imports <- parent.env(asNamespace("tubern"))
+  originals <- mget(c("DELETE", "POST"), envir = imports)
+  on.exit({
+    for (verb in names(originals)) {
+      assign(verb, originals[[verb]], envir = imports)
+      lockBinding(verb, imports)
+    }
+  }, add = TRUE)
+
   for (verb in c("DELETE", "POST")) {
     unlockBinding(verb, imports)
     assign(verb, function(url, ...) fake_response(204), envir = imports)
@@ -72,6 +84,18 @@ test_that("a 204 No Content response is a success, not an error", {
 
   expect_no_error(suppressMessages(delete_group(id = "ABC")))
   expect_no_error(suppressMessages(delete_group_item(id = "XYZ")))
+})
+
+test_that("the 204 test leaves the real HTTP verbs in place", {
+  # Guards the restore above. Without it this file quietly poisons every test
+  # that runs after it, and the damage is invisible precisely because the fake
+  # returns success.
+  imports <- parent.env(asNamespace("tubern"))
+  for (verb in c("DELETE", "POST")) {
+    expect_identical(get(verb, envir = imports),
+                     getExportedValue("httr", verb), info = verb)
+    expect_true(bindingIsLocked(verb, imports), info = verb)
+  }
 })
 
 test_that("parsing an error body that is not a list does not itself error", {

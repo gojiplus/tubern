@@ -1,6 +1,7 @@
 # https://github.com/jimhester/lintr
 if (requireNamespace("lintr", quietly = TRUE)) {
-  context("lints")
+  # context() is defunct under edition 3; it ran before skip_on_cran() could
+  # take effect, so it warned on every run including CRAN's.
   test_that("Package Style", {
     skip_if_not_installed("lintr")
     skip_on_cran()

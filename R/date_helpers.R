@@ -75,6 +75,20 @@ NULL
 
 #' Get end date for relative date ranges
 #'
+# The relative ranges the package understands. .parse_date_string() maps each
+# to the first day of its window and .get_end_date_for_range() to the last, so
+# the two switch statements have to cover the same set; naming it once means a
+# range added to one but not the other fails a test instead of silently
+# resolving to today.
+.known_date_ranges <- c(
+  "yesterday", "today",
+  "last_7_days", "last_14_days", "last_30_days", "last_60_days", "last_90_days",
+  "this_week", "last_week",
+  "this_month", "last_month",
+  "this_quarter", "last_quarter",
+  "this_year", "last_year"
+)
+
 #' @param start_date_string Character string for start date
 #' @return Date object for appropriate end date
 #' @keywords internal
@@ -129,9 +143,21 @@ NULL
       }
     },
 
-    # Default: return today
-    today
+    # No default. Falling back to today turned a typo into a silently wider
+    # report: resolve_date_range("2024-01-01", "last_mont") returned today as
+    # the end date and quietly queried years of extra data. An unrecognised
+    # range has to be reported, not guessed at.
+    NULL
   )
+
+  if (is.null(end_date)) {
+    tubern_abort(
+      paste0("Unrecognised date range: '", start_date_string, "'. ",
+             "Expected YYYY-MM-DD or one of: ",
+             paste(.known_date_ranges, collapse = ", ")),
+      class = "invalid_date"
+    )
+  }
 
   return(end_date)
 }

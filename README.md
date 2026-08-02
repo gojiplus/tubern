@@ -154,8 +154,8 @@ Common metrics you can request include:
 
 For monetary metrics (requires monetary-analytics scope):
 - `estimatedRevenue`: Estimated revenue
-- `adEarnings`: Revenue from ads
-- `impressionBasedCpm`: Cost per thousand impressions
+- `estimatedAdRevenue`: Revenue from ads (renamed from `adEarnings`)
+- `cpm`: Cost per thousand impressions (renamed from `impressionBasedCpm`)
 
 ### Available Dimensions
 
