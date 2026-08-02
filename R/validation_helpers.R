@@ -72,6 +72,10 @@ NULL
   annotationCloses = "Number of annotation closes",
   annotationCloseRate = "Rate at which annotations were closed",
 
+  # Membership metrics
+  membershipsCancellationSurveyResponses =
+    "Number of completed membership cancellation surveys",
+
   # Livestream metrics
   averageConcurrentViewers = "Average number of concurrent viewers during live stream",
   peakConcurrentViewers = "Peak number of concurrent viewers during live stream",
@@ -119,13 +123,46 @@ NULL
 
   # Playback dimensions
   insightPlaybackLocationType = "Playback location type",
+  insightPlaybackLocationDetail = "Embedded player page or URL (embedded views only)",
 
   # Sharing dimensions
-  sharingService = "Service used for sharing"
+  sharingService = "Service used for sharing",
+
+  # Geographic dimensions
+  dma = "Nielsen Designated Market Area (three-digit identifier)",
+
+  # Viewer dimensions
+  subscribedStatus = "Whether the viewer was subscribed to the channel",
+
+  # Audience retention dimensions
+  elapsedVideoTimeRatio = "Ratio of elapsed video time to length, 0.01 to 1.0",
+
+  # Livestream dimensions
+  livestreamPosition = "Minute during the live stream",
+
+  # Advertising dimensions
+  adType = "Advertising format",
+
+  # Membership dimensions
+  membershipsCancellationSurveyReason = "Reason given for cancelling a membership",
+
+  # Content owner dimensions -- only valid in content owner reports
+  uploaderType = "Whether metrics are for content owner or third-party uploads",
+  claimedStatus = "Restricts to claimed content"
 )
 
-# Filter-only dimensions
-.filter_only_dimensions <- c("continent", "subContinent", "group")
+# Filter-only dimensions. These are documented as filters and cannot be
+# requested as report dimensions, so they are held apart rather than added to
+# .valid_dimensions above.
+.filter_only_dimensions <- c(
+  "continent", "subContinent", "group",
+  "audienceType"
+)
+
+# Dimensions valid only in content owner reports, kept for the error message
+# rather than for validation -- a channel-level caller who asks for one gets a
+# clearer answer than "invalid dimension".
+.content_owner_dimensions <- c("uploaderType", "claimedStatus")
 
 # Dimensions that require specific filters
 .dimension_requirements <- list(
