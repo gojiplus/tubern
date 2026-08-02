@@ -152,7 +152,7 @@ Analytics data.</p>
 <span></span>
 <span><span class="co"># Customize what metrics to include</span></span>
 <span><span class="va">overview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_channel_overview.html">get_channel_overview</a></span><span class="op">(</span></span>
-<span>  <span class="st">"this_month"</span>, </span>
+<span>  <span class="st">"this_month"</span>,</span>
 <span>  include_engagement <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  include_subscribers <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -193,7 +193,7 @@ Analytics data.</p>
 <span></span>
 <span><span class="co"># US states/provinces (requires filtering to US)</span></span>
 <span><span class="va">us_states</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_geographic_performance.html">get_geographic_performance</a></span><span class="op">(</span></span>
-<span>  <span class="st">"this_month"</span>, </span>
+<span>  <span class="st">"this_month"</span>,</span>
 <span>  dimension <span class="op">=</span> <span class="st">"province"</span>,</span>
 <span>  filters <span class="op">=</span> <span class="st">"country==US"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -213,7 +213,7 @@ Analytics data.</p>
 <span><span class="co"># Operating system breakdown</span></span>
 <span><span class="va">os_performance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_report.html">get_report</a></span><span class="op">(</span></span>
 <span>  ids <span class="op">=</span> <span class="st">"channel==MINE"</span>,</span>
-<span>  metrics <span class="op">=</span> <span class="st">"views,estimatedMinutesWatched"</span>, </span>
+<span>  metrics <span class="op">=</span> <span class="st">"views,estimatedMinutesWatched"</span>,</span>
 <span>  dimensions <span class="op">=</span> <span class="st">"operatingSystem"</span>,</span>
 <span>  start_date <span class="op">=</span> <span class="st">"this_month"</span></span>
 <span><span class="op">)</span></span>
@@ -267,7 +267,7 @@ Analytics data.</p>
 <span><span class="fu"><a href="../reference/get_available_metrics.html">get_available_metrics</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/get_available_metrics.html">get_available_metrics</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span>  <span class="co"># Filter by pattern</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/get_available_dimensions.html">get_available_dimensions</a></span><span class="op">(</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="../reference/get_available_dimensions.html">get_available_dimensions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/get_available_dimensions.html">get_available_dimensions</a></span><span class="op">(</span><span class="st">"country|city"</span><span class="op">)</span>  <span class="co"># Geographic dimensions</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -394,7 +394,7 @@ Analytics data.</p>
 <span><span class="va">demographics</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_audience_demographics.html">get_audience_demographics</a></span><span class="op">(</span><span class="st">"last_90_days"</span><span class="op">)</span></span>
 <span><span class="va">demo_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yt_to_dataframe.html">yt_to_dataframe</a></span><span class="op">(</span><span class="va">demographics</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Device analysis  </span></span>
+<span><span class="co"># Device analysis</span></span>
 <span><span class="va">devices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_report.html">get_report</a></span><span class="op">(</span></span>
 <span>  ids <span class="op">=</span> <span class="st">"channel==MINE"</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="st">"views,estimatedMinutesWatched"</span>,</span>
@@ -413,7 +413,7 @@ Analytics data.</p>
 <span>  <span class="va">top_countries</span> <span class="op">&lt;-</span> <span class="va">geo_df</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">estimated_minutes_watched</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_countries</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
@@ -426,7 +426,7 @@ Analytics data.</p>
 <span><span class="va">videos_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yt_to_dataframe.html">yt_to_dataframe</a></span><span class="op">(</span><span class="va">videos_monthly</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compare with previous month</span></span>
-<span><span class="va">videos_prev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_top_videos.html">get_top_videos</a></span><span class="op">(</span><span class="st">"last_month"</span>, max_results <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> </span>
+<span><span class="va">videos_prev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_top_videos.html">get_top_videos</a></span><span class="op">(</span><span class="st">"last_month"</span>, max_results <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">videos_prev_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yt_to_dataframe.html">yt_to_dataframe</a></span><span class="op">(</span><span class="va">videos_prev</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Daily performance for trend analysis</span></span>
@@ -514,7 +514,7 @@ analysis</li>
 <span><span class="fu"><a href="../reference/check_api_quota.html">check_api_quota</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Reduce data scope</span></span>
-<span><span class="fu"><a href="../reference/get_report.html">get_report</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="st">"channel==MINE"</span>, metrics <span class="op">=</span> <span class="st">"views"</span>, </span>
+<span><span class="fu"><a href="../reference/get_report.html">get_report</a></span><span class="op">(</span>ids <span class="op">=</span> <span class="st">"channel==MINE"</span>, metrics <span class="op">=</span> <span class="st">"views"</span>,</span>
 <span>          start_date <span class="op">=</span> <span class="st">"yesterday"</span>, max_results <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li>
