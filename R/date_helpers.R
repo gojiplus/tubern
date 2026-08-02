@@ -158,7 +158,14 @@ resolve_date_range <- function(start_date, end_date = NULL) {
   if (is.null(end_date) && !grepl("^\\d{4}-\\d{2}-\\d{2}$", start_date)) {
     end_parsed <- .get_end_date_for_range(start_date)
   } else if (!is.null(end_date)) {
-    end_parsed <- .parse_date_string(end_date)
+    # A relative end_date names a window; the end of the range is its last day,
+    # not its first, so .parse_date_string() (a start-of-range mapper) is only
+    # correct for absolute YYYY-MM-DD input.
+    end_parsed <- if (grepl("^\\d{4}-\\d{2}-\\d{2}$", end_date)) {
+      .parse_date_string(end_date)
+    } else {
+      .get_end_date_for_range(end_date)
+    }
   } else {
     end_parsed <- start_parsed  # Same as start if absolute and no end specified
   }

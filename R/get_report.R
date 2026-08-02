@@ -14,8 +14,8 @@
 #' @param end_date String. End date for the report.
 #' Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.
 #' @param currency Optional. String. Default is USD. Specifies what earnings
-#' metrics like \code{earnings, adEarnings, grossRevenue, playbackBasedCpm,
-#' impressionBasedCpm} will be reported in.
+#' metrics like \code{estimatedRevenue, estimatedAdRevenue, grossRevenue,
+#' playbackBasedCpm, cpm} will be reported in.
 #' @param dimensions String. Optional. Comma-separated list of YouTube Analytics
 #' dimensions, such as \code{video} or \code{ageGroup,gender}.
 #' @param filters String. Optional. Dimension value filters. Multiple filters
@@ -146,7 +146,9 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
     assert_int(start_index, lower = 1, .var.name = "start_index")
   }
 
-  querylist <- list(ids = URLencode(ids),
+  # httr percent-encodes query values itself; encoding here too would double-
+  # encode anything that needs escaping.
+  querylist <- list(ids = ids,
                     startDate = start_date,
                     endDate = end_date,
                     metrics = metrics_param,
