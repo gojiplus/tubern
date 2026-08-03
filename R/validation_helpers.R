@@ -14,9 +14,12 @@ NULL
   engagedViews = "Number of views that went past the initial seconds",
   viewerPercentage = "Percentage of viewers who were logged in when watching",
 
-  # Impression metrics
-  videoThumbnailImpressions = "Number of times video thumbnails were displayed",
-  videoThumbnailImpressionsClickRate = "Click-through rate for video thumbnails",
+  # Thumbnail impression metrics are deliberately absent. They exist only as
+  # video_thumbnail_impressions / video_thumbnail_impressions_ctr in the bulk
+  # Reporting API, and are not on the targeted-query metrics reference this
+  # package builds requests against:
+  #   https://developers.google.com/youtube/analytics/metrics
+  # Accepting them here let a request through that reports.query then rejected.
 
   # Engagement metrics
   likes = "Number of likes",
@@ -72,6 +75,10 @@ NULL
   annotationCloses = "Number of annotation closes",
   annotationCloseRate = "Rate at which annotations were closed",
 
+  # Membership metrics
+  membershipsCancellationSurveyResponses =
+    "Number of completed membership cancellation surveys",
+
   # Livestream metrics
   averageConcurrentViewers = "Average number of concurrent viewers during live stream",
   peakConcurrentViewers = "Peak number of concurrent viewers during live stream",
@@ -119,13 +126,47 @@ NULL
 
   # Playback dimensions
   insightPlaybackLocationType = "Playback location type",
+  insightPlaybackLocationDetail = "Embedded player page or URL (embedded views only)",
 
   # Sharing dimensions
-  sharingService = "Service used for sharing"
+  sharingService = "Service used for sharing",
+
+  # Geographic dimensions
+  dma = "Nielsen Designated Market Area (three-digit identifier)",
+
+  # Viewer dimensions
+  subscribedStatus = "Whether the viewer was subscribed to the channel",
+
+  # Audience retention dimensions
+  elapsedVideoTimeRatio = "Ratio of elapsed video time to length, 0.01 to 1.0",
+
+  # Livestream dimensions
+  livestreamPosition = "Minute during the live stream",
+
+  # Advertising dimensions
+  adType = "Advertising format",
+
+  # Membership dimensions
+  membershipsCancellationSurveyReason = "Reason given for cancelling a membership"
 )
 
-# Filter-only dimensions
-.filter_only_dimensions <- c("continent", "subContinent", "group")
+# Filter-only dimensions. These are documented as filters and cannot be
+# requested as report dimensions, so they are held apart rather than added to
+# .valid_dimensions above.
+#
+# uploaderType and claimedStatus are here rather than above despite the
+# reference filing them under a "Content owner dimensions" heading. The
+# per-report tables settle it: across every content owner report they appear
+# only in Filters rows, never in a Dimensions row --
+#   https://developers.google.com/youtube/analytics/content_owner_reports
+# The prose ("must filter data using ... the claimedStatus and uploaderType
+# dimensions") calls them dimensions while describing them as filters, which is
+# what led to listing them as requestable here.
+.filter_only_dimensions <- c(
+  "continent", "subContinent", "group",
+  "audienceType",
+  "uploaderType", "claimedStatus"
+)
 
 # Dimensions that require specific filters
 .dimension_requirements <- list(
@@ -348,9 +389,14 @@ NULL
     )
   }
 
-  if ("video" %in% filter_dims && !is.null(dimensions) && !"video" %in% dimensions) {
-    tubern_inform(
-      "When filtering by video, consider adding 'video' to dimensions to see individual video results"
+  if ("video" %in% filter_dims && (is.null(dimensions) || !"video" %in% dimensions)) {
+    tubern_warn(
+      c(
+        "Filtering by video without dimensions='video' returns aggregated channel stats.",
+        "To see per-video breakdown, add dimensions = 'video' to your call.",
+        "Example: get_report(..., dimensions = 'video', filters = 'video==id1,id2')"
+      ),
+      class = "parameter"
     )
   }
 

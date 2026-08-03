@@ -1,5 +1,3 @@
-context("Group Items endpoints")
-
 test_that("add_group_item constructs correct API call", {
   resource_details <- list(groupId = "g1", resourceId = "r1")
   stub <- function(method, path, query = NULL, body = NULL, ...) {

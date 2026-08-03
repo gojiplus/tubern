@@ -71,6 +71,15 @@ with_retry <- function(expr,
                        base_delay = 1,
                        max_delay = 60,
                        retry_on = c(429L, 500L, 502L, 503L, 504L)) {
+  # Re-evaluate the caller's expression on each attempt. Forcing the same
+  # promise repeatedly warns ("restarting interrupted promise evaluation") and
+  # memoises a successful result, so a retry would replay a stale value.
+  call_expr <- substitute(expr)
+  call_env <- parent.frame()
+
+  # A distinct sentinel, so that a genuine NULL result is not read as a retry.
+  retry_signal <- new.env(parent = emptyenv())
+
   attempt <- 1
   last_error <- NULL
 
@@ -78,7 +87,7 @@ with_retry <- function(expr,
   while (attempt <= max_tries) {
     result <- tryCatch(
       {
-        force(expr)
+        eval(call_expr, call_env)
       },
       tubern_quota_error = function(e) {
         if (attempt < max_tries) {
@@ -91,7 +100,7 @@ with_retry <- function(expr,
           Sys.sleep(delay)
         }
         last_error <<- e
-        NULL
+        retry_signal
       },
       tubern_api_error = function(e) {
         status <- e$status_code
@@ -104,7 +113,7 @@ with_retry <- function(expr,
           )
           Sys.sleep(delay)
           last_error <<- e
-          return(NULL)
+          return(retry_signal)
         }
         stop(e)
       },
@@ -113,7 +122,7 @@ with_retry <- function(expr,
       }
     )
 
-    if (!is.null(result)) {
+    if (!identical(result, retry_signal)) {
       return(result)
     }
 
@@ -180,7 +189,12 @@ with_retry <- function(expr,
 #' @keywords internal
 #' @noRd
 .handle_api_response <- function(req) {
-  if (req$status_code == 200) {
+  # Any 2xx is a success. groups.delete and groupItems.delete document HTTP 204
+  # with an empty body, which has nothing to parse.
+  if (req$status_code >= 200 && req$status_code < 300) {
+    if (req$status_code == 204) {
+      return(list())
+    }
     return(content(req))
   }
 
@@ -205,8 +219,10 @@ with_retry <- function(expr,
 #' @keywords internal
 #' @noRd
 .parse_api_error <- function(status_code, error_content) {
+  # An error body is not always a parsed list: an empty body comes back from
+  # httr::content() as raw(0), and `$` on an atomic vector is an error.
   error_details <- NULL
-  if (!is.null(error_content) && !is.null(error_content$error$errors)) {
+  if (is.list(error_content) && !is.null(error_content$error$errors)) {
     error_details <- error_content$error$errors[[1]]
   }
 
@@ -249,7 +265,10 @@ with_retry <- function(expr,
       message = paste(
         "Resource not found. Possible causes:",
         "- YouTube Analytics API not enabled in Google Cloud project",
-        "- Channel/content owner ID doesn't exist or is inaccessible",
+        "- Using a specific channel ID (channel==UCxxx) instead of 'channel==MINE'",
+        "  Note: You can only access analytics for your own authenticated channel",
+        "  unless you are a YouTube Partner content owner",
+        "- Channel/content owner ID doesn't exist",
         "- Incorrect authentication scopes",
         sep = "\n"
       ),

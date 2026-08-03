@@ -63,7 +63,7 @@ overview <- get_channel_overview("last_30_days")
 
 # Customize what metrics to include
 overview <- get_channel_overview(
-  "this_month", 
+  "this_month",
   include_engagement = TRUE,
   include_subscribers = TRUE
 )
@@ -101,7 +101,7 @@ geo_performance <- get_geographic_performance("last_30_days")
 
 # US states/provinces (requires filtering to US)
 us_states <- get_geographic_performance(
-  "this_month", 
+  "this_month",
   dimension = "province",
   filters = "country==US"
 )
@@ -120,7 +120,7 @@ device_performance <- get_report(
 # Operating system breakdown
 os_performance <- get_report(
   ids = "channel==MINE",
-  metrics = "views,estimatedMinutesWatched", 
+  metrics = "views,estimatedMinutesWatched",
   dimensions = "operatingSystem",
   start_date = "this_month"
 )
@@ -172,7 +172,7 @@ tubern now provides helpful validation and suggestions:
 get_available_metrics()
 get_available_metrics("view")  # Filter by pattern
 
-get_available_dimensions() 
+get_available_dimensions()
 get_available_dimensions("country|city")  # Geographic dimensions
 ```
 
@@ -285,7 +285,7 @@ yt_export_csv(top_videos, "top_videos.csv")
 demographics <- get_audience_demographics("last_90_days")
 demo_df <- yt_to_dataframe(demographics)
 
-# Device analysis  
+# Device analysis
 devices <- get_report(
   ids = "channel==MINE",
   metrics = "views,estimatedMinutesWatched",
@@ -304,7 +304,7 @@ if (require(dplyr)) {
   top_countries <- geo_df %>%
     arrange(desc(estimated_minutes_watched)) %>%
     head(10)
-  
+
   print(top_countries)
 }
 ```
@@ -316,7 +316,7 @@ videos_monthly <- get_top_videos("this_month", max_results = 50)
 videos_df <- yt_to_dataframe(videos_monthly)
 
 # Compare with previous month
-videos_prev <- get_top_videos("last_month", max_results = 50) 
+videos_prev <- get_top_videos("last_month", max_results = 50)
 videos_prev_df <- yt_to_dataframe(videos_prev)
 
 # Daily performance for trend analysis
@@ -360,7 +360,7 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
    ```{r}
    # Run diagnostics
    diagnose_tubern()
-   
+
    # Re-authenticate
    yt_oauth("your-client-id", "your-client-secret")
    ```
@@ -369,9 +369,9 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
    ```{r}
    # Check quota status
    check_api_quota()
-   
+
    # Reduce data scope
-   get_report(ids = "channel==MINE", metrics = "views", 
+   get_report(ids = "channel==MINE", metrics = "views",
              start_date = "yesterday", max_results = 10)
    ```
 
@@ -380,7 +380,7 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
    # Check available options
    get_available_metrics()
    get_available_dimensions()
-   
+
    # Use helper functions for validation
    get_channel_overview("last_7_days")  # Pre-validated parameters
    ```

@@ -1,3 +1,31 @@
+# tubern 0.5.1
+
+## Bug fixes
+
+* A relative `end_date` resolved to the *start* of its own window.
+  `.parse_date_string()` maps a range name to the beginning of that range, and
+  `end_date` was passed through it unchanged, so a value like `"last_month"`
+  returned the first day of the period rather than the last and silently
+  shortened every such report. Absolute `YYYY-MM-DD` input was always correct,
+  which is why this was not obvious.
+
+* Two revenue metrics used names the API had renamed: `adEarnings` and
+  `impressionBasedCpm` are the pre-v2 spellings of `estimatedAdRevenue` and
+  `cpm`, so requests carrying them did not return the intended columns.
+
+* The retry helper called `force(expr)` inside its loop. `expr` is a promise, so
+  forcing it again memoises the first result and a retry replayed a stale value
+  rather than re-issuing the request. It also signalled "retry" by returning
+  `NULL`, which was indistinguishable from a genuine `NULL` result. The caller's
+  expression is now re-evaluated each attempt and the retry signal is a distinct
+  sentinel.
+
+* Only HTTP 200 counted as success, but `groups.delete` and `groupItems.delete`
+  return 204 with an empty body, so a successful delete was handled as a
+  failure. Any 2xx is now a success. The error path also called `$` on a body
+  that comes back as `raw(0)` when empty, which is an error on an atomic vector;
+  an empty error body now reports the status instead.
+
 # tubern 0.5.0
 
 ## Modernization & Code Quality

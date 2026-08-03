@@ -1,5 +1,3 @@
-context("API client wrappers")
-
 test_that("tubern_GET errors when no token is set", {
   old_token <- getOption("google_token")
   options(google_token = NULL)

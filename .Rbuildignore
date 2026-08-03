@@ -18,3 +18,4 @@ dev
 ^\.DS_Store$
 \.Rcheck$
 ^tubern_.*\.tar\.gz$
+^client_secret.*\.json$

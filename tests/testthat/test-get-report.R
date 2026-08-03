@@ -1,5 +1,3 @@
-context("Get Report")
-
 test_that("get_report validates ids parameter format", {
   stub <- function(method, path, query = NULL, body = NULL, ...) {
     mock_api_response()
@@ -84,6 +82,26 @@ test_that("get_report validates max_results bounds", {
                  start_date = "2023-01-01", end_date = "2023-01-31",
                  max_results = 300),
       "max_results"
+    )
+  })
+})
+
+test_that("get_report warns when using specific channel ID", {
+  stub <- function(method, path, query = NULL, body = NULL, ...) {
+    mock_api_response()
+  }
+  with_api_stub(stub, {
+    expect_warning(
+      get_report(ids = "channel==UCiMg06DjcUk5FRiM3g5sqoQ",
+                 metrics = "views",
+                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      "Using a specific channel ID may result in 404 errors",
+      class = "tubern_parameter_warning"
+    )
+
+    expect_silent(
+      get_report(ids = "channel==MINE", metrics = "views",
+                 start_date = "2023-01-01", end_date = "2023-01-31")
     )
   })
 })
