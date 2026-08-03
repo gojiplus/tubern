@@ -1,0 +1,15 @@
+{
+    "kind": "youtubeAnalytics#resultTable",
+    "columnHeaders": [
+        {
+            "name": "views",
+            "columnType": "METRIC",
+            "dataType": "INTEGER"
+        }
+    ],
+    "rows": [
+        [
+            0
+        ]
+    ]
+}

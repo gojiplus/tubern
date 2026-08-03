@@ -94,7 +94,10 @@ get_top_videos <- function(date_range, end_date = NULL, ids = "channel==MINE",
 #' @param end_date End date (only needed if date_range is a specific start date)
 #' @param ids Channel identifier (default: "channel==MINE")
 #' @param dimension Demographic dimension: "ageGroup", "gender", or both (default: both)
-#' @param metrics Vector of metrics to include (default: views, estimatedMinutesWatched)
+#' @param metrics Vector of metrics to include. Defaults to `"viewerPercentage"`,
+#'   which is the only metric the viewer demographics report supports: the API
+#'   rejects `views` and `estimatedMinutesWatched` against `ageGroup`/`gender`
+#'   with "The query is not supported."
 #' @param ... Additional arguments passed to get_report()
 #' @return API response with demographic data
 #' @export
@@ -111,7 +114,12 @@ get_top_videos <- function(date_range, end_date = NULL, ids = "channel==MINE",
 #' }
 get_audience_demographics <- function(date_range, end_date = NULL, ids = "channel==MINE",
                                     dimension = c("ageGroup", "gender"),
-                                    metrics = c("views", "estimatedMinutesWatched"), ...) {
+                                    metrics = "viewerPercentage", ...) {
+  # The default used to be c("views", "estimatedMinutesWatched"), which the
+  # viewer demographics report does not support -- the API answers 400 "The
+  # query is not supported" for those metrics against ageGroup/gender, so this
+  # function could not succeed as documented. viewerPercentage is the metric
+  # that report defines. Nothing caught it because no test ever called the API.
 
   # Handle dimension parameter
   if (length(dimension) > 1) {

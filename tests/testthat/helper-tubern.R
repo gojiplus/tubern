@@ -12,8 +12,43 @@
 skip_if_no_token <- function() {
   token <- getOption("google_token")
   if (is.null(token)) {
-    testthat::skip("No OAuth token available. Run yt_oauth() to test with real API.")
+    # Fall back to the httr cache. Only yt_oauth() sets the option, and no test
+    # calls it, so this check could never pass on any machine -- the two live
+    # tests skipped everywhere, always, including where a working token was
+    # sitting in the package root the whole time.
+    token <- tryCatch({
+      cache <- ".httr-oauth"
+      if (!file.exists(cache)) cache <- file.path("..", "..", ".httr-oauth")
+      if (!file.exists(cache)) NULL else {
+        cached <- readRDS(cache)
+        keep <- Filter(function(x) inherits(x, "Token2.0"), cached)
+        if (length(keep) == 0) NULL else keep[[1]]
+      }
+    }, error = function(e) NULL)
+
+    if (is.null(token)) {
+      testthat::skip("No OAuth token available. Run yt_oauth() to test with real API.")
+    }
+    options(google_token = token)
   }
+  invisible(NULL)
+}
+
+#' Skip unless end-to-end tests are explicitly enabled
+#'
+#' These call the live API and consume real quota, so a token alone is not
+#' enough to opt in -- a contributor with a stale .httr-oauth should not start
+#' issuing requests because they ran the suite.
+#'
+#' @return Invisibly NULL; skips unless TUBERN_E2E is set to a truthy value
+#' @keywords internal
+skip_if_not_e2e <- function() {
+  flag <- tolower(Sys.getenv("TUBERN_E2E", ""))
+  if (!flag %in% c("1", "true", "yes")) {
+    testthat::skip("Set TUBERN_E2E=true to run live end-to-end tests.")
+  }
+  skip_if_no_token()
+  invisible(NULL)
 }
 
 #' Create a mock API response for testing
