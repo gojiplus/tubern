@@ -57,13 +57,19 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
   # Parse data types
   df <- .parse_column_types(df, api_response$columnHeaders, parse_dates)
 
-  # Add metadata as attributes
-  attr(df, "query") <- list(
+  # Carry query metadata only when the response actually has it. reports.query
+  # returns just kind/columnHeaders/rows -- there is no $query member -- so this
+  # unconditionally attached a list of four NULLs to every frame it ever
+  # produced, which reads like metadata and holds nothing.
+  meta <- list(
     start_date = api_response$query$startDate,
     end_date = api_response$query$endDate,
     metrics = api_response$query$metrics,
     dimensions = api_response$query$dimensions
   )
+  if (any(vapply(meta, Negate(is.null), logical(1)))) {
+    attr(df, "query") <- meta
+  }
 
   return(df)
 }
