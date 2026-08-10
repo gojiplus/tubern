@@ -9,7 +9,7 @@ get_audience_demographics(
   end_date = NULL,
   ids = "channel==MINE",
   dimension = c("ageGroup", "gender"),
-  metrics = c("views", "estimatedMinutesWatched"),
+  metrics = "viewerPercentage",
   ...
 )
 }
@@ -22,7 +22,10 @@ get_audience_demographics(
 
 \item{dimension}{Demographic dimension: "ageGroup", "gender", or both (default: both)}
 
-\item{metrics}{Vector of metrics to include (default: views, estimatedMinutesWatched)}
+\item{metrics}{Vector of metrics to include. Defaults to `"viewerPercentage"`,
+which is the only metric the viewer demographics report supports: the API
+rejects `views` and `estimatedMinutesWatched` against `ageGroup`/`gender`
+with "The query is not supported."}
 
 \item{...}{Additional arguments passed to get_report()}
 }
@@ -40,7 +43,7 @@ get_audience_demographics("last_90_days")
 # Age groups only
 get_audience_demographics("this_month", dimension = "ageGroup")
 
-# Gender breakdown only  
+# Gender breakdown only
 get_audience_demographics("this_quarter", dimension = "gender")
 }
 }

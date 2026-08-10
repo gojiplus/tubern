@@ -23,6 +23,6 @@ resolve_date_range("last_30_days")
 resolve_date_range("this_month")
 resolve_date_range("last_quarter")
 
-# Absolute date ranges  
+# Absolute date ranges
 resolve_date_range("2024-01-01", "2024-01-31")
 }
