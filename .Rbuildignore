@@ -19,4 +19,3 @@ dev
 \.Rcheck$
 ^tubern_.*\.tar\.gz$
 ^client_secret.*\.json$
-^\.lycheecache$
