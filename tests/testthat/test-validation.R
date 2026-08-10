@@ -22,13 +22,18 @@ test_that(".validate_metrics handles comma-separated string", {
   expect_equal(result, c("views", "likes", "comments"))
 })
 
-test_that(".validate_metrics rejects invalid metrics with suggestions", {
-  err <- tryCatch(
+test_that(".validate_metrics warns about unknown metrics with suggestions", {
+  cnd <- tryCatch(
     tubern:::.validate_metrics("viewz"),
-    tubern_parameter_error = function(e) e
+    tubern_parameter_warning = function(w) w
   )
-  expect_true(grepl("Invalid metric", conditionMessage(err)))
-  expect_true(grepl("Did you mean", conditionMessage(err)))
+  expect_true(grepl("Unrecognised metric", conditionMessage(cnd)))
+  expect_true(grepl("did you mean", conditionMessage(cnd)))
+})
+
+test_that(".validate_metrics still sends the unknown metric on to the API", {
+  expect_warning(out <- tubern:::.validate_metrics("viewz"))
+  expect_equal(out, "viewz")
 })
 
 test_that(".validate_dimensions accepts valid dimensions", {

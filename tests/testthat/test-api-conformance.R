@@ -78,10 +78,22 @@ test_that("filter-only dimensions are known but refused as dimensions", {
   }
 })
 
-test_that("a genuine typo is still rejected, with a suggestion", {
+test_that("a name we can name the mistake for is still rejected", {
   validate <- getFromNamespace(".validate_dimensions", "tubern")
+  # subscriberStatus is on the known-invalid list: it is the bulk Reporting
+  # API's spelling, so we can say what the mistake is rather than guess.
   expect_error(validate("subscriberStatus"), "Invalid dimension")
-  expect_error(validate("nonsenseDimension"), "Invalid dimension")
+  expect_error(validate("subscriberStatus"), "subscribedStatus")
+})
+
+test_that("a name we merely do not know warns, with a suggestion, and passes through", {
+  validate <- getFromNamespace(".validate_dimensions", "tubern")
+  # Absence from the registry means "not heard of", which is not the same as
+  # "not a dimension" -- the registry is a hand-made snapshot. Blocking here
+  # would make every dimension YouTube adds unreachable until tubern ships.
+  expect_warning(out <- validate("dayy"), "Unrecognised dimension")
+  expect_warning(validate("dayy"), "did you mean")
+  expect_equal(out, "dayy")
 })
 
 test_that("metrics the API documents are accepted", {
@@ -104,10 +116,19 @@ test_that("bulk-Reporting-API-only metrics are refused", {
   # These exist as video_thumbnail_impressions / _ctr in the bulk Reporting API
   # and are absent from the targeted-query metrics reference. Accepting them
   # let a request through that reports.query then rejected, which is the failure
-  # local validation exists to prevent.
+  # local validation exists to prevent. They stay hard errors because we can
+  # say *why* they are wrong; a name merely missing from the registry only
+  # warns, since that cannot be told apart from a name YouTube has just added.
   validate <- getFromNamespace(".validate_metrics", "tubern")
   expect_error(validate("videoThumbnailImpressions"), "Invalid metric")
+  expect_error(validate("videoThumbnailImpressions"), "bulk Reporting API")
   expect_error(validate("videoThumbnailImpressionsClickRate"), "Invalid metric")
+})
+
+test_that("a metric the registry has not heard of warns rather than blocking", {
+  validate <- getFromNamespace(".validate_metrics", "tubern")
+  expect_warning(out <- validate("someMetricAddedNextYear"), "Unrecognised metric")
+  expect_equal(out, "someMetricAddedNextYear")
 })
 
 test_that("the registry covers the pinned API lists exactly", {

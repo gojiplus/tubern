@@ -191,6 +191,113 @@ NULL
   }
 }
 
+# Names that are positively known to be wrong, and why
+#
+# Absence from `.valid_metrics` means "this package has not heard of it",
+# which is not the same as "this is not a metric" -- the lists here are a
+# hand-made snapshot and YouTube keeps adding names. These entries are the
+# other thing: names we can say are wrong and give a reason for. They are
+# rejected outright, because a message naming the actual mistake beats a
+# round trip that returns "not supported".
+#
+# Both of these exist in the bulk Reporting API, under its snake_case
+# spelling, and are absent from the targeted-query reference. Reaching for
+# them in `get_report()` is a real and easy confusion between the two APIs.
+.known_invalid_metrics <- c(
+  videoThumbnailImpressions = paste(
+    "exists in the bulk Reporting API as 'video_thumbnail_impressions'",
+    "and is not available to reports.query"
+  ),
+  videoThumbnailImpressionsClickRate = paste(
+    "exists in the bulk Reporting API as 'video_thumbnail_impressions_ctr'",
+    "and is not available to reports.query"
+  )
+)
+
+# Same idea for dimensions.
+.known_invalid_dimensions <- c(
+  subscriberStatus = paste(
+    "exists in the bulk Reporting API as 'subscribed_status';",
+    "reports.query spells it 'subscribedStatus'"
+  )
+)
+
+#' Reject a name we can affirmatively say is wrong
+#'
+#' @param names Character vector of names supplied by the caller
+#' @param registry Named character vector mapping a bad name to its reason
+#' @param what Singular noun for the message, e.g. "metric"
+#' @return Invisibly NULL; called for the error
+#' @keywords internal
+#' @noRd
+.abort_known_invalid <- function(names, registry, what) {
+  hits <- names[names %in% base::names(registry)]
+  if (!length(hits)) {
+    return(invisible(NULL))
+  }
+
+  lines <- vapply(
+    hits,
+    function(h) paste0("  ", h, ": ", registry[[h]]),
+    character(1)
+  )
+  tubern_abort(
+    paste(
+      c(paste0("Invalid ", what, "(s):"), lines),
+      collapse = "\n"
+    ),
+    class = "parameter"
+  )
+}
+
+#' Warn about names this package does not recognise, and carry on
+#'
+#' The lists in this file are transcribed by hand from Google's prose
+#' documentation. There is no machine-readable source for them: the discovery
+#' document types `metrics` and `dimensions` as plain strings with the pattern
+#' `[0-9a-zA-Z,]+` and enumerates nothing. So the lists are a snapshot, and
+#' YouTube adds names -- `adImpressions` was called `impressions` until Google
+#' renamed it.
+#'
+#' Refusing to send a name that is missing from a stale snapshot is the worse
+#' of the two errors. A false rejection blocks a request the API would have
+#' answered, and the user cannot work around it without editing the package;
+#' a false acceptance costs one round trip and a clear message from the server,
+#' which is the authority anyway. So an unrecognised name is a warning with a
+#' spelling suggestion, and the request still goes out.
+#'
+#' This applies only to list membership. Rules about names we *do* know --
+#' a filter-only dimension used as a dimension, a dimension whose filter is
+#' missing -- stay errors, because those are documented constraints rather
+#' than gaps in a snapshot.
+#'
+#' @param unknown Character vector of unrecognised names
+#' @param choices Character vector of names this package knows
+#' @param what Singular noun for the message, e.g. "metric"
+#' @param helper Name of the accessor that lists valid values
+#' @return Invisibly NULL; called for the warning
+#' @keywords internal
+#' @noRd
+.warn_unrecognised <- function(unknown, choices, what, helper) {
+  suggestions <- unlist(lapply(unknown, .find_suggestions, choices))
+
+  msg <- paste0(
+    "Unrecognised ", what, "(s): ", paste(unknown, collapse = ", "),
+    "\n\nThese are not in this package's list of known ", what, "s, which is",
+    "\ntranscribed from Google's documentation and may be out of date.",
+    "\nThe request will be sent as given and the API will decide."
+  )
+  if (length(suggestions) > 0) {
+    msg <- paste0(msg, "\n\nIf this is a typo, did you mean:\n",
+                  paste(suggestions, collapse = "\n"))
+  }
+  msg <- paste0(msg, "\n\nUse ", helper, "() to see the ", what,
+                "s this package knows about.")
+
+  tubern_warn(msg, class = "parameter")
+  invisible(NULL)
+}
+
 #' Validate metrics parameter
 #'
 #' @param metrics Character vector or comma-separated string of metrics
@@ -211,17 +318,13 @@ NULL
     metrics <- trimws(strsplit(metrics, ",")[[1]])
   }
 
-  invalid_metrics <- metrics[!metrics %in% names(.valid_metrics)]
-  if (length(invalid_metrics) > 0) {
-    suggestions <- unlist(lapply(invalid_metrics, .find_suggestions, names(.valid_metrics)))
+  .abort_known_invalid(metrics, .known_invalid_metrics, "metric")
 
-    msg <- paste0("Invalid metric(s): ", paste(invalid_metrics, collapse = ", "))
-    if (length(suggestions) > 0) {
-      msg <- paste0(msg, "\n\nDid you mean:\n", paste(suggestions, collapse = "\n"))
-    }
-    msg <- paste0(msg, "\n\nUse get_available_metrics() to see all valid metrics.")
-
-    tubern_abort(msg, class = "parameter", invalid_metrics = invalid_metrics)
+  unknown_metrics <- metrics[!metrics %in% names(.valid_metrics)]
+  if (length(unknown_metrics) > 0) {
+    .warn_unrecognised(
+      unknown_metrics, names(.valid_metrics), "metric", "get_available_metrics"
+    )
   }
 
   metrics
@@ -243,19 +346,15 @@ NULL
 
   assert_character(dimensions, min.len = 1, .var.name = "dimensions")
 
+  .abort_known_invalid(dimensions, .known_invalid_dimensions, "dimension")
+
   all_valid <- c(names(.valid_dimensions), .filter_only_dimensions)
-  invalid_dims <- dimensions[!dimensions %in% all_valid]
+  unknown_dims <- dimensions[!dimensions %in% all_valid]
 
-  if (length(invalid_dims) > 0) {
-    suggestions <- unlist(lapply(invalid_dims, .find_suggestions, all_valid))
-
-    msg <- paste0("Invalid dimension(s): ", paste(invalid_dims, collapse = ", "))
-    if (length(suggestions) > 0) {
-      msg <- paste0(msg, "\n\nDid you mean:\n", paste(suggestions, collapse = "\n"))
-    }
-    msg <- paste0(msg, "\n\nUse get_available_dimensions() to see all valid dimensions.")
-
-    tubern_abort(msg, class = "parameter", invalid_dimensions = invalid_dims)
+  if (length(unknown_dims) > 0) {
+    .warn_unrecognised(
+      unknown_dims, all_valid, "dimension", "get_available_dimensions"
+    )
   }
 
   filter_only_used <- dimensions[dimensions %in% .filter_only_dimensions]
@@ -379,13 +478,11 @@ NULL
   }, character(1))
 
   all_valid <- c(names(.valid_dimensions), .filter_only_dimensions)
-  invalid_filter_dims <- filter_dims[!filter_dims %in% all_valid]
+  unknown_filter_dims <- filter_dims[!filter_dims %in% all_valid]
 
-  if (length(invalid_filter_dims) > 0) {
-    tubern_abort(
-      paste0("Invalid filter dimension(s): ", paste(invalid_filter_dims, collapse = ", ")),
-      class = "parameter",
-      invalid_dimensions = invalid_filter_dims
+  if (length(unknown_filter_dims) > 0) {
+    .warn_unrecognised(
+      unknown_filter_dims, all_valid, "filter dimension", "get_available_dimensions"
     )
   }
 

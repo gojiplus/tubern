@@ -1,3 +1,31 @@
+# tubern (development version)
+
+## Behaviour changes
+
+* A metric, dimension or filter dimension that this package does not recognise
+  now warns and is sent to the API, rather than aborting the request. The
+  registries in `validation_helpers.R` are transcribed by hand from Google's
+  prose documentation -- the discovery document types `metrics` and
+  `dimensions` as plain strings and enumerates nothing -- so they are a
+  snapshot, and YouTube adds names to the API without asking. Refusing a name
+  missing from a stale snapshot blocked requests the API would have answered,
+  with no way around it short of editing the package. The spelling suggestions
+  are unchanged; they now appear in the warning.
+
+  Names that are *known* to be wrong are still hard errors, because there the
+  package can say what the mistake is: `videoThumbnailImpressions`,
+  `videoThumbnailImpressionsClickRate` and `subscriberStatus` are bulk
+  Reporting API spellings that `reports.query` does not accept, and the error
+  now names the API they belong to.
+
+* A 400 carrying "The query is not supported." now explains that the request's
+  parts may each be valid while their combination is not, repeats the
+  dimensions, metrics and filters that were sent, and links the report
+  reference. YouTube Analytics is a fixed set of reports rather than a free
+  combination of dimensions and metrics, and the API's own message does not
+  say so -- this is the error `get_audience_demographics()` produced when it
+  defaulted to `views` by `ageGroup`.
+
 # tubern 0.5.1
 
 ## Bug fixes

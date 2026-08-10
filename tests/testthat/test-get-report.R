@@ -11,13 +11,31 @@ test_that("get_report validates ids parameter format", {
   })
 })
 
-test_that("get_report validates metrics parameter", {
+test_that("get_report warns about an unknown metric but still sends it", {
+  seen <- NULL
+  stub <- function(method, path, query = NULL, body = NULL, ...) {
+    seen <<- query
+    mock_api_response()
+  }
+  with_api_stub(stub, {
+    expect_warning(
+      get_report(ids = "channel==MINE", metrics = "invalid_metric",
+                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      class = "tubern_parameter_warning"
+    )
+  })
+  # The point of warning rather than aborting: the request is still made, so a
+  # metric YouTube has added but tubern has not learned about still works.
+  expect_equal(seen$metrics, "invalid_metric")
+})
+
+test_that("get_report still refuses a metric we can name the mistake for", {
   stub <- function(method, path, query = NULL, body = NULL, ...) {
     mock_api_response()
   }
   with_api_stub(stub, {
     expect_error(
-      get_report(ids = "channel==MINE", metrics = "invalid_metric",
+      get_report(ids = "channel==MINE", metrics = "videoThumbnailImpressions",
                  start_date = "2023-01-01", end_date = "2023-01-31"),
       class = "tubern_parameter_error"
     )
