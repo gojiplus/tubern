@@ -73,8 +73,6 @@ NULL
   return(date_obj)
 }
 
-#' Get end date for relative date ranges
-#'
 # The relative ranges the package understands. .parse_date_string() maps each
 # to the first day of its window and .get_end_date_for_range() to the last, so
 # the two switch statements have to cover the same set; naming it once means a

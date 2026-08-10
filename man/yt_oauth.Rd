@@ -22,6 +22,7 @@ yt_oauth(
 \itemize{
   \item \code{"analytics"} - Basic analytics data (views, likes, etc.) - Default
   \item \code{"monetary"} - Includes revenue and monetization data
+  \item \code{"full"} - Full access including group management (create/delete)
   \item \code{"auto"} - Automatically detect scope based on first API call
 }}
 
@@ -51,6 +52,10 @@ you to authorize the application.
    # Setup with monetary scope for revenue data
    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
             scope = "monetary")
+
+   # Setup with full scope for group management (create/delete groups)
+   yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
+            scope = "full")
 
    # Skip setup guide
    yt_oauth("your-client-id.apps.googleusercontent.com", "your-client-secret",
