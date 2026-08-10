@@ -5,50 +5,19 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  # External links rot without a commit to trigger a rerun, so a dormant repo
+  # would otherwise never find out.
   schedule:
-    # External links rot without a commit to trigger a rerun.
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: link-check-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   links:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Check links in the files the package ships
-        uses: lycheeverse/lychee-action@v2
-        with:
-          # Inputs must be globs, not bare directory names: `lychee vignettes/`
-          # silently matches nothing and reports it as a warning, not an error,
-          # so a directory input looks like it passed while checking zero links.
-          #
-          # R/ is included because the roxygen blocks there carry the
-          # \url{} references that become the help pages; man/ is the generated
-          # form of the same links and would only double-count them.
-          #
-          # The two excludes are API endpoints that appear as string constants,
-          # not documents: the service root 404s for an unauthenticated GET by
-          # design. OAuth scope URIs under /auth/ do resolve and stay checked.
-          args: >-
-            --no-progress
-            --cache
-            --max-cache-age 1d
-            --max-retries 3
-            --accept 200..=299,429
-            --exclude '^https://www\.googleapis\.com/?$'
-            --exclude '^https://youtubeanalytics\.googleapis\.com'
-            'README.md' 'NEWS.md' 'DESCRIPTION'
-            'vignettes/**/*.Rmd' 'R/**/*.R'
-          fail: true
-          # Backstop for the silent-empty case above: if every glob goes stale
-          # at once, fail instead of reporting a green check over nothing.
-          failIfEmpty: true
-          jobSummary: true
+    uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@add-link-check-and-pin-actions
+    with:
+      # Service endpoints that appear in R/ as string constants, not documents:
+      # both answer 404 to an unauthenticated GET by design. The OAuth scope
+      # URIs under /auth/ do resolve and stay checked.
+      exclude: |
+        ^https://www\.googleapis\.com/?$
+        ^https://youtubeanalytics\.googleapis\.com
