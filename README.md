@@ -2,7 +2,7 @@
 
 [![CRAN_Status_Badge](https://www.r-pkg.org:443/badges/version/tubern)](https://www.r-pkg.org:443/badges/version/tubern)
 ![](https://cranlogs.r-pkg.org/badges/grand-total/tubern)
-[![R-CMD-check](https://github.com/gojiplus/tubern/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gojiplus/tubern/actions)
+[![R-CMD-check](https://github.com/gojiplus/tubern/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/gojiplus/tubern/actions/workflows/R-CMD-check.yml)
 
 tubern provides an R interface to the [YouTube Analytics API v2](https://developers.google.com/youtube/analytics), allowing you to retrieve YouTube Analytics data for channels and content owners. The package supports authentication via OAuth 2.0 and provides functions for getting analytics reports and managing channel groups.
 

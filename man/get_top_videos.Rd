@@ -38,7 +38,7 @@ Retrieves performance metrics for individual videos, sorted by views.
 get_top_videos("last_30_days")
 
 # Top 25 videos with more metrics
-get_top_videos("this_month", max_results = 25, 
+get_top_videos("this_month", max_results = 25,
                metrics = c("views", "likes", "comments", "shares", "estimatedMinutesWatched"))
 }
 }

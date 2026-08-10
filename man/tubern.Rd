@@ -19,4 +19,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Gaurav Sood \email{gsood07@gmail.com}
 
+Authors:
+\itemize{
+  \item Gaurav Sood \email{gsood07@gmail.com}
+}
+
 }
