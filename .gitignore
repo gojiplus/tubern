@@ -11,4 +11,3 @@ tests/testthat/token_file.rds
 *.gz
 client_secret_394229601724-jsvluedlnkausiaes3gds7fjp0m999id.apps.googleusercontent.com.json
 tests/testthat/_problems/
-.lycheecache
