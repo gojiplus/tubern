@@ -104,3 +104,31 @@ test_that("error classes can be caught generically", {
   )
   expect_true(caught)
 })
+
+test_that(".parse_api_error explains a rejected dimension/metric combination", {
+  # The API answers a valid-parts-invalid-combination request with only "The
+  # query is not supported.", which reads like a fault in this package. This is
+  # the shape of the get_audience_demographics defect: views is a real metric,
+  # ageGroup a real dimension, and views by ageGroup is not a report.
+  content <- list(error = list(errors = list(list(
+    message = "The query is not supported.", reason = "badRequest"
+  ))))
+  query <- list(metrics = "views", dimensions = "ageGroup,gender")
+
+  result <- tubern:::.parse_api_error(400, content, query = query)
+
+  expect_equal(result$class, "parameter")
+  expect_true(grepl("not one of the reports", result$message))
+  expect_true(grepl("ageGroup,gender", result$message))
+  expect_true(grepl("views", result$message))
+  expect_true(grepl("channel_reports", result$message))
+})
+
+test_that(".parse_api_error leaves other 400s alone", {
+  content <- list(error = list(errors = list(list(
+    message = "Invalid value for startDate."
+  ))))
+  result <- tubern:::.parse_api_error(400, content)
+  expect_true(grepl("Invalid value for startDate", result$message))
+  expect_false(grepl("not one of the reports", result$message))
+})

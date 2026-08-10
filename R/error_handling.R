@@ -172,7 +172,7 @@ with_retry <- function(expr,
       )
     })
 
-    .handle_api_response(req)
+    .handle_api_response(req, query = query)
   }
 
   if (retry) {
@@ -185,10 +185,12 @@ with_retry <- function(expr,
 #' Handle API response and convert errors to rlang conditions
 #'
 #' @param req httr response object
+#' @param query The request's query list, used to explain a rejected
+#'   dimension/metric combination
 #' @return Parsed content if successful
 #' @keywords internal
 #' @noRd
-.handle_api_response <- function(req) {
+.handle_api_response <- function(req, query = NULL) {
   # Any 2xx is a success. groups.delete and groupItems.delete document HTTP 204
   # with an empty body, which has nothing to parse.
   if (req$status_code >= 200 && req$status_code < 300) {
@@ -200,7 +202,7 @@ with_retry <- function(expr,
 
   error_content <- tryCatch(content(req), error = function(e) NULL)
 
-  error_info <- .parse_api_error(req$status_code, error_content)
+  error_info <- .parse_api_error(req$status_code, error_content, query = query)
 
   tubern_abort(
     error_info$message,
@@ -215,10 +217,11 @@ with_retry <- function(expr,
 #'
 #' @param status_code HTTP status code
 #' @param error_content Parsed error content from response
+#' @param query The request's query list, if available
 #' @return List with message and class
 #' @keywords internal
 #' @noRd
-.parse_api_error <- function(status_code, error_content) {
+.parse_api_error <- function(status_code, error_content, query = NULL) {
   # An error body is not always a parsed list: an empty body comes back from
   # httr::content() as raw(0), and `$` on an atomic vector is an error.
   error_details <- NULL
@@ -229,11 +232,47 @@ with_retry <- function(expr,
   result <- switch(
     as.character(status_code),
     "400" = {
-      msg <- if (!is.null(error_details$message)) {
-        paste("Bad request:", error_details$message)
+      api_msg <- error_details$message
+      msg <- if (!is.null(api_msg)) {
+        paste("Bad request:", api_msg)
       } else {
         "Bad request. Check your parameters."
       }
+
+      # "The query is not supported." is the answer to a request whose parts
+      # are each valid but whose combination is not. YouTube Analytics is a
+      # fixed set of reports, each with its own legal dimensions, metrics and
+      # filters -- so `views` is a real metric and `ageGroup` a real dimension
+      # while `views` by `ageGroup` is not a report that exists. The API says
+      # only "not supported", which reads like a fault in the package rather
+      # than a combination that was never offered, so name the parts back.
+      if (!is.null(api_msg) && grepl("not supported", api_msg, ignore.case = TRUE)) {
+        used <- character()
+        if (!is.null(query$dimensions)) {
+          used <- c(used, paste0("  dimensions: ", query$dimensions))
+        }
+        if (!is.null(query$metrics)) {
+          used <- c(used, paste0("  metrics:    ", query$metrics))
+        }
+        if (!is.null(query$filters)) {
+          used <- c(used, paste0("  filters:    ", query$filters))
+        }
+
+        msg <- paste(
+          c(
+            msg,
+            "",
+            "This combination is not one of the reports the API offers.",
+            "Each part may be valid on its own and still not be valid together.",
+            if (length(used)) c("", "You asked for:", used),
+            "",
+            "The reports, and the dimensions and metrics legal in each, are at",
+            "https://developers.google.com/youtube/analytics/channel_reports"
+          ),
+          collapse = "\n"
+        )
+      }
+
       list(message = msg, class = "parameter")
     },
     "401" = list(
