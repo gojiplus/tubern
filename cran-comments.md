@@ -1,5 +1,6 @@
-This is a patch release for version 0.5.1, fixing defects in request
-construction, parameter validation, and error handling.
+This is a minor release. It moves the HTTP layer from httr to httr2 and
+renames four functions, both of which are breaking for users; the details
+are below and in NEWS.md.
 
 ## Test environments
 
@@ -12,31 +13,28 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 ## Summary of changes
 
-* A relative `end_date` resolved to the start of its own window rather than the
-  end, silently shortening every report that used one. Routing it through the
-  end-of-range mapper fixed that, but an unrecognised range then fell through to
-  a default of "today", so a typo silently widened the report instead. Both
-  paths now report an unrecognised range rather than guessing at one.
+* The package now uses httr2 throughout, authentication included, and no
+  longer depends on httr. Tokens saved by earlier versions are httr
+  `Token2.0` objects, which httr2 cannot read, so users must run `yt_oauth()`
+  once more. `yt_oauth()` detects an old token and says so rather than
+  failing later with a missing-field error.
 
-* Two revenue metrics used names the API had since renamed, so requests
-  carrying them did not return the intended columns.
+* The token cache moved to `.tubern-oauth`. `.httr-oauth` is httr's shared
+  cache, read by every httr-based package in the same working directory, so
+  writing an httr2 token there would break their authentication;
+  `yt_oauth()` now refuses to overwrite a file holding an httr cache.
 
-* The retry helper forced the same promise on each attempt, which memoised the
-  first result so a retry replayed a stale value, and it signalled "retry" with
-  `NULL`, which a genuine `NULL` result was indistinguishable from.
+* Four functions were renamed for consistency with the rest of the package:
+  `add_groups()` to `add_group()`, `yt_to_dataframe()` to
+  `yt_as_data_frame()`, `yt_to_tibble()` to `yt_as_tibble()`, and
+  `diagnose_tubern()` to `yt_diagnose()`. The old names still work and warn
+  once per session.
 
-* Only HTTP 200 counted as success, so a 204 from the documented delete
-  endpoints was treated as a failure; and the error path indexed a body that is
-  `raw(0)` when empty, which errors on an atomic vector.
-
-* The local registry of valid dimensions and metrics had drifted from the API
-  reference in both directions. Several documented dimensions were rejected
-  before a request was ever made; two metrics that exist only in the bulk
-  Reporting API were accepted and produced a request the targeted-query endpoint
-  rejects; and two content owner filters were listed as requestable dimensions.
-
-* The vignette used literal example values in its `yt_oauth()` call. They are
-  now placeholders.
+* An unrecognised metric, dimension or filter now warns and sends the request
+  rather than aborting it. The local registries are transcribed by hand from
+  Google's prose documentation, which enumerates nothing machine-readable, so
+  refusing a name absent from a stale snapshot blocked requests the API would
+  have answered. Names known to be wrong remain hard errors.
 
 ## Reverse dependencies
-There are no reverse dependencies.
+`devtools::revdep()` reports no reverse dependencies.

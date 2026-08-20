@@ -9,6 +9,6 @@ tests/testthat/token_file.rds
 /..Rcheck
 /tubern.Rcheck
 *.gz
-client_secret_394229601724-jsvluedlnkausiaes3gds7fjp0m999id.apps.googleusercontent.com.json
+client_secret_*.json
 tests/testthat/_problems/
 docs
