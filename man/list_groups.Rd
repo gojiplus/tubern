@@ -11,7 +11,8 @@ list_groups(filter, page_token = NULL, ...)
 id: Comma-separated list of YouTube group ID(s) to retrieve.
 mine: Set to TRUE to retrieve all groups owned by the authenticated user.}
 
-\item{page_token}{String. Optional. Identifies a specific page in the result set that should be returned.}
+\item{page_token}{String. Optional. Identifies a specific page in the
+result set that should be returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link[tubern]{tubern_GET}}.}
 }

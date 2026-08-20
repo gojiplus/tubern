@@ -22,8 +22,10 @@ e2e_report <- function(...) {
 
 test_that("a real response has the documented envelope", {
   skip_if_not_e2e()
-  r <- e2e_report(metrics = "views,estimatedMinutesWatched", dimensions = "day",
-                  start_date = WINDOW[1], end_date = WINDOW[2])
+  r <- e2e_report(
+    metrics = "views,estimatedMinutesWatched", dimensions = "day",
+    start_date = WINDOW[1], end_date = WINDOW[2]
+  )
 
   expect_type(r, "list")
   expect_identical(r$kind, "youtubeAnalytics#resultTable")
@@ -32,8 +34,10 @@ test_that("a real response has the documented envelope", {
 
   # One header per requested dimension and metric, in the order requested.
   expect_length(r$columnHeaders, 3L)
-  expect_identical(vapply(r$columnHeaders, function(h) h$name, character(1)),
-                   c("day", "views", "estimatedMinutesWatched"))
+  expect_identical(
+    vapply(r$columnHeaders, function(h) h$name, character(1)),
+    c("day", "views", "estimatedMinutesWatched")
+  )
   for (h in r$columnHeaders) {
     expect_true(all(c("name", "columnType", "dataType") %in% names(h)))
     expect_true(h$columnType %in% c("DIMENSION", "METRIC"))
@@ -45,8 +49,10 @@ test_that("a real response has the documented envelope", {
 
 test_that("yt_to_dataframe() turns that into a frame of the right shape and types", {
   skip_if_not_e2e()
-  r <- e2e_report(metrics = "views,estimatedMinutesWatched", dimensions = "day",
-                  start_date = WINDOW[1], end_date = WINDOW[2])
+  r <- e2e_report(
+    metrics = "views,estimatedMinutesWatched", dimensions = "day",
+    start_date = WINDOW[1], end_date = WINDOW[2]
+  )
   df <- yt_to_dataframe(r)
 
   expect_s3_class(df, "data.frame")
@@ -71,12 +77,16 @@ test_that("per-day figures sum to the undimensioned total", {
   # The identity that makes the numbers mean something: if parsing dropped,
   # duplicated or misaligned a row, this stops holding.
   total <- as.numeric(
-    e2e_report(metrics = "views",
-               start_date = WINDOW[1], end_date = WINDOW[2])$rows[[1]][[1]]
+    e2e_report(
+      metrics = "views",
+      start_date = WINDOW[1], end_date = WINDOW[2]
+    )$rows[[1]][[1]]
   )
   daily <- yt_to_dataframe(
-    e2e_report(metrics = "views", dimensions = "day",
-               start_date = WINDOW[1], end_date = WINDOW[2])
+    e2e_report(
+      metrics = "views", dimensions = "day",
+      start_date = WINDOW[1], end_date = WINDOW[2]
+    )
   )
 
   expect_equal(sum(daily$views), total)
@@ -88,9 +98,11 @@ test_that("per-day figures sum to the undimensioned total", {
 test_that("sort and max_results are honoured", {
   skip_if_not_e2e()
   df <- yt_to_dataframe(
-    e2e_report(metrics = "views", dimensions = "day",
-               start_date = WINDOW[1], end_date = WINDOW[2],
-               sort = "-views", max_results = 5)
+    e2e_report(
+      metrics = "views", dimensions = "day",
+      start_date = WINDOW[1], end_date = WINDOW[2],
+      sort = "-views", max_results = 5
+    )
   )
   expect_lte(nrow(df), 5L)
   expect_false(is.unsorted(rev(df$views)))
@@ -98,10 +110,14 @@ test_that("sort and max_results are honoured", {
 
 test_that("metrics come back as columns in the order requested", {
   skip_if_not_e2e()
-  a <- yt_to_dataframe(e2e_report(metrics = "views,estimatedMinutesWatched",
-                                  start_date = WINDOW[1], end_date = WINDOW[2]))
-  b <- yt_to_dataframe(e2e_report(metrics = "estimatedMinutesWatched,views",
-                                  start_date = WINDOW[1], end_date = WINDOW[2]))
+  a <- yt_to_dataframe(e2e_report(
+    metrics = "views,estimatedMinutesWatched",
+    start_date = WINDOW[1], end_date = WINDOW[2]
+  ))
+  b <- yt_to_dataframe(e2e_report(
+    metrics = "estimatedMinutesWatched,views",
+    start_date = WINDOW[1], end_date = WINDOW[2]
+  ))
   expect_identical(names(a), c("views", "estimated_minutes_watched"))
   expect_identical(names(b), c("estimated_minutes_watched", "views"))
   # Same underlying quantities, just transposed.
@@ -118,8 +134,10 @@ test_that("the month dimension survives conversion without being mangled", {
   # Note the window: the month dimension requires BOTH bounds to be the first of
   # a month. 2023-01-01..2023-12-31 is rejected by the API, which is why this
   # test does not use WINDOW.
-  r <- e2e_report(metrics = "views", dimensions = "month",
-                  start_date = "2023-01-01", end_date = "2023-12-01")
+  r <- e2e_report(
+    metrics = "views", dimensions = "month",
+    start_date = "2023-01-01", end_date = "2023-12-01"
+  )
   df <- yt_to_dataframe(r)
 
   expect_type(df$month, "character")
@@ -130,8 +148,10 @@ test_that("the month dimension survives conversion without being mangled", {
 
 test_that("a window with no data yields an empty frame, not an error", {
   skip_if_not_e2e()
-  r <- e2e_report(metrics = "views", dimensions = "day",
-                  start_date = "2019-01-01", end_date = "2019-01-07")
+  r <- e2e_report(
+    metrics = "views", dimensions = "day",
+    start_date = "2019-01-01", end_date = "2019-01-07"
+  )
   expect_length(r$rows, 0L)
 
   df <- expect_no_error(suppressMessages(yt_to_dataframe(r)))
@@ -143,8 +163,10 @@ test_that("a window with no data yields an empty frame, not an error", {
 test_that("yt_to_tibble() matches yt_to_dataframe() apart from class", {
   skip_if_not_e2e()
   skip_if_not_installed("tibble")
-  r <- e2e_report(metrics = "views", dimensions = "day",
-                  start_date = WINDOW[1], end_date = WINDOW[2])
+  r <- e2e_report(
+    metrics = "views", dimensions = "day",
+    start_date = WINDOW[1], end_date = WINDOW[2]
+  )
   df <- yt_to_dataframe(r)
   tb <- yt_to_tibble(r)
 
@@ -163,7 +185,9 @@ test_that("the metrics 0.5.1 removed are in fact rejected by the API", {
   for (m in c("videoThumbnailImpressions", "videoThumbnailImpressionsClickRate")) {
     # Rejected locally, before a request is made.
     expect_error(e2e_report(metrics = m, start_date = WINDOW[1], end_date = WINDOW[2]),
-                 "Invalid metric", info = m)
+      "Invalid metric",
+      info = m
+    )
   }
 
   # And rejected by the API when the local check is bypassed, which is the part
@@ -173,8 +197,10 @@ test_that("the metrics 0.5.1 removed are in fact rejected by the API", {
     resp <- httr::GET(
       "https://youtubeanalytics.googleapis.com/v2/reports",
       httr::config(token = tok),
-      query = list(ids = "channel==MINE", startDate = WINDOW[1],
-                   endDate = WINDOW[2], metrics = m)
+      query = list(
+        ids = "channel==MINE", startDate = WINDOW[1],
+        endDate = WINDOW[2], metrics = m
+      )
     )
     expect_equal(httr::status_code(resp), 400L, info = m)
   }
@@ -187,17 +213,24 @@ test_that("dimensions 0.5.1 added are accepted by the API", {
   tok <- getOption("google_token")
   ok <- function(q) {
     r <- httr::GET("https://youtubeanalytics.googleapis.com/v2/reports",
-                   httr::config(token = tok),
-                   query = c(list(ids = "channel==MINE", startDate = "2015-01-01",
-                                  endDate = "2026-06-30"), q))
+      httr::config(token = tok),
+      query = c(list(
+        ids = "channel==MINE", startDate = "2015-01-01",
+        endDate = "2026-06-30"
+      ), q)
+    )
     httr::status_code(r)
   }
   expect_equal(ok(list(metrics = "views", dimensions = "creatorContentType")), 200L)
-  expect_equal(ok(list(metrics = "views", dimensions = "insightPlaybackLocationDetail",
-                       filters = "insightPlaybackLocationType==EMBEDDED",
-                       sort = "-views", maxResults = 10)), 200L)
-  expect_equal(ok(list(metrics = "membershipsCancellationSurveyResponses",
-                       dimensions = "membershipsCancellationSurveyReason")), 200L)
+  expect_equal(ok(list(
+    metrics = "views", dimensions = "insightPlaybackLocationDetail",
+    filters = "insightPlaybackLocationType==EMBEDDED",
+    sort = "-views", maxResults = 10
+  )), 200L)
+  expect_equal(ok(list(
+    metrics = "membershipsCancellationSurveyResponses",
+    dimensions = "membershipsCancellationSurveyReason"
+  )), 200L)
   # dma does NOT require country==US, contrary to the release review's claim.
   expect_equal(ok(list(metrics = "views", dimensions = "dma")), 200L)
 })
@@ -205,11 +238,11 @@ test_that("dimensions 0.5.1 added are accepted by the API", {
 test_that("the reporting wrappers all return convertible responses", {
   skip_if_not_e2e()
   wrappers <- list(
-    get_channel_overview      = function() get_channel_overview("2023-01-01", "2023-12-31"),
-    get_top_videos            = function() get_top_videos("2023-01-01", "2023-12-31"),
+    get_channel_overview = function() get_channel_overview("2023-01-01", "2023-12-31"),
+    get_top_videos = function() get_top_videos("2023-01-01", "2023-12-31"),
     get_audience_demographics = function() get_audience_demographics("2023-01-01", "2023-12-31"),
     get_geographic_performance = function() get_geographic_performance("2023-01-01", "2023-12-31"),
-    get_daily_performance     = function() get_daily_performance("2023-01-01", "2023-12-31")
+    get_daily_performance = function() get_daily_performance("2023-01-01", "2023-12-31")
   )
   for (nm in names(wrappers)) {
     r <- tryCatch(wrappers[[nm]](), error = function(e) e)
@@ -232,7 +265,8 @@ test_that("get_revenue_report needs the monetary scope and says so", {
   # outcome for this credential, and the point is that the failure is a clean
   # typed error rather than a parse crash.
   r <- tryCatch(get_revenue_report("2023-01-01", "2023-12-31"),
-                error = function(e) e)
+    error = function(e) e
+  )
   if (inherits(r, "error")) {
     expect_s3_class(r, "tubern_error")
   } else {

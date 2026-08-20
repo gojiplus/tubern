@@ -13,7 +13,6 @@
 #' @references \url{https://developers.google.com/youtube/analytics/reference/groups/insert}
 #'
 #' @examples
-#'
 #' \dontrun{
 #' add_groups(list(
 #'   snippet = list(
@@ -23,8 +22,7 @@
 #'   contentDetails = list(itemType = "youtube#channel")
 #' ))
 #' }
-
-add_groups <- function (resource_details, ...) {
+add_groups <- function(resource_details, ...) {
   assert_list(resource_details, .var.name = "resource_details")
 
   json_arg <- toJSON(resource_details, auto_unbox = TRUE)

@@ -3,7 +3,8 @@
 #' Internal validation functions for metrics, dimensions, and parameters
 #' using checkmate for robust parameter validation.
 #' @name validation_helpers
-#' @importFrom checkmate assert_character assert_string assert_flag assert_int assert_number assert_list check_string
+#' @importFrom checkmate assert_character assert_string assert_flag assert_int
+#' @importFrom checkmate assert_number assert_list check_string
 NULL
 
 # Valid metrics for YouTube Analytics API v2
@@ -288,11 +289,15 @@ NULL
     "\nThe request will be sent as given and the API will decide."
   )
   if (length(suggestions) > 0) {
-    msg <- paste0(msg, "\n\nIf this is a typo, did you mean:\n",
-                  paste(suggestions, collapse = "\n"))
+    msg <- paste0(
+      msg, "\n\nIf this is a typo, did you mean:\n",
+      paste(suggestions, collapse = "\n")
+    )
   }
-  msg <- paste0(msg, "\n\nUse ", helper, "() to see the ", what,
-                "s this package knows about.")
+  msg <- paste0(
+    msg, "\n\nUse ", helper, "() to see the ", what,
+    "s this package knows about."
+  )
 
   tubern_warn(msg, class = "parameter")
   invisible(NULL)
@@ -516,7 +521,7 @@ get_available_metrics <- function(pattern = NULL) {
   if (!is.null(pattern)) {
     assert_string(pattern, .var.name = "pattern")
     matches <- grepl(pattern, names(metrics), ignore.case = TRUE) |
-               grepl(pattern, unlist(metrics), ignore.case = TRUE)
+      grepl(pattern, unlist(metrics), ignore.case = TRUE)
     metrics <- metrics[matches]
   }
   unlist(metrics)
@@ -538,7 +543,7 @@ get_available_dimensions <- function(pattern = NULL) {
   if (!is.null(pattern)) {
     assert_string(pattern, .var.name = "pattern")
     matches <- grepl(pattern, names(dimensions), ignore.case = TRUE) |
-               grepl(pattern, unlist(dimensions), ignore.case = TRUE)
+      grepl(pattern, unlist(dimensions), ignore.case = TRUE)
     dimensions <- dimensions[matches]
   }
   unlist(dimensions)

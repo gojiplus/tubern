@@ -45,7 +45,7 @@ get_common_date_ranges()
 report <- get_report(
   ids = "channel==MINE",
   metrics = "views,likes",
-  start_date = "last_30_days"  # End date calculated automatically
+  start_date = "last_30_days" # End date calculated automatically
 )
 
 # More examples
@@ -164,16 +164,16 @@ tubern now provides helpful validation and suggestions:
 
 ```{r validation}
 # Invalid metrics get helpful suggestions
-# get_report(ids = "channel==MINE", metrics = "vews", start_date = "last_7_days")
+# get_report(ids = "channel==MINE", metrics = "vews", start_date = "last_7_days") # nolint
 # Error: Invalid metric(s): vews
 # Did you mean: 'vews' -> 'views'
 
 # Check available metrics and dimensions
 get_available_metrics()
-get_available_metrics("view")  # Filter by pattern
+get_available_metrics("view") # Filter by pattern
 
 get_available_dimensions()
-get_available_dimensions("country|city")  # Geographic dimensions
+get_available_dimensions("country|city") # Geographic dimensions
 ```
 
 ### 4. Data Transformation and Analysis
@@ -206,7 +206,7 @@ file_path <- yt_export_csv(report)
 ```{r plots}
 # Automatic plot creation (requires ggplot2)
 daily_report <- get_daily_performance("last_30_days")
-yt_quick_plot(daily_report)  # Line plot over time
+yt_quick_plot(daily_report) # Line plot over time
 
 # Bar chart for top videos
 top_videos <- get_top_videos("last_7_days")
@@ -269,9 +269,9 @@ geo <- get_geographic_performance("last_30_days")
 geo_df <- yt_to_dataframe(geo)
 
 # Create visualizations
-yt_quick_plot(daily)      # Daily trend
+yt_quick_plot(daily) # Daily trend
 yt_quick_plot(top_videos) # Top videos
-yt_quick_plot(geo)        # Geographic performance
+yt_quick_plot(geo) # Geographic performance
 
 # Export data
 yt_export_csv(overview, "channel_overview.csv")
@@ -301,8 +301,8 @@ geo_df <- yt_to_dataframe(geography)
 # Combined analysis with dplyr (if available)
 if (require(dplyr)) {
   # Top countries by watch time
-  top_countries <- geo_df %>%
-    arrange(desc(estimated_minutes_watched)) %>%
+  top_countries <- geo_df |>
+    arrange(desc(estimated_minutes_watched)) |>
     head(10)
 
   print(top_countries)
@@ -358,31 +358,33 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
 
 1. **Authentication Problems**
    ```{r}
-   # Run diagnostics
-   diagnose_tubern()
+# Run diagnostics
+diagnose_tubern()
 
-   # Re-authenticate
-   yt_oauth("your-client-id", "your-client-secret")
+# Re-authenticate
+yt_oauth("your-client-id", "your-client-secret")
    ```
 
 2. **API Quota Exceeded**
    ```{r}
-   # Check quota status
-   check_api_quota()
+# Check quota status
+check_api_quota()
 
-   # Reduce data scope
-   get_report(ids = "channel==MINE", metrics = "views",
-             start_date = "yesterday", max_results = 10)
+# Reduce data scope
+get_report(
+  ids = "channel==MINE", metrics = "views",
+  start_date = "yesterday", max_results = 10
+)
    ```
 
 3. **Invalid Parameters**
    ```{r}
-   # Check available options
-   get_available_metrics()
-   get_available_dimensions()
+# Check available options
+get_available_metrics()
+get_available_dimensions()
 
-   # Use helper functions for validation
-   get_channel_overview("last_7_days")  # Pre-validated parameters
+# Use helper functions for validation
+get_channel_overview("last_7_days") # Pre-validated parameters
    ```
 
 ## More Resources

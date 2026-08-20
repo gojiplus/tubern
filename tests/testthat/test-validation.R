@@ -152,8 +152,9 @@ test_that("get_available_metrics returns valid metrics", {
 
 test_that("get_available_metrics filters by pattern", {
   metrics <- get_available_metrics("view")
-  expect_true(all(grepl("view", names(metrics), ignore.case = TRUE) |
-                  grepl("view", metrics, ignore.case = TRUE)))
+  matches_name <- grepl("view", names(metrics), ignore.case = TRUE)
+  matches_value <- grepl("view", metrics, ignore.case = TRUE)
+  expect_true(all(matches_name | matches_value))
 })
 
 test_that("get_available_dimensions returns valid dimensions", {

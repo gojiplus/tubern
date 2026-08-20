@@ -19,9 +19,8 @@ named list
 Add Group Item
 }
 \examples{
-
 \dontrun{
-add_group_item(list(groupId = "", resource.id ="hello"))
+add_group_item(list(groupId = "", resource.id = "hello"))
 }
 }
 \references{

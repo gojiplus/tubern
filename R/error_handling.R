@@ -49,7 +49,6 @@ tubern_inform <- function(message, class = NULL, ...) {
   full_class <- c(
     if (!is.null(class)) paste0("tubern_", class, "_message"),
     "tubern_message"
-
   )
   inform(message, class = full_class, ...)
 }
@@ -93,13 +92,15 @@ with_retry <- function(expr,
         if (attempt < max_tries) {
           delay <- min(base_delay * (2^(attempt - 1)), max_delay)
           tubern_inform(
-            sprintf("Rate limited. Retrying in %.1f seconds (attempt %d/%d)...",
-                    delay, attempt, max_tries),
+            sprintf(
+              "Rate limited. Retrying in %.1f seconds (attempt %d/%d)...",
+              delay, attempt, max_tries
+            ),
             class = "retry"
           )
           Sys.sleep(delay)
         }
-        last_error <<- e
+        last_error <<- e # nolint: assignment_linter.
         retry_signal
       },
       tubern_api_error = function(e) {
@@ -107,12 +108,14 @@ with_retry <- function(expr,
         if (!is.null(status) && status %in% retry_on && attempt < max_tries) {
           delay <- min(base_delay * (2^(attempt - 1)), max_delay)
           tubern_inform(
-            sprintf("Transient error (HTTP %d). Retrying in %.1f seconds (attempt %d/%d)...",
-                    status, delay, attempt, max_tries),
+            sprintf(
+              "Transient error (HTTP %d). Retrying in %.1f seconds (attempt %d/%d)...",
+              status, delay, attempt, max_tries
+            ),
             class = "retry"
           )
           Sys.sleep(delay)
-          last_error <<- e
+          last_error <<- e # nolint: assignment_linter.
           return(retry_signal)
         }
         stop(e)
@@ -152,25 +155,30 @@ with_retry <- function(expr,
 
   url <- paste0(.api_base, "/", path)
   fun <- switch(method,
-                GET = GET,
-                POST = POST,
-                PUT = PUT,
-                DELETE = DELETE,
-                tubern_abort(paste("Unsupported HTTP method:", method), class = "parameter"))
+    GET = GET,
+    POST = POST,
+    PUT = PUT,
+    DELETE = DELETE,
+    tubern_abort(paste("Unsupported HTTP method:", method), class = "parameter")
+  )
 
   make_request <- function() {
-    req <- tryCatch({
-      fun(url,
+    req <- tryCatch(
+      {
+        fun(url,
           query = query,
           body = body,
           config(token = getOption("google_token")),
-          ...)
-    }, error = function(e) {
-      tubern_abort(
-        paste("Network error:", conditionMessage(e)),
-        class = "network"
-      )
-    })
+          ...
+        )
+      },
+      error = function(e) {
+        tubern_abort(
+          paste("Network error:", conditionMessage(e)),
+          class = "network"
+        )
+      }
+    )
 
     .handle_api_response(req, query = query)
   }
@@ -229,8 +237,7 @@ with_retry <- function(expr,
     error_details <- error_content$error$errors[[1]]
   }
 
-  result <- switch(
-    as.character(status_code),
+  result <- switch(as.character(status_code),
     "400" = {
       api_msg <- error_details$message
       msg <- if (!is.null(api_msg)) {
@@ -351,33 +358,38 @@ with_retry <- function(expr,
 #' check_api_quota()
 #' }
 check_api_quota <- function() {
-  tryCatch({
-    result <- get_report(
-      ids = "channel==MINE",
-      metrics = "views",
-      start_date = format(Sys.Date() - 1, "%Y-%m-%d"),
-      end_date = format(Sys.Date() - 1, "%Y-%m-%d"),
-      max_results = 1
-    )
-    tubern_inform("API access is working normally.")
-  }, tubern_quota_error = function(e) {
-    tubern_inform(c(
-      "Quota exceeded. Consider:",
-      "- Reducing the date range of your requests",
-      "- Using fewer metrics or dimensions",
-      "- Implementing caching for repeated requests",
-      "- Checking your Google Cloud Console quota limits"
-    ))
-  }, tubern_auth_error = function(e) {
-    tubern_inform(c(
-      "Authentication issue. Try:",
-      "- Running yt_oauth() again",
-      "- Checking your OAuth scopes",
-      "- Verifying your Google Cloud project settings"
-    ))
-  }, error = function(e) {
-    tubern_inform(paste("API check failed:", conditionMessage(e)))
-  })
+  tryCatch(
+    {
+      get_report(
+        ids = "channel==MINE",
+        metrics = "views",
+        start_date = format(Sys.Date() - 1, "%Y-%m-%d"),
+        end_date = format(Sys.Date() - 1, "%Y-%m-%d"),
+        max_results = 1
+      )
+      tubern_inform("API access is working normally.")
+    },
+    tubern_quota_error = function(e) {
+      tubern_inform(c(
+        "Quota exceeded. Consider:",
+        "- Reducing the date range of your requests",
+        "- Using fewer metrics or dimensions",
+        "- Implementing caching for repeated requests",
+        "- Checking your Google Cloud Console quota limits"
+      ))
+    },
+    tubern_auth_error = function(e) {
+      tubern_inform(c(
+        "Authentication issue. Try:",
+        "- Running yt_oauth() again",
+        "- Checking your OAuth scopes",
+        "- Verifying your Google Cloud project settings"
+      ))
+    },
+    error = function(e) {
+      tubern_inform(paste("API check failed:", conditionMessage(e)))
+    }
+  )
 }
 
 #' Diagnose common tubern issues
@@ -399,38 +411,47 @@ diagnose_tubern <- function() {
   } else {
     cat("   OK Authentication token present\n")
 
-    tryCatch({
-      yt_check_token()
-      cat("   OK Token validation passed\n")
-    }, error = function(e) {
-      cat("   X Token validation failed\n")
-      cat("   -> Run yt_oauth() to refresh your token\n")
-    })
+    tryCatch(
+      {
+        yt_check_token()
+        cat("   OK Token validation passed\n")
+      },
+      error = function(e) {
+        cat("   X Token validation failed\n")
+        cat("   -> Run yt_oauth() to refresh your token\n")
+      }
+    )
     cat("\n")
   }
 
   cat("2. Network Connectivity:\n")
-  tryCatch({
-    test_req <- GET("https://www.googleapis.com")
-    if (test_req$status_code == 200) {
-      cat("   OK Network connection to Google APIs working\n")
-    } else {
-      cat("   X Network connection issues detected\n")
+  tryCatch(
+    {
+      test_req <- GET("https://www.googleapis.com")
+      if (test_req$status_code == 200) {
+        cat("   OK Network connection to Google APIs working\n")
+      } else {
+        cat("   X Network connection issues detected\n")
+      }
+    },
+    error = function(e) {
+      cat("   X Network connection failed:", conditionMessage(e), "\n")
+      cat("   -> Check your internet connection and proxy settings\n")
     }
-  }, error = function(e) {
-    cat("   X Network connection failed:", conditionMessage(e), "\n")
-    cat("   -> Check your internet connection and proxy settings\n")
-  })
+  )
   cat("\n")
 
   cat("3. YouTube Analytics API Access:\n")
   if (!is.null(token)) {
-    tryCatch({
-      check_api_quota()
-    }, error = function(e) {
-      cat("   X API access test failed\n")
-      cat("   -> Error:", conditionMessage(e), "\n")
-    })
+    tryCatch(
+      {
+        check_api_quota()
+      },
+      error = function(e) {
+        cat("   X API access test failed\n")
+        cat("   -> Error:", conditionMessage(e), "\n")
+      }
+    )
   } else {
     cat("   - Skipped (no authentication token)\n")
   }
