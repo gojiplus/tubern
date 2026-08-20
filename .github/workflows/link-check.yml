@@ -26,3 +26,4 @@ jobs:
       exclude: |
         ^https://youtubeanalytics\.googleapis\.com/v2$
         ^https://www\.googleapis\.com/$
+        ^https://oauth2\.googleapis\.com/token$

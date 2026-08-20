@@ -8,7 +8,7 @@ yt_oauth(
   app_id = NULL,
   app_secret = NULL,
   scope = "analytics",
-  token = ".httr-oauth",
+  token = ".tubern-oauth",
   setup_guide = interactive(),
   ...
 )
@@ -26,25 +26,31 @@ yt_oauth(
   \item \code{"auto"} - Automatically detect scope based on first API call
 }}
 
-\item{token}{Path to the file containing the token. Defaults to
-\code{.httr-oauth} in the working directory.}
+\item{token}{Path to the file holding the token. Defaults to
+\code{.tubern-oauth} in the working directory.}
 
 \item{setup_guide}{Logical. Show the setup guide for first-time users
 (default: TRUE for interactive sessions)}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
+\item{\dots}{Additional arguments passed to
+\code{\link[httr2]{oauth_flow_auth_code}}}
 }
 \value{
-Sets the google_token option and saves .httr-oauth in working directory
+Sets the google_token option and saves the token file. Called for
+  those side effects.
 }
 \description{
 Simplified OAuth2 setup for YouTube Analytics API. This function will automatically
 detect the required scope based on your needs and provide helpful setup guidance.
 }
 \details{
-The function looks for .httr-oauth in the working directory. If it doesn't find it,
-it expects an application ID and a secret. The function launches a browser to allow
-you to authorize the application.
+The function looks for .tubern-oauth in the working directory. If it does
+not find one, it expects an application ID and a secret, and launches a
+browser so you can authorize the application.
+
+The cache is deliberately not httr's shared .httr-oauth file. tubern
+authenticates with httr2 since 0.6.0, and other packages in the same
+working directory still read .httr-oauth expecting httr tokens.
 }
 \examples{
  \dontrun{

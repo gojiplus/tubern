@@ -3,9 +3,13 @@
 #' Simplified OAuth2 setup for YouTube Analytics API. This function will automatically
 #' detect the required scope based on your needs and provide helpful setup guidance.
 #'
-#' The function looks for .httr-oauth in the working directory. If it doesn't find it,
-#' it expects an application ID and a secret. The function launches a browser to allow
-#' you to authorize the application.
+#' The function looks for .tubern-oauth in the working directory. If it does
+#' not find one, it expects an application ID and a secret, and launches a
+#' browser so you can authorize the application.
+#'
+#' The cache is deliberately not httr's shared .httr-oauth file. tubern
+#' authenticates with httr2 since 0.6.0, and other packages in the same
+#' working directory still read .httr-oauth expecting httr tokens.
 #'
 #' @param app_id Client ID from Google Cloud Console; required; no default
 #' @param app_secret Client secret from Google Cloud Console; required; no default
@@ -16,13 +20,15 @@
 #'     \item \code{"full"} - Full access including group management (create/delete)
 #'     \item \code{"auto"} - Automatically detect scope based on first API call
 #'   }
-#' @param token Path to the file containing the token. Defaults to
-#'   \code{.httr-oauth} in the working directory.
+#' @param token Path to the file holding the token. Defaults to
+#'   \code{.tubern-oauth} in the working directory.
 #' @param setup_guide Logical. Show the setup guide for first-time users
 #'   (default: TRUE for interactive sessions)
-#' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
+#' @param \dots Additional arguments passed to
+#'   \code{\link[httr2]{oauth_flow_auth_code}}
 #'
-#' @return Sets the google_token option and saves .httr-oauth in working directory
+#' @return Sets the google_token option and saves the token file. Called for
+#'   those side effects.
 #'
 #' @export
 #'
@@ -47,7 +53,7 @@
 #' }
 
 yt_oauth <- function(app_id = NULL, app_secret = NULL,
-                     scope = "analytics", token = ".httr-oauth",
+                     scope = "analytics", token = ".tubern-oauth",
                      setup_guide = interactive(), ...) {
 
   assert_string(scope, .var.name = "scope")
@@ -60,30 +66,16 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL,
   }
 
   if (file.exists(token)) {
-    google_token <- tryCatch(
-      suppressWarnings(readRDS(token)),
-      error = function(e) {
-        tubern_abort(
-          c(
-            paste0("Unable to read token from: ", token),
-            "The token file may be corrupted. Delete it and run yt_oauth() again."
-          ),
-          class = "auth"
-        )
+    saved <- .read_token_file(token)
+    if (!is.null(saved)) {
+      tubern_inform("Using existing authentication token")
+      options(google_token = saved)
+      if (!is.null(app_id) && !is.null(app_secret)) {
+        # Keep the client around so an expired token can be refreshed.
+        options(tubern.oauth_client = .oauth_client(app_id, app_secret))
       }
-    )
-
-    google_token <- google_token[[1]]
-
-    tryCatch({
-      if (!is.null(google_token) && !is.null(google_token$credentials)) {
-        tubern_inform("Using existing authentication token")
-        options(google_token = google_token)
-        return(invisible())
-      }
-    }, error = function(e) {
-      tubern_warn("Existing token appears invalid, creating new one...")
-    })
+      return(invisible())
+    }
   }
 
   if (is.null(app_id) || is.null(app_secret)) {
@@ -103,31 +95,32 @@ yt_oauth <- function(app_id = NULL, app_secret = NULL,
     tubern_warn("app_id should end with '.apps.googleusercontent.com'")
   }
 
-  myapp <- oauth_app("google", key = app_id, secret = app_secret)
-
+  client <- .oauth_client(app_id, app_secret)
   scopes <- .get_oauth_scopes(scope)
 
   tubern_inform(paste("Setting up OAuth with scope:", scope))
   tubern_inform("Opening browser for authentication...")
 
-  google_token <- tryCatch({
-    oauth2.0_token(
-      oauth_endpoints("google"),
-      myapp,
-      scope = scopes,
+  google_token <- tryCatch(
+    oauth_flow_auth_code(
+      client,
+      auth_url = .oauth_auth_url,
+      scope = paste(scopes, collapse = " "),
       ...
-    )
-  }, error = function(e) {
-    tubern_abort(
-      c(
-        paste("OAuth setup failed:", conditionMessage(e)),
-        "Check your app_id and app_secret, and ensure YouTube Analytics API is enabled."
-      ),
-      class = "auth"
-    )
-  })
+    ),
+    error = function(e) {
+      tubern_abort(
+        c(
+          paste("OAuth setup failed:", conditionMessage(e)),
+          "Check your app_id and app_secret, and ensure YouTube Analytics API is enabled."
+        ),
+        class = "auth"
+      )
+    }
+  )
 
-  options(google_token = google_token)
+  options(google_token = google_token, tubern.oauth_client = client)
+  .save_token_file(google_token, token)
   tubern_inform("Authentication successful!")
 
   tryCatch({
