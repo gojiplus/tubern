@@ -194,15 +194,11 @@ test_that("the metrics 0.5.1 removed are in fact rejected by the API", {
   # that proves the local rejection is right rather than merely consistent.
   tok <- getOption("google_token")
   for (m in c("videoThumbnailImpressions", "videoThumbnailImpressionsClickRate")) {
-    resp <- httr::GET(
-      "https://youtubeanalytics.googleapis.com/v2/reports",
-      httr::config(token = tok),
-      query = list(
-        ids = "channel==MINE", startDate = WINDOW[1],
-        endDate = WINDOW[2], metrics = m
-      )
-    )
-    expect_equal(httr::status_code(resp), 400L, info = m)
+    resp <- live_get(tok, list(
+      ids = "channel==MINE", startDate = WINDOW[1],
+      endDate = WINDOW[2], metrics = m
+    ))
+    expect_equal(resp, 400L, info = m)
   }
 })
 
@@ -212,14 +208,10 @@ test_that("dimensions 0.5.1 added are accepted by the API", {
   # "views" produces a 400 that says nothing about whether the dimension exists.
   tok <- getOption("google_token")
   ok <- function(q) {
-    r <- httr::GET("https://youtubeanalytics.googleapis.com/v2/reports",
-      httr::config(token = tok),
-      query = c(list(
-        ids = "channel==MINE", startDate = "2015-01-01",
-        endDate = "2026-06-30"
-      ), q)
-    )
-    httr::status_code(r)
+    live_get(tok, c(list(
+      ids = "channel==MINE", startDate = "2015-01-01",
+      endDate = "2026-06-30"
+    ), q))
   }
   expect_equal(ok(list(metrics = "views", dimensions = "creatorContentType")), 200L)
   expect_equal(ok(list(

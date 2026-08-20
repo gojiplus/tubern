@@ -16,7 +16,7 @@ test_that("record get_report fixture", {
   if (is.null(getOption("google_token"))) {
     skip("No OAuth token available to record fixtures")
   }
-  httptest::capture_requests({
+  httptest2::capture_requests({
     # call the real API; requires valid OAuth token
     get_report(
       ids = "channel==MINE",

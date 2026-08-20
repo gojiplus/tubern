@@ -111,3 +111,34 @@ with_api_stub <- function(stub_fn, code) {
   assignInNamespace(".api_request", stub_fn, ns = "tubern")
   force(code)
 }
+
+#' A token shaped the way httr2 stores one
+#'
+#' For tests that only need a request to get as far as being sent. Lives here
+#' rather than in a test file so every file can reach it.
+#'
+#' @return An object of class httr2_token
+#' @keywords internal
+fake_token <- function() {
+  structure(
+    list(token_type = "Bearer", access_token = "x"),
+    class = "httr2_token"
+  )
+}
+
+#' Call the live reports endpoint and return only its status code
+#'
+#' Used by the end-to-end tests to check what the API accepts, which is a
+#' different question from what this package sends.
+#'
+#' @param token An httr2 token
+#' @param query Query parameters
+#' @return Integer HTTP status
+#' @keywords internal
+live_get <- function(token, query) {
+  req <- httr2::request("https://youtubeanalytics.googleapis.com/v2/reports")
+  req <- httr2::req_url_query(req, !!!query)
+  req <- httr2::req_auth_bearer_token(req, token$access_token)
+  req <- httr2::req_error(req, is_error = function(resp) FALSE)
+  httr2::resp_status(httr2::req_perform(req))
+}
