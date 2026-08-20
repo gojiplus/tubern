@@ -20,3 +20,9 @@ permissions:
 jobs:
   links:
     uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@v1
+    with:
+      # API base URLs, which appear in the source as string constants and
+      # answer 404 to an unauthenticated GET by design.
+      exclude: |
+        ^https://youtubeanalytics\.googleapis\.com/v2$
+        ^https://www\.googleapis\.com/$
