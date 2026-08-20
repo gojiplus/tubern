@@ -41,7 +41,9 @@ Retrieves performance metrics broken down by country or other geographic dimensi
 get_geographic_performance("last_30_days")
 
 # US states/provinces (requires US-only data)
-get_geographic_performance("this_month", dimension = "province",
-                          filters = "country==US")
+get_geographic_performance("this_month",
+  dimension = "province",
+  filters = "country==US"
+)
 }
 }

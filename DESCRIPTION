@@ -28,7 +28,6 @@ Suggests:
     httptest,
     rmarkdown,
     xml2,
-    lintr,
     covr,
     ggplot2,
     tibble,

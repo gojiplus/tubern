@@ -17,7 +17,8 @@ yt_to_dataframe(api_response, clean_names = TRUE, parse_dates = TRUE)
 data.frame with transformed data, or NULL if no data available
 }
 \description{
-Transforms YouTube Analytics API response into a clean data.frame with proper column names and types.
+Transforms a YouTube Analytics API response into a clean data.frame with
+proper column names and types.
 }
 \examples{
 \dontrun{

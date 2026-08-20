@@ -19,7 +19,6 @@ named list
 Creates a new channel group.
 }
 \examples{
-
 \dontrun{
 add_groups(list(
   snippet = list(

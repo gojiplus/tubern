@@ -3,7 +3,8 @@
 #' @param filter Named Vector. Required. Only one of the two: id or mine.
 #' id: Comma-separated list of YouTube group ID(s) to retrieve.
 #' mine: Set to TRUE to retrieve all groups owned by the authenticated user.
-#' @param page_token String. Optional. Identifies a specific page in the result set that should be returned.
+#' @param page_token String. Optional. Identifies a specific page in the
+#'   result set that should be returned.
 #' @param \dots Additional arguments passed to \code{\link[tubern]{tubern_GET}}.
 #'
 #' @return named list
@@ -16,8 +17,7 @@
 #' \dontrun{
 #' list_groups(filter = c(mine = TRUE))
 #' }
-
-list_groups <- function (filter, page_token = NULL, ...) {
+list_groups <- function(filter, page_token = NULL, ...) {
   if (!is.null(page_token)) {
     assert_string(page_token, .var.name = "page_token")
   }

@@ -60,8 +60,10 @@ test_that("query metadata is carried when a response does supply it", {
       list(name = "views", columnType = "METRIC", dataType = "INTEGER")
     ),
     rows = list(list(7L)),
-    query = list(startDate = "2023-01-01", endDate = "2023-12-31",
-                 metrics = "views", dimensions = NULL)
+    query = list(
+      startDate = "2023-01-01", endDate = "2023-12-31",
+      metrics = "views", dimensions = NULL
+    )
   )
   df <- yt_to_dataframe(resp)
   q <- attr(df, "query")

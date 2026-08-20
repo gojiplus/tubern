@@ -19,9 +19,8 @@ named list
 Update Groups
 }
 \examples{
-
 \dontrun{
-update_group(list(id="ABZZzGSIAAA", snippet = list(title ="hello")))
+update_group(list(id = "ABZZzGSIAAA", snippet = list(title = "hello")))
 }
 }
 \references{

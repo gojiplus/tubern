@@ -32,7 +32,8 @@ such as \code{views} or \code{likes,dislikes}.}
 Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", "yesterday".}
 
 \item{end_date}{String. End date for the report.
-Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.}
+Can be in YYYY-MM-DD format or a relative date. If NULL and start_date is
+relative, it is calculated automatically.}
 
 \item{currency}{Optional. String. Default is USD. Specifies what earnings
 metrics like \code{estimatedRevenue, estimatedAdRevenue, grossRevenue,
@@ -88,21 +89,27 @@ If you encounter a 404 "Not Found" error, check the following:
 \examples{
 \dontrun{
 # Basic channel report
-get_report(ids = "channel==MINE", metrics = "views",
-           start_date = "2020-01-01", end_date = "2020-01-31")
+get_report(
+  ids = "channel==MINE", metrics = "views",
+  start_date = "2020-01-01", end_date = "2020-01-31"
+)
 
 # Report with video filtering (requires dimensions = "video")
-get_report(ids = "channel==MINE",
-           metrics = "views,likes,comments",
-           dimensions = "video",
-           filters = "video==videoId1,videoId2",
-           start_date = "2020-01-01", end_date = "2020-01-31")
+get_report(
+  ids = "channel==MINE",
+  metrics = "views,likes,comments",
+  dimensions = "video",
+  filters = "video==videoId1,videoId2",
+  start_date = "2020-01-01", end_date = "2020-01-31"
+)
 
 # Report with country filtering
-get_report(ids = "channel==MINE",
-           metrics = "views",
-           filters = "country==US",
-           start_date = "2020-01-01", end_date = "2020-01-31")
+get_report(
+  ids = "channel==MINE",
+  metrics = "views",
+  filters = "country==US",
+  start_date = "2020-01-01", end_date = "2020-01-31"
+)
 }
 }
 \references{

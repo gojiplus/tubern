@@ -1,12 +1,14 @@
 #' \pkg{tubern} provides access to the YouTube Analytics and Reporting API
 #'
-#' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status
+#' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
 #' @importFrom jsonlite toJSON
 #' @importFrom utils URLencode adist packageVersion write.csv
 #' @importFrom stats median
 #' @importFrom graphics barplot points
 #' @importFrom rlang abort warn inform caller_env
-#' @importFrom checkmate assert_character assert_string assert_flag assert_int assert_number assert_list check_string
+#' @importFrom checkmate assert_character assert_string assert_flag assert_int
+#' @importFrom checkmate assert_number assert_list check_string
 #' @name tubern
 "_PACKAGE"
 
@@ -49,7 +51,7 @@ yt_check_token <- function() {
 #' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
 #' @return list
 
-tubern_GET <- function(path, query = NULL, ...) {
+tubern_GET <- function(path, query = NULL, ...) { # nolint: object_name_linter.
   .api_request("GET", path, query = query, ...)
 }
 
@@ -63,7 +65,7 @@ tubern_GET <- function(path, query = NULL, ...) {
 #'
 #' @return list
 
-tubern_POST <- function(path, query = NULL, body = "", ...) {
+tubern_POST <- function(path, query = NULL, body = "", ...) { # nolint: object_name_linter.
   .api_request("POST", path, query = query, body = body, ...)
 }
 
@@ -77,7 +79,7 @@ tubern_POST <- function(path, query = NULL, body = "", ...) {
 #'
 #' @return list
 
-tubern_PUT <- function(path, query = NULL, body = "", ...) {
+tubern_PUT <- function(path, query = NULL, body = "", ...) { # nolint: object_name_linter.
   .api_request("PUT", path, query = query, body = body, ...)
 }
 
@@ -91,6 +93,6 @@ tubern_PUT <- function(path, query = NULL, body = "", ...) {
 #'
 #' @return list
 
-tubern_DELETE <- function(path, query = NULL, body = "", ...) {
+tubern_DELETE <- function(path, query = NULL, body = "", ...) { # nolint: object_name_linter.
   .api_request("DELETE", path, query = query, body = body, ...)
 }

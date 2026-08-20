@@ -9,7 +9,8 @@ utils::globalVariables(".data")
 
 #' Convert API response to data frame
 #'
-#' Transforms YouTube Analytics API response into a clean data.frame with proper column names and types.
+#' Transforms a YouTube Analytics API response into a clean data.frame with
+#' proper column names and types.
 #'
 #' @param api_response List returned from get_report() or other API functions
 #' @param clean_names Logical. Clean column names by removing special characters (default: TRUE)
@@ -26,7 +27,6 @@ utils::globalVariables(".data")
 #' df <- yt_to_dataframe(report, clean_names = FALSE)
 #' }
 yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE) {
-
   if (is.null(api_response) || !is.list(api_response)) {
     tubern_warn("Invalid API response provided")
     return(NULL)
@@ -71,7 +71,7 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
     attr(df, "query") <- meta
   }
 
-  return(df)
+  df
 }
 
 #' Clean column names for R data.frame
@@ -93,7 +93,7 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
   # Remove leading/trailing underscores
   names <- gsub("^_|_$", "", names)
 
-  return(names)
+  names
 }
 
 #' Parse column types based on API metadata
@@ -104,7 +104,6 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
 #' @keywords internal
 #' @noRd
 .parse_column_types <- function(df, column_headers, parse_dates) {
-
   for (i in seq_along(column_headers)) {
     col_name <- names(df)[i]
     col_type <- column_headers[[i]]$dataType
@@ -118,10 +117,15 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
     }
 
     # Parse date columns if requested
-    if (parse_dates && (col_name %in% c("day", "month") || grepl("date", col_name, ignore.case = TRUE))) {
-      date_parsed <- tryCatch({
-        as.Date(df[[col_name]])
-      }, error = function(e) NULL)
+    is_date_col <- col_name %in% c("day", "month") ||
+      grepl("date", col_name, ignore.case = TRUE)
+    if (parse_dates && is_date_col) {
+      date_parsed <- tryCatch(
+        {
+          as.Date(df[[col_name]])
+        },
+        error = function(e) NULL
+      )
 
       if (!is.null(date_parsed)) {
         df[[col_name]] <- date_parsed
@@ -129,7 +133,7 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
     }
   }
 
-  return(df)
+  df
 }
 
 #' Convert API response to tibble (if tibble is available)
@@ -149,10 +153,10 @@ yt_to_tibble <- function(api_response, ...) {
   if (is.null(df)) return(NULL)
 
   if (requireNamespace("tibble", quietly = TRUE)) {
-    return(tibble::as_tibble(df))
+    tibble::as_tibble(df)
   } else {
     tubern_inform("Install 'tibble' package for tibble output format")
-    return(df)
+    df
   }
 }
 
@@ -197,7 +201,7 @@ yt_extract_summary <- function(api_response) {
     })
   }
 
-  return(summary_list)
+  summary_list
 }
 
 #' Export data to CSV
@@ -231,7 +235,7 @@ yt_export_csv <- function(api_response, filename = NULL, ...) {
 
   write.csv(df, filename, row.names = FALSE)
   tubern_inform(paste("Data exported to:", filename))
-  return(filename)
+  filename
 }
 
 #' Create a quick visualization of the data (if ggplot2 is available)
@@ -324,7 +328,7 @@ yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type =
     p <- p + ggplot2::coord_flip()
   }
 
-  return(p)
+  p
 }
 
 #' Create base R plot
@@ -332,18 +336,23 @@ yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type =
 #' @noRd
 .create_base_plot <- function(df, x_col, y_col, chart_type) {
   if (chart_type == "line" && inherits(df[[x_col]], "Date")) {
-    plot(df[[x_col]], df[[y_col]], type = "l",
-         xlab = x_col, ylab = y_col,
-         main = paste("YouTube Analytics:", y_col, "by", x_col))
+    plot(df[[x_col]], df[[y_col]],
+      type = "l",
+      xlab = x_col, ylab = y_col,
+      main = paste("YouTube Analytics:", y_col, "by", x_col)
+    )
     points(df[[x_col]], df[[y_col]], pch = 16)
   } else if (chart_type == "bar") {
-    barplot(df[[y_col]], names.arg = df[[x_col]],
-            xlab = x_col, ylab = y_col,
-            main = paste("YouTube Analytics:", y_col, "by", x_col),
-            las = 2)
+    barplot(df[[y_col]],
+      names.arg = df[[x_col]],
+      xlab = x_col, ylab = y_col,
+      main = paste("YouTube Analytics:", y_col, "by", x_col),
+      las = 2
+    )
   } else {
     plot(df[[x_col]], df[[y_col]],
-         xlab = x_col, ylab = y_col,
-         main = paste("YouTube Analytics:", y_col, "by", x_col))
+      xlab = x_col, ylab = y_col,
+      main = paste("YouTube Analytics:", y_col, "by", x_col)
+    )
   }
 }

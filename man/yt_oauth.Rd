@@ -26,9 +26,11 @@ yt_oauth(
   \item \code{"auto"} - Automatically detect scope based on first API call
 }}
 
-\item{token}{Path to file containing the token. Default is \code{.httr-oauth} in working directory.}
+\item{token}{Path to the file containing the token. Defaults to
+\code{.httr-oauth} in the working directory.}
 
-\item{setup_guide}{Logical. Show setup guide for first-time users (default: TRUE for interactive sessions)}
+\item{setup_guide}{Logical. Show the setup guide for first-time users
+(default: TRUE for interactive sessions)}
 
 \item{\dots}{Additional arguments passed to \code{\link[httr]{oauth2.0_token}}}
 }

@@ -12,7 +12,8 @@
 #' @param start_date String. Start date for the report.
 #' Can be in YYYY-MM-DD format or relative date like "last_30_days", "this_month", "yesterday".
 #' @param end_date String. End date for the report.
-#' Can be in YYYY-MM-DD format or relative date. If NULL and start_date is relative, will be calculated automatically.
+#' Can be in YYYY-MM-DD format or a relative date. If NULL and start_date is
+#' relative, it is calculated automatically.
 #' @param currency Optional. String. Default is USD. Specifies what earnings
 #' metrics like \code{estimatedRevenue, estimatedAdRevenue, grossRevenue,
 #' playbackBasedCpm, cpm} will be reported in.
@@ -59,29 +60,33 @@
 #' @examples
 #' \dontrun{
 #' # Basic channel report
-#' get_report(ids = "channel==MINE", metrics = "views",
-#'            start_date = "2020-01-01", end_date = "2020-01-31")
+#' get_report(
+#'   ids = "channel==MINE", metrics = "views",
+#'   start_date = "2020-01-01", end_date = "2020-01-31"
+#' )
 #'
 #' # Report with video filtering (requires dimensions = "video")
-#' get_report(ids = "channel==MINE",
-#'            metrics = "views,likes,comments",
-#'            dimensions = "video",
-#'            filters = "video==videoId1,videoId2",
-#'            start_date = "2020-01-01", end_date = "2020-01-31")
+#' get_report(
+#'   ids = "channel==MINE",
+#'   metrics = "views,likes,comments",
+#'   dimensions = "video",
+#'   filters = "video==videoId1,videoId2",
+#'   start_date = "2020-01-01", end_date = "2020-01-31"
+#' )
 #'
 #' # Report with country filtering
-#' get_report(ids = "channel==MINE",
-#'            metrics = "views",
-#'            filters = "country==US",
-#'            start_date = "2020-01-01", end_date = "2020-01-31")
+#' get_report(
+#'   ids = "channel==MINE",
+#'   metrics = "views",
+#'   filters = "country==US",
+#'   start_date = "2020-01-01", end_date = "2020-01-31"
+#' )
 #' }
-
 get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
-                        currency = NULL, dimensions = NULL, filters = NULL,
-                        include_historical_channel_data = NULL,
-                        max_results = NULL, sort = NULL,
-                        start_index = NULL, ...) {
-
+                       currency = NULL, dimensions = NULL, filters = NULL,
+                       include_historical_channel_data = NULL, # nolint: object_length_linter.
+                       max_results = NULL, sort = NULL,
+                       start_index = NULL, ...) {
   assert_string(ids, .var.name = "ids")
 
   if (!grepl("^(channel|contentOwner)==", ids)) {
@@ -131,8 +136,10 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
     valid_currencies <- c("USD", "EUR", "GBP", "JPY", "KRW", "INR", "CAD", "AUD")
     if (!currency %in% valid_currencies) {
       tubern_warn(
-        paste0("Currency '", currency, "' may not be supported. Common currencies: ",
-               paste(valid_currencies, collapse = ", ")),
+        paste0(
+          "Currency '", currency, "' may not be supported. Common currencies: ",
+          paste(valid_currencies, collapse = ", ")
+        ),
         class = "parameter"
       )
     }
@@ -148,18 +155,20 @@ get_report <- function(ids, metrics, start_date = NULL, end_date = NULL,
 
   # httr percent-encodes query values itself; encoding here too would double-
   # encode anything that needs escaping.
-  querylist <- list(ids = ids,
-                    startDate = start_date,
-                    endDate = end_date,
-                    metrics = metrics_param,
-                    currency = currency,
-                    dimensions = dimensions_param,
-                    filters = filters,
-                    maxResults = max_results,
-                    sort = sort,
-                    includeHistoricalChannelData =
-                      include_historical_channel_data,
-                    startIndex = start_index)
+  querylist <- list(
+    ids = ids,
+    startDate = start_date,
+    endDate = end_date,
+    metrics = metrics_param,
+    currency = currency,
+    dimensions = dimensions_param,
+    filters = filters,
+    maxResults = max_results,
+    sort = sort,
+    includeHistoricalChannelData =
+      include_historical_channel_data,
+    startIndex = start_index
+  )
 
   tubern_GET("reports", querylist, ...)
 }

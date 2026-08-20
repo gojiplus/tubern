@@ -28,8 +28,7 @@ NULL
 #' get_channel_overview("this_month", include_engagement = FALSE, include_subscribers = FALSE)
 #' }
 get_channel_overview <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                                include_engagement = TRUE, include_subscribers = TRUE, ...) {
-
+                                 include_engagement = TRUE, include_subscribers = TRUE, ...) {
   # Build metrics based on options
   metrics <- c("views", "estimatedMinutesWatched")
 
@@ -68,19 +67,20 @@ get_channel_overview <- function(date_range, end_date = NULL, ids = "channel==MI
 #' get_top_videos("last_30_days")
 #'
 #' # Top 25 videos with more metrics
-#' get_top_videos("this_month", max_results = 25,
-#'                metrics = c("views", "likes", "comments", "shares", "estimatedMinutesWatched"))
+#' get_top_videos("this_month",
+#'   max_results = 25,
+#'   metrics = c("views", "likes", "comments", "shares", "estimatedMinutesWatched")
+#' )
 #' }
 get_top_videos <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                          max_results = 10, metrics = c("views", "likes", "comments"), ...) {
-
+                           max_results = 10, metrics = c("views", "likes", "comments"), ...) {
   get_report(
     ids = ids,
     metrics = paste(metrics, collapse = ","),
     dimensions = "video",
     start_date = date_range,
     end_date = end_date,
-    sort = "-views",  # Sort by views descending
+    sort = "-views", # Sort by views descending
     max_results = max_results,
     ...
   )
@@ -113,8 +113,8 @@ get_top_videos <- function(date_range, end_date = NULL, ids = "channel==MINE",
 #' get_audience_demographics("this_quarter", dimension = "gender")
 #' }
 get_audience_demographics <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                                    dimension = c("ageGroup", "gender"),
-                                    metrics = "viewerPercentage", ...) {
+                                      dimension = c("ageGroup", "gender"),
+                                      metrics = "viewerPercentage", ...) {
   # The default used to be c("views", "estimatedMinutesWatched"), which the
   # viewer demographics report does not support -- the API answers 400 "The
   # query is not supported" for those metrics against ageGroup/gender, so this
@@ -157,14 +157,15 @@ get_audience_demographics <- function(date_range, end_date = NULL, ids = "channe
 #' get_geographic_performance("last_30_days")
 #'
 #' # US states/provinces (requires US-only data)
-#' get_geographic_performance("this_month", dimension = "province",
-#'                           filters = "country==US")
+#' get_geographic_performance("this_month",
+#'   dimension = "province",
+#'   filters = "country==US"
+#' )
 #' }
 get_geographic_performance <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                                     dimension = "country",
-                                     metrics = c("views", "estimatedMinutesWatched"),
-                                     max_results = 25, ...) {
-
+                                       dimension = "country",
+                                       metrics = c("views", "estimatedMinutesWatched"),
+                                       max_results = 25, ...) {
   get_report(
     ids = ids,
     metrics = paste(metrics, collapse = ","),
@@ -198,15 +199,14 @@ get_geographic_performance <- function(date_range, end_date = NULL, ids = "chann
 #' get_daily_performance("this_month", metrics = c("views", "likes", "comments", "shares"))
 #' }
 get_daily_performance <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                                metrics = c("views", "estimatedMinutesWatched"), ...) {
-
+                                  metrics = c("views", "estimatedMinutesWatched"), ...) {
   get_report(
     ids = ids,
     metrics = paste(metrics, collapse = ","),
     dimensions = "day",
     start_date = date_range,
     end_date = end_date,
-    sort = "day",  # Sort chronologically
+    sort = "day", # Sort chronologically
     ...
   )
 }
@@ -232,8 +232,7 @@ get_daily_performance <- function(date_range, end_date = NULL, ids = "channel==M
 #' get_revenue_report("this_quarter", currency = "EUR")
 #' }
 get_revenue_report <- function(date_range, end_date = NULL, ids = "channel==MINE",
-                             currency = "USD", include_cpm = TRUE, ...) {
-
+                               currency = "USD", include_cpm = TRUE, ...) {
   # adEarnings and impressionBasedCpm are the pre-v2 names; the API renamed
   # them to estimatedAdRevenue and cpm.
   metrics <- c("estimatedRevenue", "estimatedAdRevenue", "monetizedPlaybacks")

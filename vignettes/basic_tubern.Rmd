@@ -23,7 +23,7 @@ install.packages("tubern")
 The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.
 
 ```{r, eval=FALSE, install_g}
-# install.packages('devtools')
+# install.packages('devtools') # nolint
 devtools::install_github("soodoku/tubern", build_vignettes = TRUE)
 ```
 
@@ -52,7 +52,10 @@ yt_oauth("YOUR_CLIENT_ID.apps.googleusercontent.com", "YOUR_CLIENT_SECRET")
 
 
 ```{r, eval=FALSE, getstats}
-get_report(ids = "channel==MINE", metrics = "views", start_date = "2010-04-01", end_date ="2017-04-01")
+get_report(
+  ids = "channel==MINE", metrics = "views",
+  start_date = "2010-04-01", end_date = "2017-04-01"
+)
 ```
 
 
