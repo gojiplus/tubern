@@ -10,7 +10,7 @@ test_that("group management lifecycle works", {
     }
   })
 
-  test_group <- add_groups(list(
+  test_group <- add_group(list(
     snippet = list(
       title = "tubern_test_group",
       description = "Test group created by tubern tests"

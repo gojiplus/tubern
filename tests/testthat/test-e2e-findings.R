@@ -34,7 +34,7 @@ test_that("the demographics wrapper builds the query the API accepts", {
   expect_identical(captured$query$dimensions, "ageGroup,gender")
 })
 
-test_that("yt_to_dataframe() does not attach empty query metadata", {
+test_that("yt_as_data_frame() does not attach empty query metadata", {
   # reports.query returns kind/columnHeaders/rows and no $query member, so the
   # old unconditional attr() put a list of four NULLs on every frame. An
   # attribute that is always empty is worse than no attribute: it invites code
@@ -47,7 +47,7 @@ test_that("yt_to_dataframe() does not attach empty query metadata", {
     ),
     rows = list(list("2023-02-25", 3L), list("2023-02-26", 3L))
   )
-  df <- yt_to_dataframe(resp)
+  df <- yt_as_data_frame(resp)
   expect_null(attr(df, "query"))
 })
 
@@ -65,7 +65,7 @@ test_that("query metadata is carried when a response does supply it", {
       metrics = "views", dimensions = NULL
     )
   )
-  df <- yt_to_dataframe(resp)
+  df <- yt_as_data_frame(resp)
   q <- attr(df, "query")
   expect_false(is.null(q))
   expect_identical(q$start_date, "2023-01-01")
@@ -86,7 +86,7 @@ test_that("a real-shaped response converts to atomic columns", {
     ),
     rows = list(list("2023-02-25", 3L, 2L), list("2023-02-26", 3L, 0L))
   )
-  df <- yt_to_dataframe(resp)
+  df <- yt_as_data_frame(resp)
 
   expect_identical(names(df), c("day", "views", "estimated_minutes_watched"))
   for (n in names(df)) expect_false(is.list(df[[n]]), info = n)
@@ -105,7 +105,7 @@ test_that("a month column is left alone rather than turned into NA", {
     ),
     rows = list(list("2023-02", 6L), list("2023-08", 2L))
   )
-  df <- yt_to_dataframe(resp)
+  df <- yt_as_data_frame(resp)
   expect_type(df$month, "character")
   expect_false(anyNA(df$month))
   expect_identical(df$month, c("2023-02", "2023-08"))

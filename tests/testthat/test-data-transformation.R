@@ -1,4 +1,4 @@
-test_that("yt_to_dataframe handles parse_dates=FALSE correctly", {
+test_that("yt_as_data_frame handles parse_dates=FALSE correctly", {
   mock_response <- mock_api_response(
     rows = list(
       c("2023-01-01", "100"),
@@ -16,14 +16,14 @@ test_that("yt_to_dataframe handles parse_dates=FALSE correctly", {
     )
   )
 
-  df_with_dates <- yt_to_dataframe(mock_response, parse_dates = TRUE)
+  df_with_dates <- yt_as_data_frame(mock_response, parse_dates = TRUE)
   expect_s3_class(df_with_dates$day, "Date")
 
-  df_without_dates <- yt_to_dataframe(mock_response, parse_dates = FALSE)
+  df_without_dates <- yt_as_data_frame(mock_response, parse_dates = FALSE)
   expect_type(df_without_dates$day, "character")
 })
 
-test_that("yt_to_dataframe handles clean_names correctly", {
+test_that("yt_as_data_frame handles clean_names correctly", {
   mock_response <- mock_api_response(
     rows = list(c("123.45")),
     column_headers = list(
@@ -32,28 +32,28 @@ test_that("yt_to_dataframe handles clean_names correctly", {
     query = list()
   )
 
-  df_clean <- yt_to_dataframe(mock_response, clean_names = TRUE)
+  df_clean <- yt_as_data_frame(mock_response, clean_names = TRUE)
   expect_true("average_view_duration" %in% names(df_clean))
 
-  df_original <- yt_to_dataframe(mock_response, clean_names = FALSE)
+  df_original <- yt_as_data_frame(mock_response, clean_names = FALSE)
   expect_true("averageViewDuration" %in% names(df_original))
 })
 
-test_that("yt_to_dataframe returns NULL for invalid input", {
-  expect_warning(result <- yt_to_dataframe(NULL))
+test_that("yt_as_data_frame returns NULL for invalid input", {
+  expect_warning(result <- yt_as_data_frame(NULL))
   expect_null(result)
 
-  expect_warning(result <- yt_to_dataframe("not a list"))
+  expect_warning(result <- yt_as_data_frame("not a list"))
   expect_null(result)
 })
 
-test_that("yt_to_dataframe returns empty data.frame for empty rows", {
+test_that("yt_as_data_frame returns empty data.frame for empty rows", {
   mock_response <- list(
     columnHeaders = list(list(name = "views", dataType = "INTEGER")),
     rows = list()
   )
 
-  expect_message(result <- yt_to_dataframe(mock_response))
+  expect_message(result <- yt_as_data_frame(mock_response))
   expect_true(is.data.frame(result))
   expect_equal(nrow(result), 0)
 })

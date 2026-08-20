@@ -13,7 +13,8 @@ get_available_metrics(pattern = NULL)
 Named character vector of metrics and descriptions
 }
 \description{
-Get available metrics with descriptions
+Reads this package's own registry of metric names, transcribed from
+Google's documentation. Local data; makes no API call.
 }
 \examples{
 # Get all metrics

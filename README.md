@@ -70,7 +70,7 @@ report <- get_report(
 
 ```r
 # Convert to data.frame with clean column names
-df <- yt_to_dataframe(daily_trends)
+df <- yt_as_data_frame(daily_trends)
 head(df)
 
 # Quick visualization
@@ -123,7 +123,7 @@ get_available_dimensions()
 # → Error: Invalid metric(s): vews. Did you mean: 'vews' -> 'views'?
 
 # Diagnostic tools
-diagnose_tubern()  # Check setup
+yt_diagnose()  # Check setup
 check_api_quota()  # Monitor API usage
 ```
 
@@ -134,7 +134,7 @@ check_api_quota()  # Monitor API usage
 - `yt_oauth()`: Set up OAuth 2.0 authentication
 - `get_report()`: Retrieve YouTube Analytics reports
 - `list_groups()`: List channel groups
-- `add_groups()`: Create new channel groups
+- `add_group()`: Create new channel groups
 - `update_group()`: Modify existing groups
 - `delete_group()`: Remove groups
 - `list_group_items()`: List items in a group

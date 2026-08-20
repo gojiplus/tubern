@@ -10,7 +10,7 @@ get_common_date_ranges()
 Named list of common date ranges
 }
 \description{
-Get common date ranges
+Returns the ranges this package understands. Local data; makes no API call.
 }
 \examples{
 get_common_date_ranges()

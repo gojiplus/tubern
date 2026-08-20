@@ -236,6 +236,8 @@ resolve_date_range <- function(start_date, end_date = NULL) {
 
 #' Get common date ranges
 #'
+#' Returns the ranges this package understands. Local data; makes no API call.
+#'
 #' @return Named list of common date ranges
 #' @export
 #' @examples

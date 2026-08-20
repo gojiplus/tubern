@@ -13,7 +13,8 @@ get_available_dimensions(pattern = NULL)
 Named character vector of dimensions and descriptions
 }
 \description{
-Get available dimensions with descriptions
+Reads this package's own registry of dimension names, transcribed from
+Google's documentation. Local data; makes no API call.
 }
 \examples{
 # Get all dimensions

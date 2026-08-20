@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' add_groups(list(
+#' add_group(list(
 #'   snippet = list(
 #'     title = "My Channel Group",
 #'     description = "A group for organizing channels"
@@ -22,7 +22,7 @@
 #'   contentDetails = list(itemType = "youtube#channel")
 #' ))
 #' }
-add_groups <- function(resource_details, ...) {
+add_group <- function(resource_details, ...) {
   assert_list(resource_details, .var.name = "resource_details")
 
   json_arg <- toJSON(resource_details, auto_unbox = TRUE)

@@ -182,14 +182,14 @@ get_available_dimensions("country|city") # Geographic dimensions
 ```{r dataframes}
 # Get data and convert to clean data.frame
 report <- get_daily_performance("last_30_days")
-df <- yt_to_dataframe(report)
+df <- yt_as_data_frame(report)
 head(df)
 
 # Convert to tibble (if tibble package installed)
-tbl <- yt_to_tibble(report)
+tbl <- yt_as_tibble(report)
 
 # Keep original column names
-df_orig <- yt_to_dataframe(report, clean_names = FALSE)
+df_orig <- yt_as_data_frame(report, clean_names = FALSE)
 ```
 
 #### Data Export
@@ -230,7 +230,7 @@ print(summary)
 #### Diagnostic Tools
 ```{r diagnostics}
 # Check if everything is set up correctly
-diagnose_tubern()
+yt_diagnose()
 
 # Check API quota status
 check_api_quota()
@@ -254,19 +254,19 @@ yt_oauth("your-client-id", "your-client-secret")
 
 # Get overview data
 overview <- get_channel_overview("last_30_days")
-overview_df <- yt_to_dataframe(overview)
+overview_df <- yt_as_data_frame(overview)
 
 # Get daily trends
 daily <- get_daily_performance("last_30_days")
-daily_df <- yt_to_dataframe(daily)
+daily_df <- yt_as_data_frame(daily)
 
 # Get top videos
 top_videos <- get_top_videos("last_30_days", max_results = 10)
-videos_df <- yt_to_dataframe(top_videos)
+videos_df <- yt_as_data_frame(top_videos)
 
 # Get geographic performance
 geo <- get_geographic_performance("last_30_days")
-geo_df <- yt_to_dataframe(geo)
+geo_df <- yt_as_data_frame(geo)
 
 # Create visualizations
 yt_quick_plot(daily) # Daily trend
@@ -283,7 +283,7 @@ yt_export_csv(top_videos, "top_videos.csv")
 ```{r workflow2}
 # Demographic analysis
 demographics <- get_audience_demographics("last_90_days")
-demo_df <- yt_to_dataframe(demographics)
+demo_df <- yt_as_data_frame(demographics)
 
 # Device analysis
 devices <- get_report(
@@ -292,11 +292,11 @@ devices <- get_report(
   dimensions = "deviceType",
   start_date = "last_90_days"
 )
-device_df <- yt_to_dataframe(devices)
+device_df <- yt_as_data_frame(devices)
 
 # Geographic analysis
 geography <- get_geographic_performance("last_90_days", max_results = 50)
-geo_df <- yt_to_dataframe(geography)
+geo_df <- yt_as_data_frame(geography)
 
 # Combined analysis with dplyr (if available)
 if (require(dplyr)) {
@@ -313,18 +313,18 @@ if (require(dplyr)) {
 ```{r workflow3}
 # Analyze video performance over time
 videos_monthly <- get_top_videos("this_month", max_results = 50)
-videos_df <- yt_to_dataframe(videos_monthly)
+videos_df <- yt_as_data_frame(videos_monthly)
 
 # Compare with previous month
 videos_prev <- get_top_videos("last_month", max_results = 50)
-videos_prev_df <- yt_to_dataframe(videos_prev)
+videos_prev_df <- yt_as_data_frame(videos_prev)
 
 # Daily performance for trend analysis
 daily_trends <- get_daily_performance(
   "last_30_days",
   metrics = c("views", "estimatedMinutesWatched", "likes", "comments")
 )
-trends_df <- yt_to_dataframe(daily_trends)
+trends_df <- yt_as_data_frame(daily_trends)
 
 # Visualize trends
 yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
@@ -335,7 +335,7 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
 ### 1. Authentication
 - Use `scope = "monetary"` only when you need revenue data
 - Keep your OAuth credentials secure
-- Use `diagnose_tubern()` to troubleshoot authentication issues
+- Use `yt_diagnose()` to troubleshoot authentication issues
 
 ### 2. Data Retrieval
 - Use relative dates for convenience: `"last_30_days"`, `"this_month"`
@@ -343,12 +343,12 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
 - Use `max_results` parameter to limit data when testing
 
 ### 3. Error Handling
-- Always check `diagnose_tubern()` if you encounter issues
+- Always check `yt_diagnose()` if you encounter issues
 - Use `check_api_quota()` to monitor your API usage
 - Enable `setup_guide = TRUE` for first-time setup help
 
 ### 4. Data Analysis
-- Convert API responses to data.frames with `yt_to_dataframe()`
+- Convert API responses to data.frames with `yt_as_data_frame()`
 - Use `yt_quick_plot()` for rapid data exploration
 - Export data with `yt_export_csv()` for external analysis
 
@@ -359,7 +359,7 @@ yt_quick_plot(daily_trends, x_col = "day", y_col = "views")
 1. **Authentication Problems**
    ```{r}
 # Run diagnostics
-diagnose_tubern()
+yt_diagnose()
 
 # Re-authenticate
 yt_oauth("your-client-id", "your-client-secret")

@@ -21,12 +21,12 @@ utils::globalVariables(".data")
 #' \dontrun{
 #' # Get data and convert to data.frame
 #' report <- get_channel_overview("last_30_days")
-#' df <- yt_to_dataframe(report)
+#' df <- yt_as_data_frame(report)
 #'
 #' # Keep original column names
-#' df <- yt_to_dataframe(report, clean_names = FALSE)
+#' df <- yt_as_data_frame(report, clean_names = FALSE)
 #' }
-yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE) {
+yt_as_data_frame <- function(api_response, clean_names = TRUE, parse_dates = TRUE) {
   if (is.null(api_response) || !is.list(api_response)) {
     tubern_warn("Invalid API response provided")
     return(NULL)
@@ -139,16 +139,16 @@ yt_to_dataframe <- function(api_response, clean_names = TRUE, parse_dates = TRUE
 #' Convert API response to tibble (if tibble is available)
 #'
 #' @param api_response API response from YouTube Analytics
-#' @param ... Additional arguments passed to yt_to_dataframe()
+#' @param ... Additional arguments passed to yt_as_data_frame()
 #' @return tibble or data.frame if tibble not available
 #' @export
 #' @examples
 #' \dontrun{
 #' report <- get_top_videos("last_7_days")
-#' tbl <- yt_to_tibble(report)
+#' tbl <- yt_as_tibble(report)
 #' }
-yt_to_tibble <- function(api_response, ...) {
-  df <- yt_to_dataframe(api_response, ...)
+yt_as_tibble <- function(api_response, ...) {
+  df <- yt_as_data_frame(api_response, ...)
 
   if (is.null(df)) return(NULL)
 
@@ -176,7 +176,7 @@ yt_extract_summary <- function(api_response) {
     return(list(total_rows = 0))
   }
 
-  df <- yt_to_dataframe(api_response, clean_names = FALSE, parse_dates = FALSE)
+  df <- yt_as_data_frame(api_response, clean_names = FALSE, parse_dates = FALSE)
   if (is.null(df) || nrow(df) == 0) {
     return(list(total_rows = 0))
   }
@@ -208,7 +208,7 @@ yt_extract_summary <- function(api_response) {
 #'
 #' @param api_response API response from YouTube Analytics
 #' @param filename Output filename (default: auto-generated based on timestamp)
-#' @param ... Additional arguments passed to yt_to_dataframe()
+#' @param ... Additional arguments passed to yt_as_data_frame()
 #' @return Path to saved file
 #' @export
 #' @examples
@@ -217,7 +217,7 @@ yt_extract_summary <- function(api_response) {
 #' file_path <- yt_export_csv(report, "daily_performance.csv")
 #' }
 yt_export_csv <- function(api_response, filename = NULL, ...) {
-  df <- yt_to_dataframe(api_response, ...)
+  df <- yt_as_data_frame(api_response, ...)
 
   if (is.null(df) || nrow(df) == 0) {
     tubern_abort("No data to export", class = "parameter")
@@ -257,7 +257,7 @@ yt_export_csv <- function(api_response, filename = NULL, ...) {
 #' yt_quick_plot(top_videos, chart_type = "bar")
 #' }
 yt_quick_plot <- function(api_response, x_col = NULL, y_col = NULL, chart_type = "auto") {
-  df <- yt_to_dataframe(api_response)
+  df <- yt_as_data_frame(api_response)
 
   if (is.null(df) || nrow(df) == 0) {
     tubern_abort("No data to plot", class = "parameter")
