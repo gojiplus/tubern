@@ -19,9 +19,8 @@ named list
 Delete Group Item
 }
 \examples{
-
 \dontrun{
-delete_group_item(id="ABZZzGSIAAA")
+delete_group_item(id = "ABZZzGSIAAA")
 }
 }
 \references{

@@ -5,7 +5,7 @@
 ## answered every unrecognised string instead of rejecting it, and the fix
 ## handed typos a silent wrong answer:
 ##
-##   resolve_date_range("2024-01-01", "last_mont")   # -> end_date = today
+##   resolve_date_range("2024-01-01", "last_mont")   # -> end_date = today # nolint
 ##
 ## which quietly widened the report by however long ago 2024 was. The previous
 ## code path rejected that string. A range the package does not know has to be
@@ -29,14 +29,16 @@ test_that("an invalid range is a parameter error, like every other bad argument"
   # already write: every other invalid-argument path in the package raises
   # tubern_parameter_error, so one outlier silently escapes tryCatch on it.
   err <- tryCatch(resolve_date_range("2024-01-01", "last_mont"),
-                  error = function(e) e)
+    error = function(e) e
+  )
   expect_s3_class(err, "tubern_parameter_error")
   expect_s3_class(err, "tubern_error")
 })
 
 test_that("the error names the ranges that would have worked", {
   err <- tryCatch(resolve_date_range("2024-01-01", "last_mont"),
-                  error = function(e) conditionMessage(e))
+    error = function(e) conditionMessage(e)
+  )
   expect_match(err, "last_month", fixed = TRUE)
   expect_match(err, "YYYY-MM-DD", fixed = TRUE)
 })

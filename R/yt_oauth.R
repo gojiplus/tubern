@@ -16,8 +16,10 @@
 #'     \item \code{"full"} - Full access including group management (create/delete)
 #'     \item \code{"auto"} - Automatically detect scope based on first API call
 #'   }
-#' @param token Path to file containing the token. Default is \code{.httr-oauth} in working directory.
-#' @param setup_guide Logical. Show setup guide for first-time users (default: TRUE for interactive sessions)
+#' @param token Path to the file containing the token. Defaults to
+#'   \code{.httr-oauth} in the working directory.
+#' @param setup_guide Logical. Show the setup guide for first-time users
+#'   (default: TRUE for interactive sessions)
 #' @param \dots Additional arguments passed to \code{\link[httr]{oauth2.0_token}}
 #'
 #' @return Sets the google_token option and saves .httr-oauth in working directory
@@ -44,9 +46,9 @@
 #'             setup_guide = FALSE)
 #' }
 
-yt_oauth <- function (app_id = NULL, app_secret = NULL,
-                      scope = "analytics", token = ".httr-oauth",
-                      setup_guide = interactive(), ...) {
+yt_oauth <- function(app_id = NULL, app_secret = NULL,
+                     scope = "analytics", token = ".httr-oauth",
+                     setup_guide = interactive(), ...) {
 
   assert_string(scope, .var.name = "scope")
   assert_string(token, .var.name = "token")
@@ -133,7 +135,10 @@ yt_oauth <- function (app_id = NULL, app_secret = NULL,
     tubern_inform("Token validation successful")
   }, error = function(e) {
     tubern_warn(
-      "Token created but validation failed. You may need to enable YouTube Analytics API in Google Cloud Console."
+      paste(
+        "Token created but validation failed. You may need to enable the",
+        "YouTube Analytics API in the Google Cloud Console."
+      )
     )
   })
 }
@@ -193,6 +198,9 @@ yt_oauth <- function (app_id = NULL, app_secret = NULL,
   cat("5. Copy your credentials and run:\n")
   cat("   yt_oauth('your-client-id.apps.googleusercontent.com', 'your-client-secret')\n\n")
 
-  cat("Need help? Visit: https://developers.google.com/youtube/analytics/registering_an_application\n")
+  cat(
+    "Need help? Visit:",
+    "https://developers.google.com/youtube/analytics/registering_an_application\n"
+  )
   cat("===========================================\n")
 }

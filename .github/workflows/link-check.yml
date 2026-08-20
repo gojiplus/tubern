@@ -21,9 +21,8 @@ jobs:
   links:
     uses: gojiplus/r-canon/.github/workflows/reusable-link-check.yml@v1
     with:
-      # Service endpoints that appear in R/ as string constants, not documents:
-      # both answer 404 to an unauthenticated GET by design. The OAuth scope
-      # URIs under /auth/ do resolve and stay checked.
+      # API base URLs, which appear in the source as string constants and
+      # answer 404 to an unauthenticated GET by design.
       exclude: |
-        ^https://www\.googleapis\.com/?$
-        ^https://youtubeanalytics\.googleapis\.com
+        ^https://youtubeanalytics\.googleapis\.com/v2$
+        ^https://www\.googleapis\.com/$

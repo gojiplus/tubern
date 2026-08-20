@@ -4,8 +4,10 @@ test_that("get_report validates ids parameter format", {
   }
   with_api_stub(stub, {
     expect_error(
-      get_report(ids = "invalid", metrics = "views",
-                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      get_report(
+        ids = "invalid", metrics = "views",
+        start_date = "2023-01-01", end_date = "2023-01-31"
+      ),
       class = "tubern_parameter_error"
     )
   })
@@ -19,8 +21,10 @@ test_that("get_report warns about an unknown metric but still sends it", {
   }
   with_api_stub(stub, {
     expect_warning(
-      get_report(ids = "channel==MINE", metrics = "invalid_metric",
-                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      get_report(
+        ids = "channel==MINE", metrics = "invalid_metric",
+        start_date = "2023-01-01", end_date = "2023-01-31"
+      ),
       class = "tubern_parameter_warning"
     )
   })
@@ -35,8 +39,10 @@ test_that("get_report still refuses a metric we can name the mistake for", {
   }
   with_api_stub(stub, {
     expect_error(
-      get_report(ids = "channel==MINE", metrics = "videoThumbnailImpressions",
-                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      get_report(
+        ids = "channel==MINE", metrics = "videoThumbnailImpressions",
+        start_date = "2023-01-01", end_date = "2023-01-31"
+      ),
       class = "tubern_parameter_error"
     )
   })
@@ -55,8 +61,10 @@ test_that("get_report validates date format", {
   }
   with_api_stub(stub, {
     expect_error(
-      get_report(ids = "channel==MINE", metrics = "views",
-                 start_date = "2023/01/01", end_date = "2023-01-31"),
+      get_report(
+        ids = "channel==MINE", metrics = "views",
+        start_date = "2023/01/01", end_date = "2023-01-31"
+      ),
       class = "tubern_parameter_error"
     )
   })
@@ -69,8 +77,10 @@ test_that("get_report constructs correct query with valid parameters", {
     mock_api_response()
   }
   with_api_stub(stub, {
-    get_report(ids = "channel==MINE", metrics = "views",
-               start_date = "2023-01-01", end_date = "2023-01-31")
+    get_report(
+      ids = "channel==MINE", metrics = "views",
+      start_date = "2023-01-01", end_date = "2023-01-31"
+    )
     expect_equal(captured_query$metrics, "views")
     expect_equal(captured_query$startDate, "2023-01-01")
     expect_equal(captured_query$endDate, "2023-01-31")
@@ -84,8 +94,10 @@ test_that("get_report handles multiple metrics", {
     mock_api_response()
   }
   with_api_stub(stub, {
-    get_report(ids = "channel==MINE", metrics = "views,likes,comments",
-               start_date = "2023-01-01", end_date = "2023-01-31")
+    get_report(
+      ids = "channel==MINE", metrics = "views,likes,comments",
+      start_date = "2023-01-01", end_date = "2023-01-31"
+    )
     expect_equal(captured_query$metrics, "views,likes,comments")
   })
 })
@@ -96,9 +108,11 @@ test_that("get_report validates max_results bounds", {
   }
   with_api_stub(stub, {
     expect_error(
-      get_report(ids = "channel==MINE", metrics = "views",
-                 start_date = "2023-01-01", end_date = "2023-01-31",
-                 max_results = 300),
+      get_report(
+        ids = "channel==MINE", metrics = "views",
+        start_date = "2023-01-01", end_date = "2023-01-31",
+        max_results = 300
+      ),
       "max_results"
     )
   })
@@ -110,16 +124,20 @@ test_that("get_report warns when using specific channel ID", {
   }
   with_api_stub(stub, {
     expect_warning(
-      get_report(ids = "channel==UCiMg06DjcUk5FRiM3g5sqoQ",
-                 metrics = "views",
-                 start_date = "2023-01-01", end_date = "2023-01-31"),
+      get_report(
+        ids = "channel==UCiMg06DjcUk5FRiM3g5sqoQ",
+        metrics = "views",
+        start_date = "2023-01-01", end_date = "2023-01-31"
+      ),
       "Using a specific channel ID may result in 404 errors",
       class = "tubern_parameter_warning"
     )
 
     expect_silent(
-      get_report(ids = "channel==MINE", metrics = "views",
-                 start_date = "2023-01-01", end_date = "2023-01-31")
+      get_report(
+        ids = "channel==MINE", metrics = "views",
+        start_date = "2023-01-01", end_date = "2023-01-31"
+      )
     )
   })
 })
@@ -128,7 +146,9 @@ test_that("get_report with real API works", {
   skip_on_cran()
   skip_if_no_token()
 
-  get_info <- get_report(ids = "channel==MINE", metrics = "views",
-                         start_date = "2010-04-01", end_date = "2017-04-01")
+  get_info <- get_report(
+    ids = "channel==MINE", metrics = "views",
+    start_date = "2010-04-01", end_date = "2017-04-01"
+  )
   expect_type(get_info, "list")
 })

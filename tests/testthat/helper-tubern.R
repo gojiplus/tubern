@@ -16,15 +16,20 @@ skip_if_no_token <- function() {
     # calls it, so this check could never pass on any machine -- the two live
     # tests skipped everywhere, always, including where a working token was
     # sitting in the package root the whole time.
-    token <- tryCatch({
-      cache <- ".httr-oauth"
-      if (!file.exists(cache)) cache <- file.path("..", "..", ".httr-oauth")
-      if (!file.exists(cache)) NULL else {
-        cached <- readRDS(cache)
-        keep <- Filter(function(x) inherits(x, "Token2.0"), cached)
-        if (length(keep) == 0) NULL else keep[[1]]
-      }
-    }, error = function(e) NULL)
+    token <- tryCatch(
+      {
+        cache <- ".httr-oauth"
+        if (!file.exists(cache)) cache <- file.path("..", "..", ".httr-oauth")
+        if (!file.exists(cache)) {
+          NULL
+        } else {
+          cached <- readRDS(cache)
+          keep <- Filter(function(x) inherits(x, "Token2.0"), cached)
+          if (length(keep) == 0) NULL else keep[[1]]
+        }
+      },
+      error = function(e) NULL
+    )
 
     if (is.null(token)) {
       testthat::skip("No OAuth token available. Run yt_oauth() to test with real API.")

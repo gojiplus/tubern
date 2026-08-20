@@ -19,9 +19,8 @@ named list
 Delete Group
 }
 \examples{
-
 \dontrun{
-delete_group(id="ABZZzGSIAAA")
+delete_group(id = "ABZZzGSIAAA")
 }
 }
 \references{

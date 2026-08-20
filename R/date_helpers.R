@@ -48,8 +48,10 @@ NULL
     "this_quarter" = {
       quarter <- ceiling(as.numeric(format(today, "%m")) / 3)
       quarter_start_month <- (quarter - 1) * 3 + 1
-      as.Date(paste0(format(today, "%Y"), "-",
-                     sprintf("%02d", quarter_start_month), "-01"))
+      as.Date(paste0(
+        format(today, "%Y"), "-",
+        sprintf("%02d", quarter_start_month), "-01"
+      ))
     },
     "last_quarter" = {
       quarter <- ceiling(as.numeric(format(today, "%m")) / 3)
@@ -58,19 +60,22 @@ NULL
         as.Date(paste0(as.numeric(format(today, "%Y")) - 1, "-10-01"))
       } else {
         quarter_start_month <- (quarter - 2) * 3 + 1
-        as.Date(paste0(format(today, "%Y"), "-",
-                       sprintf("%02d", quarter_start_month), "-01"))
+        as.Date(paste0(
+          format(today, "%Y"), "-",
+          sprintf("%02d", quarter_start_month), "-01"
+        ))
       }
     },
-
     tubern_abort(
-      paste0("Unrecognized date string: '", date_string, "'.",
-             " Use YYYY-MM-DD format or relative dates like 'last_30_days', 'this_month', etc."),
+      paste0(
+        "Unrecognized date string: '", date_string, "'.",
+        " Use YYYY-MM-DD format or relative dates like 'last_30_days', 'this_month', etc."
+      ),
       class = "parameter"
     )
   )
 
-  return(date_obj)
+  date_obj
 }
 
 # The relative ranges the package understands. .parse_date_string() maps each
@@ -105,7 +110,7 @@ NULL
     # Days
     "yesterday" = today - 1,
     "today" = today,
-    "last_7_days" = today - 1,  # Last 7 days up to yesterday
+    "last_7_days" = today - 1, # Last 7 days up to yesterday
     "last_14_days" = today - 1,
     "last_30_days" = today - 1,
     "last_60_days" = today - 1,
@@ -134,10 +139,15 @@ NULL
       } else {
         quarter_end_month <- (quarter - 2) * 3 + 3
         last_day <- switch(as.character(quarter_end_month),
-          "3" = "31", "6" = "30", "9" = "30", "12" = "31"
+          "3" = "31",
+          "6" = "30",
+          "9" = "30",
+          "12" = "31"
         )
-        as.Date(paste0(format(today, "%Y"), "-",
-                       sprintf("%02d", quarter_end_month), "-", last_day))
+        as.Date(paste0(
+          format(today, "%Y"), "-",
+          sprintf("%02d", quarter_end_month), "-", last_day
+        ))
       }
     },
 
@@ -150,9 +160,11 @@ NULL
 
   if (is.null(end_date)) {
     tubern_abort(
-      paste0("Unrecognised date range: '", start_date_string, "'. ",
-             "Expected YYYY-MM-DD or one of: ",
-             paste(.known_date_ranges, collapse = ", ")),
+      paste0(
+        "Unrecognised date range: '", start_date_string, "'. ",
+        "Expected YYYY-MM-DD or one of: ",
+        paste(.known_date_ranges, collapse = ", ")
+      ),
       # "parameter", not a date-specific class: every other invalid-argument
       # path in the package raises tubern_parameter_error, and a handler
       # catching that would silently miss this one.
@@ -160,13 +172,14 @@ NULL
     )
   }
 
-  return(end_date)
+  end_date
 }
 
 #' Resolve date range with support for relative dates
 #'
 #' @param start_date Start date (can be relative like "last_30_days" or absolute like "2024-01-01")
-#' @param end_date End date (can be relative or absolute). If NULL and start_date is relative, will be calculated automatically
+#' @param end_date End date (can be relative or absolute). If NULL and
+#'   start_date is relative, it is calculated automatically
 #' @return List with resolved start_date and end_date as YYYY-MM-DD strings
 #' @export
 #' @examples
@@ -194,13 +207,15 @@ resolve_date_range <- function(start_date, end_date = NULL) {
       .get_end_date_for_range(end_date)
     }
   } else {
-    end_parsed <- start_parsed  # Same as start if absolute and no end specified
+    end_parsed <- start_parsed # Same as start if absolute and no end specified
   }
 
   if (start_parsed > end_parsed) {
     tubern_abort(
-      paste0("Resolved start_date (", format(start_parsed, "%Y-%m-%d"),
-             ") is after end_date (", format(end_parsed, "%Y-%m-%d"), ")"),
+      paste0(
+        "Resolved start_date (", format(start_parsed, "%Y-%m-%d"),
+        ") is after end_date (", format(end_parsed, "%Y-%m-%d"), ")"
+      ),
       class = "parameter"
     )
   }

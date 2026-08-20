@@ -9,7 +9,8 @@ resolve_date_range(start_date, end_date = NULL)
 \arguments{
 \item{start_date}{Start date (can be relative like "last_30_days" or absolute like "2024-01-01")}
 
-\item{end_date}{End date (can be relative or absolute). If NULL and start_date is relative, will be calculated automatically}
+\item{end_date}{End date (can be relative or absolute). If NULL and
+start_date is relative, it is calculated automatically}
 }
 \value{
 List with resolved start_date and end_date as YYYY-MM-DD strings

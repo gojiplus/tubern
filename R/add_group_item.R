@@ -11,12 +11,10 @@
 #' @references \url{https://developers.google.com/youtube/analytics/reference/groupItems/insert}
 #'
 #' @examples
-#'
 #' \dontrun{
-#' add_group_item(list(groupId = "", resource.id ="hello"))
+#' add_group_item(list(groupId = "", resource.id = "hello"))
 #' }
-
-add_group_item <- function (resource_details, ...) {
+add_group_item <- function(resource_details, ...) {
   assert_list(resource_details, .var.name = "resource_details")
 
   json_arg <- toJSON(resource_details, auto_unbox = TRUE)

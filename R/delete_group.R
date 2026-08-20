@@ -11,12 +11,10 @@
 #' @references \url{https://developers.google.com/youtube/analytics/reference/groups/delete}
 #'
 #' @examples
-#'
 #' \dontrun{
-#' delete_group(id="ABZZzGSIAAA")
+#' delete_group(id = "ABZZzGSIAAA")
 #' }
-
-delete_group <- function (id, ...) {
+delete_group <- function(id, ...) {
   assert_string(id, .var.name = "id")
 
   querylist <- list(id = id)
