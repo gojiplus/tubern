@@ -1,6 +1,6 @@
 Package: tubern
 Title: R Client for the YouTube Analytics and Reporting API
-Version: 0.5.1
+Version: 0.6.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Author: Gaurav Sood [aut, cre]
 Maintainer: Gaurav Sood <gsood07@gmail.com>
@@ -16,7 +16,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
 Imports:
-    httr,
+    httr2 (>= 1.1.0),
     jsonlite,
     checkmate,
     rlang (>= 1.1.0)
@@ -25,7 +25,7 @@ VignetteBuilder: knitr
 Suggests:
     knitr (>= 1.11),
     testthat,
-    httptest,
+    httptest2,
     rmarkdown,
     xml2,
     covr,

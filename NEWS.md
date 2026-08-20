@@ -1,4 +1,25 @@
-# tubern (development version)
+# tubern 0.6.0
+
+## Breaking changes
+
+* The HTTP layer moved from httr to httr2, and so did authentication. Tokens
+  saved by earlier versions are httr `Token2.0` objects, which httr2 cannot
+  use, so **you have to run `yt_oauth()` once more**. `yt_oauth()` says so
+  when it finds an old token rather than failing later with something obscure.
+* The token cache is now `.tubern-oauth`, not `.httr-oauth`. `.httr-oauth` is
+  httr's *shared* cache: other packages in the same working directory read it
+  expecting httr tokens, and writing an httr2 token there would break their
+  authentication. `yt_oauth()` refuses to overwrite a file that holds an httr
+  cache.
+* `options(google_token)` now holds an httr2 token rather than an httr
+  `Token2.0`. Code reading `$credentials$access_token` from it should read
+  `$access_token` instead.
+
+## Improvements
+
+* Expired access tokens are refreshed automatically when a refresh token is
+  available, instead of failing the request.
+* Requests carry a package user agent.
 
 ## Behaviour changes
 

@@ -1,7 +1,9 @@
 #' \pkg{tubern} provides access to the YouTube Analytics and Reporting API
 #'
-#' @importFrom httr GET POST PUT DELETE authenticate config stop_for_status
-#' @importFrom httr upload_file content oauth_endpoints oauth_app oauth2.0_token
+#' @importFrom httr2 request req_url_path_append req_url_query req_method
+#' @importFrom httr2 req_auth_bearer_token req_user_agent req_body_json req_error
+#' @importFrom httr2 req_perform resp_status resp_body_json resp_has_body
+#' @importFrom httr2 oauth_client oauth_flow_auth_code oauth_flow_refresh
 #' @importFrom jsonlite toJSON
 #' @importFrom utils URLencode adist packageVersion write.csv
 #' @importFrom stats median
@@ -20,7 +22,7 @@
 # @param path character: API endpoint path (relative to base)
 # @param query list: query parameters
 # @param body optional body for POST/PUT/DELETE
-# @param ... additional args passed to httr functions (e.g., encode)
+#  ... ignored; kept for backward compatibility
 # @return parsed content as list
 .api_request <- function(method, path, query = NULL, body = NULL, ...) {
   .api_request_enhanced(method, path, query, body, ...)
@@ -48,7 +50,7 @@ yt_check_token <- function() {
 #'
 #' @param path path to specific API request URL
 #' @param query query list
-#' @param \dots Additional arguments passed to \code{\link[httr]{GET}}.
+#' @param \dots Ignored; kept for backward compatibility.
 #' @return list
 
 tubern_GET <- function(path, query = NULL, ...) { # nolint: object_name_linter.
@@ -61,7 +63,7 @@ tubern_GET <- function(path, query = NULL, ...) { # nolint: object_name_linter.
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param body passing image through body
-#' @param \dots Additional arguments passed to \code{\link[httr]{POST}}.
+#' @param \dots Ignored; kept for backward compatibility.
 #'
 #' @return list
 
@@ -75,7 +77,7 @@ tubern_POST <- function(path, query = NULL, body = "", ...) { # nolint: object_n
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param body passing image through body
-#' @param \dots Additional arguments passed to \code{\link[httr]{PUT}}.
+#' @param \dots Ignored; kept for backward compatibility.
 #'
 #' @return list
 
@@ -89,7 +91,7 @@ tubern_PUT <- function(path, query = NULL, body = "", ...) { # nolint: object_na
 #' @param path path to specific API request URL
 #' @param query query list
 #' @param body passing image through body
-#' @param \dots Additional arguments passed to \code{\link[httr]{DELETE}}.
+#' @param \dots Ignored; kept for backward compatibility.
 #'
 #' @return list
 

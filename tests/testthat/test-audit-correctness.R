@@ -2,18 +2,13 @@
 # YouTube Analytics API v2 reference. Nothing here touches the network.
 
 fake_response <- function(status, content = raw(0)) {
-  structure(
-    list(
-      url = "https://youtubeanalytics.googleapis.com/v2/groups",
-      status_code = as.integer(status),
-      headers = structure(list(), class = c("insensitive", "list")),
-      all_headers = list(), cookies = data.frame(),
-      content = content, date = Sys.time(), times = numeric(0),
-      request = NULL, handle = NULL
-    ),
-    class = "response"
+  httr2::response(
+    status_code = as.integer(status),
+    url = "https://youtubeanalytics.googleapis.com/v2/groups",
+    body = content
   )
 }
+
 
 test_that("get_revenue_report only asks for metrics the API defines", {
   # adEarnings and impressionBasedCpm are the pre-v2 names; the API (and this
@@ -72,48 +67,22 @@ test_that("a 204 No Content response is a success, not an error", {
   # groups.delete and groupItems.delete document HTTP 204 with an empty body on
   # success. Treating only 200 as success routed them into the error path, where
   # parsing an empty body raised an untyped error.
-  options(google_token = structure(list(credentials = list(access_token = "x")),
-    class = "Token2.0"
-  ))
-  on.exit(options(google_token = NULL), add = TRUE)
-
-  # Restore and relock on the way out. Left in place, the stub outlived this
-  # test and answered 204 for every later POST/DELETE in the session -- with a
-  # token present, test-groups-live.R's add_groups() then returned list() and
-  # the lifecycle test either failed or, worse, passed against the fake.
-  imports <- parent.env(asNamespace("tubern"))
-  originals <- mget(c("DELETE", "POST"), envir = imports)
-  on.exit(
-    {
-      for (verb in names(originals)) {
-        assign(verb, originals[[verb]], envir = imports)
-        lockBinding(verb, imports)
-      }
-    },
-    add = TRUE
-  )
-
-  for (verb in c("DELETE", "POST")) {
-    unlockBinding(verb, imports)
-    assign(verb, function(url, ...) fake_response(204), envir = imports)
-  }
+  #
+  # This used to stub httr's DELETE and POST in the package's imports
+  # environment, which outlived the test when anything went wrong and answered
+  # 204 for every later request in the session. httr2's mocking is scoped by
+  # withr and unwinds itself, so that failure mode is gone by construction and
+  # the test that guarded against it is gone with it.
+  withr::local_options(google_token = fake_token())
+  httr2::local_mocked_responses(function(req) fake_response(204))
 
   expect_no_error(suppressMessages(delete_group(id = "ABC")))
   expect_no_error(suppressMessages(delete_group_item(id = "XYZ")))
 })
 
-test_that("the 204 test leaves the real HTTP verbs in place", {
-  # Guards the restore above. Without it this file quietly poisons every test
-  # that runs after it, and the damage is invisible precisely because the fake
-  # returns success.
-  imports <- parent.env(asNamespace("tubern"))
-  for (verb in c("DELETE", "POST")) {
-    expect_identical(get(verb, envir = imports),
-      getExportedValue("httr", verb),
-      info = verb
-    )
-    expect_true(bindingIsLocked(verb, imports), info = verb)
-  }
+test_that("mocked responses do not outlive the test that set them", {
+  # The property the deleted binding-surgery guard was really asserting.
+  expect_null(getOption("httr2_mock"))
 })
 
 test_that("parsing an error body that is not a list does not itself error", {
@@ -168,9 +137,8 @@ test_that("ids is percent-encoded exactly once", {
     ids = "contentOwner==My Owner", metrics = "views",
     start_date = "2024-01-01", end_date = "2024-01-31"
   )
-  # httr encodes query values itself, so the value handed to it must be raw.
+  # httr2 encodes query values itself, so the value handed to it must be raw.
   expect_equal(captured$query$ids, "contentOwner==My Owner")
-  expect_false(grepl("%25", httr::modify_url("https://x", query = captured$query),
-    fixed = TRUE
-  ))
+  built <- httr2::req_url_query(httr2::request("https://x"), !!!captured$query)
+  expect_false(grepl("%25", built$url, fixed = TRUE))
 })

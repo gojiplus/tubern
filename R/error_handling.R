@@ -153,26 +153,29 @@ with_retry <- function(expr,
 .api_request_enhanced <- function(method, path, query = NULL, body = NULL, ..., retry = TRUE) {
   yt_check_token()
 
-  url <- paste0(.api_base, "/", path)
-  fun <- switch(method,
-    GET = GET,
-    POST = POST,
-    PUT = PUT,
-    DELETE = DELETE,
+  if (!method %in% c("GET", "POST", "PUT", "DELETE")) {
     tubern_abort(paste("Unsupported HTTP method:", method), class = "parameter")
-  )
+  }
 
   make_request <- function() {
-    req <- tryCatch(
-      {
-        fun(url,
-          query = query,
-          body = body,
-          config(token = getOption("google_token")),
-          ...
-        )
-      },
-      error = function(e) {
+    req <- request(.api_base)
+    req <- req_url_path_append(req, path)
+    if (length(query)) req <- req_url_query(req, !!!query)
+    req <- req_method(req, method)
+    req <- req_auth_bearer_token(req, yt_access_token())
+    req <- req_user_agent(req, paste0(
+      "tubern/", utils::packageVersion("tubern"),
+      " (https://github.com/gojiplus/tubern)"
+    ))
+    if (!is.null(body)) req <- req_body_json(req, body)
+    # Status handling stays with .handle_api_response(), which raises the
+    # package's own condition classes; httr2 would otherwise raise its
+    # httr2_http_* conditions before that code ever runs.
+    req <- req_error(req, is_error = function(resp) FALSE)
+
+    resp <- tryCatch(
+      req_perform(req),
+      httr2_failure = function(e) {
         tubern_abort(
           paste("Network error:", conditionMessage(e)),
           class = "network"
@@ -180,7 +183,7 @@ with_retry <- function(expr,
       }
     )
 
-    .handle_api_response(req, query = query)
+    .handle_api_response(resp, query = query)
   }
 
   if (retry) {
@@ -190,32 +193,54 @@ with_retry <- function(expr,
   }
 }
 
+#' Parse a response body as JSON
+#'
+#' httr::content() parsed JSON with simplifyVector = FALSE, so everything
+#' downstream of here expects nested lists rather than data frames.
+#' resp_body_json() defaults the same way; passing it explicitly keeps the
+#' two from drifting apart if that default ever changes. An empty body is
+#' NULL rather than an error, because resp_body_raw() aborts on one and a
+#' 204 has nothing to parse.
+#'
+#' @param resp httr2 response object
+#' @return Parsed list, or NULL for an empty body
+#' @keywords internal
+#' @noRd
+.resp_parsed <- function(resp) {
+  if (!resp_has_body(resp)) {
+    return(NULL)
+  }
+  resp_body_json(resp, simplifyVector = FALSE)
+}
+
 #' Handle API response and convert errors to rlang conditions
 #'
-#' @param req httr response object
+#' @param req httr2 response object
 #' @param query The request's query list, used to explain a rejected
 #'   dimension/metric combination
 #' @return Parsed content if successful
 #' @keywords internal
 #' @noRd
 .handle_api_response <- function(req, query = NULL) {
+  status <- resp_status(req)
+
   # Any 2xx is a success. groups.delete and groupItems.delete document HTTP 204
   # with an empty body, which has nothing to parse.
-  if (req$status_code >= 200 && req$status_code < 300) {
-    if (req$status_code == 204) {
+  if (status >= 200 && status < 300) {
+    if (status == 204) {
       return(list())
     }
-    return(content(req))
+    return(.resp_parsed(req))
   }
 
-  error_content <- tryCatch(content(req), error = function(e) NULL)
+  error_content <- tryCatch(.resp_parsed(req), error = function(e) NULL)
 
-  error_info <- .parse_api_error(req$status_code, error_content, query = query)
+  error_info <- .parse_api_error(status, error_content, query = query)
 
   tubern_abort(
     error_info$message,
     class = error_info$class,
-    status_code = req$status_code,
+    status_code = status,
     response = req,
     api_error = error_content
   )
@@ -231,7 +256,7 @@ with_retry <- function(expr,
 #' @noRd
 .parse_api_error <- function(status_code, error_content, query = NULL) {
   # An error body is not always a parsed list: an empty body comes back from
-  # httr::content() as raw(0), and `$` on an atomic vector is an error.
+  # an empty body as raw(0), and `$` on an atomic vector is an error.
   error_details <- NULL
   if (is.list(error_content) && !is.null(error_content$error$errors)) {
     error_details <- error_content$error$errors[[1]]
@@ -427,8 +452,10 @@ diagnose_tubern <- function() {
   cat("2. Network Connectivity:\n")
   tryCatch(
     {
-      test_req <- GET("https://www.googleapis.com")
-      if (test_req$status_code == 200) {
+      test_req <- req_perform(
+        req_error(request("https://www.googleapis.com"), is_error = function(resp) FALSE)
+      )
+      if (resp_status(test_req) == 200) {
         cat("   OK Network connection to Google APIs working\n")
       } else {
         cat("   X Network connection issues detected\n")

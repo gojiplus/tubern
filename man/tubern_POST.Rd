@@ -13,7 +13,7 @@ tubern_POST(path, query = NULL, body = "", ...)
 
 \item{body}{passing image through body}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{POST}}.}
+\item{\dots}{Ignored; kept for backward compatibility.}
 }
 \value{
 list

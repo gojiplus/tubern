@@ -11,7 +11,7 @@ tubern_GET(path, query = NULL, ...)
 
 \item{query}{query list}
 
-\item{\dots}{Additional arguments passed to \code{\link[httr]{GET}}.}
+\item{\dots}{Ignored; kept for backward compatibility.}
 }
 \value{
 list
