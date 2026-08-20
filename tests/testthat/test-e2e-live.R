@@ -1,5 +1,5 @@
 ## End-to-end tests against the live YouTube Analytics API, covering the whole
-## path: request -> response -> yt_to_dataframe() -> usable numbers.
+## path: request -> response -> yt_as_data_frame() -> usable numbers.
 ##
 ## Nothing here ran before. skip_if_no_token() only consulted
 ## getOption("google_token"), which nothing but yt_oauth() sets, so the two
@@ -47,13 +47,13 @@ test_that("a real response has the documented envelope", {
   expect_true(all(lengths(r$rows) == length(r$columnHeaders)))
 })
 
-test_that("yt_to_dataframe() turns that into a frame of the right shape and types", {
+test_that("yt_as_data_frame() turns that into a frame of the right shape and types", {
   skip_if_not_e2e()
   r <- e2e_report(
     metrics = "views,estimatedMinutesWatched", dimensions = "day",
     start_date = WINDOW[1], end_date = WINDOW[2]
   )
-  df <- yt_to_dataframe(r)
+  df <- yt_as_data_frame(r)
 
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), length(r$rows))
@@ -82,7 +82,7 @@ test_that("per-day figures sum to the undimensioned total", {
       start_date = WINDOW[1], end_date = WINDOW[2]
     )$rows[[1]][[1]]
   )
-  daily <- yt_to_dataframe(
+  daily <- yt_as_data_frame(
     e2e_report(
       metrics = "views", dimensions = "day",
       start_date = WINDOW[1], end_date = WINDOW[2]
@@ -97,7 +97,7 @@ test_that("per-day figures sum to the undimensioned total", {
 
 test_that("sort and max_results are honoured", {
   skip_if_not_e2e()
-  df <- yt_to_dataframe(
+  df <- yt_as_data_frame(
     e2e_report(
       metrics = "views", dimensions = "day",
       start_date = WINDOW[1], end_date = WINDOW[2],
@@ -110,11 +110,11 @@ test_that("sort and max_results are honoured", {
 
 test_that("metrics come back as columns in the order requested", {
   skip_if_not_e2e()
-  a <- yt_to_dataframe(e2e_report(
+  a <- yt_as_data_frame(e2e_report(
     metrics = "views,estimatedMinutesWatched",
     start_date = WINDOW[1], end_date = WINDOW[2]
   ))
-  b <- yt_to_dataframe(e2e_report(
+  b <- yt_as_data_frame(e2e_report(
     metrics = "estimatedMinutesWatched,views",
     start_date = WINDOW[1], end_date = WINDOW[2]
   ))
@@ -138,7 +138,7 @@ test_that("the month dimension survives conversion without being mangled", {
     metrics = "views", dimensions = "month",
     start_date = "2023-01-01", end_date = "2023-12-01"
   )
-  df <- yt_to_dataframe(r)
+  df <- yt_as_data_frame(r)
 
   expect_type(df$month, "character")
   expect_false(anyNA(df$month))
@@ -154,21 +154,21 @@ test_that("a window with no data yields an empty frame, not an error", {
   )
   expect_length(r$rows, 0L)
 
-  df <- expect_no_error(suppressMessages(yt_to_dataframe(r)))
+  df <- expect_no_error(suppressMessages(yt_as_data_frame(r)))
   expect_s3_class(df, "data.frame")
   expect_equal(nrow(df), 0L)
   expect_false(is.null(df))
 })
 
-test_that("yt_to_tibble() matches yt_to_dataframe() apart from class", {
+test_that("yt_as_tibble() matches yt_as_data_frame() apart from class", {
   skip_if_not_e2e()
   skip_if_not_installed("tibble")
   r <- e2e_report(
     metrics = "views", dimensions = "day",
     start_date = WINDOW[1], end_date = WINDOW[2]
   )
-  df <- yt_to_dataframe(r)
-  tb <- yt_to_tibble(r)
+  df <- yt_as_data_frame(r)
+  tb <- yt_as_tibble(r)
 
   expect_s3_class(tb, "tbl_df")
   expect_identical(names(tb), names(df))
@@ -244,7 +244,7 @@ test_that("the reporting wrappers all return convertible responses", {
     }
     expect_true(is.list(r), info = nm)
     expect_false(is.null(r$columnHeaders), info = nm)
-    df <- suppressMessages(yt_to_dataframe(r))
+    df <- suppressMessages(yt_as_data_frame(r))
     expect_s3_class(df, "data.frame")
     if (nrow(df) > 0) for (n in names(df)) expect_false(is.list(df[[n]]), info = paste(nm, n))
   }

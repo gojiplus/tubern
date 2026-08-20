@@ -11,7 +11,7 @@ yt_export_csv(api_response, filename = NULL, ...)
 
 \item{filename}{Output filename (default: auto-generated based on timestamp)}
 
-\item{...}{Additional arguments passed to yt_to_dataframe()}
+\item{...}{Additional arguments passed to yt_as_data_frame()}
 }
 \value{
 Path to saved file

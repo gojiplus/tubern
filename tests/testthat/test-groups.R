@@ -1,4 +1,4 @@
-test_that("add_groups constructs correct API call", {
+test_that("add_group constructs correct API call", {
   resource_details <- list(
     etag = "etag123",
     snippet = list(title = "hello"),
@@ -10,7 +10,7 @@ test_that("add_groups constructs correct API call", {
   orig <- getFromNamespace(".api_request", ns = "tubern")
   on.exit(assignInNamespace(".api_request", orig, ns = "tubern"))
   assignInNamespace(".api_request", stub, ns = "tubern")
-  res <- add_groups(resource_details)
+  res <- add_group(resource_details)
   expect_equal(res$method, "POST")
   expect_equal(res$path, "groups")
   expect_null(res$query)

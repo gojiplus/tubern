@@ -507,6 +507,9 @@ NULL
 
 #' Get available metrics with descriptions
 #'
+#' Reads this package's own registry of metric names, transcribed from
+#' Google's documentation. Local data; makes no API call.
+#'
 #' @param pattern Optional regex pattern to filter metrics
 #' @return Named character vector of metrics and descriptions
 #' @export
@@ -528,6 +531,9 @@ get_available_metrics <- function(pattern = NULL) {
 }
 
 #' Get available dimensions with descriptions
+#'
+#' Reads this package's own registry of dimension names, transcribed from
+#' Google's documentation. Local data; makes no API call.
 #'
 #' @param pattern Optional regex pattern to filter dimensions
 #' @return Named character vector of dimensions and descriptions

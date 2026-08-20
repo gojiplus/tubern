@@ -15,6 +15,15 @@
   `Token2.0`. Code reading `$credentials$access_token` from it should read
   `$access_token` instead.
 
+* Four functions were renamed. The old names still work, warn once per
+  session, and will be removed in a future release:
+  `add_groups()` is now `add_group()`, since it creates one group and its
+  siblings are `delete_group()` and `update_group()`; `yt_to_dataframe()` and
+  `yt_to_tibble()` are now `yt_as_data_frame()` and `yt_as_tibble()`, since
+  `as_` is the convention for coercion; and `diagnose_tubern()` is now
+  `yt_diagnose()`, since the package's own name inside one of its functions
+  says nothing.
+
 ## Improvements
 
 * Expired access tokens are refreshed automatically when a refresh token is

@@ -423,9 +423,9 @@ check_api_quota <- function() {
 #' @return Diagnostic information about tubern setup
 #' @examples
 #' \dontrun{
-#' diagnose_tubern()
+#' yt_diagnose()
 #' }
-diagnose_tubern <- function() {
+yt_diagnose <- function() {
   cat("=== tubern Diagnostic Report ===\n\n")
 
   cat("1. Authentication Status:\n")
