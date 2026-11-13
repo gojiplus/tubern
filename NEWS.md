@@ -32,7 +32,7 @@
 
 ## Behaviour changes
 
-* A metric, dimension or filter dimension that this package does not recognise
+* A metric, dimension or filter dimension that this package does not recognize
   now warns and is sent to the API, rather than aborting the request. The
   registries in `validation_helpers.R` are transcribed by hand from Google's
   prose documentation -- the discovery document types `metrics` and
@@ -73,7 +73,7 @@
 
 * The retry helper called `force(expr)` inside its loop. `expr` is a promise, so
   forcing it again memoises the first result and a retry replayed a stale value
-  rather than re-issuing the request. It also signalled "retry" by returning
+  rather than re-issuing the request. It also signaled "retry" by returning
   `NULL`, which was indistinguishable from a genuine `NULL` result. The caller's
   expression is now re-evaluated each attempt and the retry signal is a distinct
   sentinel.

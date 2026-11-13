@@ -20,3 +20,4 @@ dev
 ^tubern_.*\.tar\.gz$
 ^client_secret.*\.json$
 ^\.lintr$
+^\.codespellrc$

@@ -153,7 +153,7 @@ NULL
 
     # No default. Falling back to today turned a typo into a silently wider
     # report: resolve_date_range("2024-01-01", "last_mont") returned today as
-    # the end date and quietly queried years of extra data. An unrecognised
+    # the end date and quietly queried years of extra data. An unrecognized
     # range has to be reported, not guessed at.
     NULL
   )
