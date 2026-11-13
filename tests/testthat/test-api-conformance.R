@@ -1,6 +1,6 @@
 ## The package validates every request against its own registry in
 ## R/validation_helpers.R and calls tubern_abort() on anything it does not
-## recognise, before a request is ever made. That registry is a set of claims
+## recognize, before a request is ever made. That registry is a set of claims
 ## about the API, and it had drifted: documented dimensions were rejected
 ## outright, including subscribedStatus, insightPlaybackLocationDetail and
 ## adType. Asking for one failed inside tubern with "Invalid dimension(s)" and a

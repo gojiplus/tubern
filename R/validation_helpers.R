@@ -251,7 +251,7 @@ NULL
   )
 }
 
-#' Warn about names this package does not recognise, and carry on
+#' Warn about names this package does not recognize, and carry on
 #'
 #' The lists in this file are transcribed by hand from Google's prose
 #' documentation. There is no machine-readable source for them: the discovery
@@ -264,7 +264,7 @@ NULL
 #' of the two errors. A false rejection blocks a request the API would have
 #' answered, and the user cannot work around it without editing the package;
 #' a false acceptance costs one round trip and a clear message from the server,
-#' which is the authority anyway. So an unrecognised name is a warning with a
+#' which is the authority anyway. So an unrecognized name is a warning with a
 #' spelling suggestion, and the request still goes out.
 #'
 #' This applies only to list membership. Rules about names we *do* know --
@@ -272,7 +272,7 @@ NULL
 #' missing -- stay errors, because those are documented constraints rather
 #' than gaps in a snapshot.
 #'
-#' @param unknown Character vector of unrecognised names
+#' @param unknown Character vector of unrecognized names
 #' @param choices Character vector of names this package knows
 #' @param what Singular noun for the message, e.g. "metric"
 #' @param helper Name of the accessor that lists valid values

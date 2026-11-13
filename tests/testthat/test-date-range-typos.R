@@ -2,7 +2,7 @@
 ## defect -- .parse_date_string() maps a range to its FIRST day, so a relative
 ## end_date used to end the report at the start of its window. But
 ## .get_end_date_for_range() carried a `switch` default of `today`, so it
-## answered every unrecognised string instead of rejecting it, and the fix
+## answered every unrecognized string instead of rejecting it, and the fix
 ## handed typos a silent wrong answer:
 ##
 ##   resolve_date_range("2024-01-01", "last_mont")   # -> end_date = today # nolint

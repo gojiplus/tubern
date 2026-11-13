@@ -30,7 +30,7 @@ There were no ERRORs, WARNINGs or NOTEs.
   `diagnose_tubern()` to `yt_diagnose()`. The old names still work and warn
   once per session.
 
-* An unrecognised metric, dimension or filter now warns and sends the request
+* An unrecognized metric, dimension or filter now warns and sends the request
   rather than aborting it. The local registries are transcribed by hand from
   Google's prose documentation, which enumerates nothing machine-readable, so
   refusing a name absent from a stale snapshot blocked requests the API would

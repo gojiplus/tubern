@@ -1,5 +1,5 @@
 # The old names must keep working, and must keep returning what they did.
-# A deprecation shim that quietly changes behaviour is worse than a clean
+# A deprecation shim that quietly changes behavior is worse than a clean
 # break, because nobody looks.
 
 fake_report <- function() {
