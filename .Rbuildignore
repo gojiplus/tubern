@@ -21,3 +21,4 @@ dev
 ^client_secret.*\.json$
 ^\.lintr$
 ^\.codespellrc$
+^lychee\.toml$
